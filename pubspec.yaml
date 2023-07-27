@@ -1,7 +1,7 @@
 name: newton
 description: An Easy To Use Particles Engine.
 version: 0.0.1
-homepage:
+homepage: https://newton.7omtech.fr
 
 environment:
   sdk: '>=3.0.6 <4.0.0'
@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  vector_math: ^2.1.4
 
 dev_dependencies:
   flutter_test:

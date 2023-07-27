@@ -1,125 +1,265 @@
+import 'package:example/available_effect.dart';
+import 'package:example/range_selection.dart';
+import 'package:example/single_value_selection.dart';
+import 'package:example/theme_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:newton/effects/effect.dart';
+import 'package:newton/newton.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const NewtonExampleApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class NewtonExampleApp extends StatelessWidget {
+  const NewtonExampleApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      home: NewtonConfigurationPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class NewtonConfigurationPage extends StatefulWidget {
+  const NewtonConfigurationPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<NewtonConfigurationPage> createState() =>
+      _NewtonConfigurationPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
+  final _scrollController = ScrollController();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  AvailableEffect _selectedAnimation = AvailableEffect.rain;
+  int _particlesPerEmit = 1;
+  int _emitDuration = 100;
+  int _particleMinDuration = 4000;
+  int _particleMaxDuration = 7000;
+  double _particleMinDistance = 100;
+  double _particleMaxDistance = 200;
+  double _particleMinFadeOutThreshold = 0.6;
+  double _particleMaxFadeOutThreshold = 0.8;
+  double _particleMinBeginScale = 1;
+  double _particleMaxBeginScale = 1;
+  double _particleMinEndScale = 1;
+  double _particleMaxEndScale = 1;
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Newton(
+            activeEffects: [currentActiveEffect()],
+          ),
+          configurationSection()
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    );
+  }
+
+  Effect currentActiveEffect() {
+    final size = MediaQuery.of(context).size;
+    return _selectedAnimation.instantiate(
+      size: size,
+      particlesPerEmit: _particlesPerEmit,
+      emitDuration: _emitDuration,
+      particleMinDuration: _particleMinDuration,
+      particleMaxDuration: _particleMaxDuration,
+      particleMinDistance: _particleMinDistance,
+      particleMaxDistance: _particleMaxDistance,
+      particleMinFadeOutThreshold: _particleMinFadeOutThreshold,
+      particleMaxFadeOutThreshold: _particleMaxFadeOutThreshold,
+      particleMinBeginScale: _particleMinBeginScale,
+      particleMaxBeginScale: _particleMaxBeginScale,
+      particleMinEndScale: _particleMinEndScale,
+      particleMaxEndScale: _particleMaxEndScale,
+    );
+  }
+
+  Widget configurationSection() {
+    return Scrollbar(
+      controller: _scrollController,
+      scrollbarOrientation: ScrollbarOrientation.left,
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              titleSection(),
+              const SizedBox(
+                height: 20,
+              ),
+              animationSelectionSection(defaultAnimation: _selectedAnimation),
+              const SizedBox(
+                height: 20,
+              ),
+              particlesPerEmitSection(),
+              emitDurationSection(),
+              animationDurationSection(),
+              if (_selectedAnimation
+                  .supportParameter(AnimationParameter.distance))
+                particleDistanceSection(),
+              if (_selectedAnimation
+                  .supportParameter(AnimationParameter.fadeout))
+                particleFadeoutProgressSection(),
+              particleBeginScaleSection(),
+              particleEndScaleSection(),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Text titleSection() {
+    return Text(
+      "Configure Animation",
+      style: textTheme.headlineSmall!,
+    );
+  }
+
+  Widget animationSelectionSection(
+      {required AvailableEffect defaultAnimation}) {
+    return SizedBox(
+        width: 200,
+        child: DropdownButton<String>(
+          isExpanded: true,
+          value: defaultAnimation.label,
+          icon: const Icon(Icons.arrow_drop_down),
+          elevation: 16,
+          onChanged: (String? value) {
+            // This is called when the user selects an item.
+            setState(() {
+              _selectedAnimation = AvailableEffect.of(value!);
+            });
+          },
+          items: AvailableEffect.values
+              .map<DropdownMenuItem<String>>((AvailableEffect value) {
+            return DropdownMenuItem<String>(
+              value: value.label,
+              child: Text(value.label),
+            );
+          }).toList(),
+        ));
+  }
+
+  Widget animationDurationSection() {
+    return RangeSelection(
+      initialMin: _particleMinDuration.toDouble(),
+      initialMax: _particleMaxDuration.toDouble(),
+      min: 100,
+      max: 8000,
+      title: "Animation duration",
+      onChanged: (values) {
+        setState(() {
+          _particleMinDuration = values.start.round();
+          _particleMaxDuration = values.end.round();
+        });
+      },
+    );
+  }
+
+  Widget particlesPerEmitSection() {
+    return SingleValueSelection(
+      value: _particlesPerEmit.toDouble(),
+      title: "Particles per emit",
+      onChanged: (value) {
+        setState(() {
+          _particlesPerEmit = value.round();
+        });
+      },
+      min: 1,
+      max: 100,
+    );
+  }
+
+  Widget emitDurationSection() {
+    return SingleValueSelection(
+      value: _emitDuration.toDouble(),
+      title: "Emit duration",
+      onChanged: (value) {
+        setState(() {
+          _emitDuration = value.round();
+        });
+      },
+      min: 100,
+      max: 5000,
+    );
+  }
+
+  Widget particleDistanceSection() {
+    return RangeSelection(
+      initialMin: _particleMinDistance,
+      initialMax: _particleMaxDistance,
+      min: 100,
+      max: 2000,
+      title: "Particle distance",
+      onChanged: (values) {
+        setState(() {
+          _particleMinDistance = values.start;
+          _particleMaxDistance = values.end;
+        });
+      },
+    );
+  }
+
+  Widget particleFadeoutProgressSection() {
+    return RangeSelection(
+      initialMin: _particleMinFadeOutThreshold,
+      initialMax: _particleMaxFadeOutThreshold,
+      min: 0,
+      max: 1,
+      title: "Particle fadeout threshold",
+      onChanged: (values) {
+        setState(() {
+          _particleMinFadeOutThreshold = values.start;
+          _particleMaxFadeOutThreshold = values.end;
+        });
+      },
+      roundValue: false,
+    );
+  }
+
+  Widget particleBeginScaleSection() {
+    return RangeSelection(
+      initialMin: _particleMinBeginScale,
+      initialMax: _particleMaxBeginScale,
+      min: 0,
+      max: 10,
+      divisions: 100,
+      title: "Particle begin scale",
+      onChanged: (values) {
+        setState(() {
+          _particleMinBeginScale = values.start;
+          _particleMaxBeginScale = values.end;
+        });
+      },
+      roundValue: false,
+    );
+  }
+
+  Widget particleEndScaleSection() {
+    return RangeSelection(
+      initialMin: _particleMinEndScale,
+      initialMax: _particleMaxEndScale,
+      min: 0,
+      max: 10,
+      divisions: 100,
+      title: "Particle end scale",
+      onChanged: (values) {
+        setState(() {
+          _particleMinEndScale = values.start;
+          _particleMaxEndScale = values.end;
+        });
+      },
+      roundValue: false,
     );
   }
 }
