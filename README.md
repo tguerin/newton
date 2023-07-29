@@ -1,39 +1,108 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Newton - Particle Emitter for Flutter
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Newton is a highly configurable particle emitter package for Flutter that allows you to create captivating animations such as rain, smoke, explosions, and more. With Newton, you can easily add visually stunning effects to your Flutter applications.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- **Highly Configurable:** Newton provides a wide range of options to tweak your particle animations to your liking. You can adjust particle appearance, movement, behavior, and more.
 
-## Getting started
+- **Ready-to-Use Presets:** Get started quickly with our collection of pre-built presets for common particle effects like rain, smoke, and explosions.
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+- **Custom Particle Design:** Tailor your particle effects to match your app's aesthetic. Use custom shapes, colors, and sizes to create unique animations.
+
+- **Efficient Performance:** Newton is designed with performance in mind, ensuring smooth animations even on less powerful devices.
+
+## Installation
+
+To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  newton: ^0.0.1
+```
+
+Then, run `flutter pub get` to fetch the package.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+1. Import the Newton package:
 
 ```dart
-const like = 'sample';
+import 'package:newton/newton.dart';
 ```
 
-## Additional information
+2. Create a `Newton` widget and add it to your Flutter UI with the desired effects:
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+Newton(
+    // Add any kind of effects to your UI
+    // For example:
+    activeEffects: [
+        RainEffect(
+            particleConfiguration: ParticleConfiguration(
+                shape: CircleShape(),
+                size: const Size(5, 5),
+                color: Colors.black,
+            ),
+        )
+    ],
+)
+```
+
+Try our [animation configurator](https:://newton.7omtech.fr/configure) to tweak your animation.
+
+## Example
+
+For a quick start, here's an example of creating a simple rain effect using Newton:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:newton/newton.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Newton Rain Example')),
+        body: Newton(
+          activeEffects: [
+            RainEffect(
+                particleConfiguration: ParticleConfiguration(
+                    shape: CircleShape(),
+                    size: const Size(5, 5),
+                    color: Colors.black,
+                ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+## Documentation
+
+For detailed documentation and examples, visit the [Newton Documentation](https:://newton.7omtech.fr).
+
+## Contributing
+
+I welcome contributions from the community! If you find any issues or have ideas for improvements, feel free to open an issue or submit a pull request on GitHub.
+
+## License
+
+This project is licensed under the [MIT License](https://github.com/tguerin/newton/blob/main/LICENSE).
+
+---
+
+**Note:** This package is under active development, and breaking changes might be introduced in future versions until a stable 1.0.0 release. Please review the [changelog](CHANGELOG.md) when updating versions.
+
+*Disclaimer: This package is not affiliated with or endorsed by any third-party trademarks mentioned in the examples of particle effects.*
+
