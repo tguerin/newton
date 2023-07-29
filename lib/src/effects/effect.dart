@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:newton/particles/animated_particle.dart';
-import 'package:newton/particles/particle_configuration.dart';
-import 'package:newton/utils/random_extensions.dart';
+import 'package:newton/src/particles/animated_particle.dart';
+import 'package:newton/src/particles/particle_configuration.dart';
+import 'package:newton/src/utils/random_extensions.dart';
 
 abstract class Effect<T extends AnimatedParticle> {
   final List<AnimatedParticle> activeParticles = List.empty(growable: true);

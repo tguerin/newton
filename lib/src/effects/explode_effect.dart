@@ -1,8 +1,8 @@
 import 'package:flutter/animation.dart';
-import 'package:newton/effects/effect.dart';
-import 'package:newton/particles/animated_particle.dart';
-import 'package:newton/particles/particle.dart';
-import 'package:newton/utils/random_extensions.dart';
+import 'package:newton/src/effects/effect.dart';
+import 'package:newton/src/particles/animated_particle.dart';
+import 'package:newton/src/particles/particle.dart';
+import 'package:newton/src/utils/random_extensions.dart';
 
 class ExplodeEffect extends Effect<AnimatedParticle> {
   ExplodeEffect({
@@ -29,8 +29,8 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
   AnimatedParticle instantiateParticle(Size surfaceSize) {
     return AnimatedParticle(
       particle: Particle(
-        particleConfiguration,
-        Offset(origin.dx, origin.dy),
+        configuration: particleConfiguration,
+        position: Offset(origin.dx, origin.dy),
       ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),

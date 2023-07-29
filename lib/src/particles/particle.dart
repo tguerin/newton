@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:newton/particles/particle_configuration.dart';
+import 'package:newton/src/particles/particle_configuration.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class Particle {
@@ -13,8 +13,11 @@ class Particle {
   Offset position;
   Size size;
 
-  Particle(this.configuration, this.position, {Vector2? rotation})
-      : size = configuration.size,
+  Particle({
+    required this.configuration,
+    required this.position,
+    Vector2? rotation,
+  })  : size = configuration.size,
         initialPosition = position {
     if (rotation != null) {
       _transform.setRotationX(radians(rotation.x));

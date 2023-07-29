@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newton/shape.dart';
+import 'package:newton/src/particles/shape.dart';
 
 class ParticleConfiguration {
   final Shape shape;

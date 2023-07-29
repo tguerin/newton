@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newton/effects/effect.dart';
-import 'package:newton/effects/explode_effect.dart';
-import 'package:newton/effects/rain_effect.dart';
-import 'package:newton/effects/smoke_effect.dart';
-import 'package:newton/particles/particle_configuration.dart';
-import 'package:newton/shape.dart';
+import 'package:newton/newton.dart';
 
 enum AvailableEffect {
   rain("Rain", supportedParameters: [
@@ -58,7 +53,7 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.blue,
+            color: Colors.white,
           ),
           emitDuration: emitDuration,
           particlesPerEmit: particlesPerEmit,
@@ -76,7 +71,7 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.blue,
+            color: Colors.white,
           ),
           emitDuration: emitDuration,
           particlesPerEmit: particlesPerEmit,
@@ -97,7 +92,7 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.blue,
+            color: Colors.white,
           ),
           emitDuration: emitDuration,
           particlesPerEmit: particlesPerEmit,

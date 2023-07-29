@@ -3,7 +3,6 @@ import 'package:example/range_selection.dart';
 import 'package:example/single_value_selection.dart';
 import 'package:example/theme_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:newton/effects/effect.dart';
 import 'package:newton/newton.dart';
 
 void main() {
@@ -16,8 +15,29 @@ class NewtonExampleApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: NewtonConfigurationPage(),
+    const Map<int, Color> _primaryColor = {
+      50: Color.fromRGBO(27, 27, 29, .1),
+      100: Color.fromRGBO(27, 27, 29, .2),
+      200: Color.fromRGBO(27, 27, 29, .3),
+      300: Color.fromRGBO(27, 27, 29, .4),
+      400: Color.fromRGBO(27, 27, 29, .5),
+      500: Color.fromRGBO(27, 27, 29, .6),
+      600: Color.fromRGBO(27, 27, 29, .7),
+      700: Color.fromRGBO(27, 27, 29, .8),
+      800: Color.fromRGBO(27, 27, 29, .9),
+      900: Color.fromRGBO(27, 27, 29, 1),
+    };
+    return MaterialApp(
+      themeMode: ThemeMode.dark,
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: const MaterialColor(
+          0x1b1b1d,
+          _primaryColor,
+        ),
+        canvasColor: const Color(0xff1b1b1d),
+      ),
+      home: const NewtonConfigurationPage(),
     );
   }
 }
@@ -92,7 +112,6 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleSection(),
               const SizedBox(
                 height: 20,
               ),
@@ -115,13 +134,6 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Text titleSection() {
-    return Text(
-      "Configure Animation",
-      style: textTheme.headlineSmall!,
     );
   }
 

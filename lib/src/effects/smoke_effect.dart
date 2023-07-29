@@ -1,9 +1,9 @@
 import 'dart:ui';
 
-import 'package:newton/effects/effect.dart';
-import 'package:newton/particles/animated_particle.dart';
-import 'package:newton/particles/particle.dart';
-import 'package:newton/utils/random_extensions.dart';
+import 'package:newton/src/effects/effect.dart';
+import 'package:newton/src/particles/animated_particle.dart';
+import 'package:newton/src/particles/particle.dart';
+import 'package:newton/src/utils/random_extensions.dart';
 
 class SmokeEffect extends Effect<AnimatedParticle> {
   final double angle;
@@ -34,8 +34,8 @@ class SmokeEffect extends Effect<AnimatedParticle> {
     final beginX = random.nextDoubleRange(-smokeWidth / 2, smokeWidth / 2);
     return AnimatedParticle(
       particle: Particle(
-        particleConfiguration,
-        Offset(beginX + origin.dx, origin.dy),
+        configuration: particleConfiguration,
+        position: Offset(beginX + origin.dx, origin.dy),
       ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),
