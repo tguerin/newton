@@ -51,7 +51,7 @@ Newton(
 )
 ```
 
-Try our [animation configurator](https:://newton.7omtech.fr/configure) to tweak your animation.
+Try our [effect configurator](https://newton.7omtech.fr/docs/configurator) to tweak your effect.
 
 ## Example
 
@@ -90,11 +90,11 @@ class MyApp extends StatelessWidget {
 
 ## Documentation
 
-For detailed documentation and examples, visit the [Newton Documentation](https:://newton.7omtech.fr).
+For detailed documentation and examples, visit the [Newton Documentation](https://newton.7omtech.fr).
 
 ## Contributing
 
-I welcome contributions from the community! If you find any issues or have ideas for improvements, feel free to open an issue or submit a pull request on GitHub.
+We welcome contributions from the community! If you find any issues or have ideas for improvements, feel free to open an issue or submit a pull request on GitHub.
 
 ## License
 
@@ -103,6 +103,3 @@ This project is licensed under the [MIT License](https://github.com/tguerin/newt
 ---
 
 **Note:** This package is under active development, and breaking changes might be introduced in future versions until a stable 1.0.0 release. Please review the [changelog](CHANGELOG.md) when updating versions.
-
-*Disclaimer: This package is not affiliated with or endorsed by any third-party trademarks mentioned in the examples of particle effects.*
-
