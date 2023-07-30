@@ -1,3 +1,7 @@
-## 0.0.1
+## [0.0.1] - 2023-07-30
 
-* TODO: Describe initial release.
+### Added
+
+- [Feature] Initial release of Newton package.
+- [Feature] Implemented a highly configurable particle emitter with default effects.
+
