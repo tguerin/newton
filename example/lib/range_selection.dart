@@ -71,4 +71,11 @@ class _RangeSelectionState extends State<RangeSelection> {
       ],
     );
   }
+
+  @override
+  void didUpdateWidget(RangeSelection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _min = widget.initialMin;
+    _max = widget.initialMax;
+  }
 }

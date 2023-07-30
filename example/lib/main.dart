@@ -14,7 +14,7 @@ class NewtonExampleApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    const Map<int, Color> _primaryColor = {
+    const Map<int, Color> primaryColor = {
       50: Color.fromRGBO(27, 27, 29, .1),
       100: Color.fromRGBO(27, 27, 29, .2),
       200: Color.fromRGBO(27, 27, 29, .3),
@@ -32,7 +32,7 @@ class NewtonExampleApp extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: const MaterialColor(
           0x1b1b1d,
-          _primaryColor,
+          primaryColor,
         ),
         canvasColor: const Color(0xff1b1b1d),
       ),

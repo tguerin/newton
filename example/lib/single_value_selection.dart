@@ -60,4 +60,10 @@ class _SingleValueSelectionState extends State<SingleValueSelection> {
       ],
     );
   }
+
+  @override
+  void didUpdateWidget(SingleValueSelection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _value = widget.value;
+  }
 }
