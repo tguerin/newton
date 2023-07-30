@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:newton/src/particles/particle_configuration.dart';
+import 'package:newton_particles/src/particles/particle_configuration.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class Particle {

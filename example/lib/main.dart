@@ -1,9 +1,8 @@
 import 'package:example/available_effect.dart';
 import 'package:example/range_selection.dart';
 import 'package:example/single_value_selection.dart';
-import 'package:example/theme_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:newton/newton.dart';
+import 'package:newton_particles/newton_particles.dart';
 
 void main() {
   runApp(const NewtonExampleApp());

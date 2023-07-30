@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:newton/src/effects/effect.dart';
+import 'package:newton_particles/src/effects/effect.dart';
 
 class NewtonPainter extends CustomPainter {
   final List<Effect> effects;

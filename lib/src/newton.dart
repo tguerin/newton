@@ -2,8 +2,8 @@ library newton;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:newton/src/effects/effect.dart';
-import 'package:newton/src/newton_painter.dart';
+import 'package:newton_particles/src/effects/effect.dart';
+import 'package:newton_particles/src/newton_painter.dart';
 
 class Newton extends StatefulWidget {
   final List<Effect> activeEffects;

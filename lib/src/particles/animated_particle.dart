@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/animation.dart';
-import 'package:newton/src/particles/particle.dart';
+import 'package:newton_particles/src/particles/particle.dart';
 import 'package:vector_math/vector_math.dart';
 
 class AnimatedParticle {

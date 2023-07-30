@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newton/newton.dart';
+import 'package:newton_particles/newton_particles.dart';
 
 enum AvailableEffect {
   rain("Rain", supportedParameters: [

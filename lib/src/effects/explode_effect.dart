@@ -1,8 +1,8 @@
 import 'package:flutter/animation.dart';
-import 'package:newton/src/effects/effect.dart';
-import 'package:newton/src/particles/animated_particle.dart';
-import 'package:newton/src/particles/particle.dart';
-import 'package:newton/src/utils/random_extensions.dart';
+import 'package:newton_particles/src/effects/effect.dart';
+import 'package:newton_particles/src/particles/animated_particle.dart';
+import 'package:newton_particles/src/particles/particle.dart';
+import 'package:newton_particles/src/utils/random_extensions.dart';
 
 class ExplodeEffect extends Effect<AnimatedParticle> {
   ExplodeEffect({
