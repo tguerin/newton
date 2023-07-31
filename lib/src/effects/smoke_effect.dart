@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/animation.dart';
 
 import 'package:newton_particles/src/effects/effect.dart';
 import 'package:newton_particles/src/particles/animated_particle.dart';

@@ -1,6 +1,7 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/animation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:newton_particles/src/effects/effect_configuration.dart';
 import 'package:newton_particles/src/particles/animated_particle.dart';
 import 'package:newton_particles/src/particles/particle_configuration.dart';
