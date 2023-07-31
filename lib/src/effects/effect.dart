@@ -15,6 +15,7 @@ abstract class Effect<T extends AnimatedParticle> {
   Size _surfaceSize = const Size(0, 0);
 
   bool _stopEmission = false;
+  bool _killed = false;
 
   final EffectConfiguration effectConfiguration;
 
@@ -56,10 +57,14 @@ abstract class Effect<T extends AnimatedParticle> {
   }
 
   start() {
+    if (_killed) {
+      throw StateError("Can't start a killed effect");
+    }
     _stopEmission = false;
   }
 
   stop({bool cancel = false}) {
+    if (_killed) return;
     _stopEmission = true;
     if (cancel) {
       activeParticles.clear();
@@ -67,6 +72,13 @@ abstract class Effect<T extends AnimatedParticle> {
   }
 
   bool get isStopped => _stopEmission;
+
+  kill() {
+    stop(cancel: true);
+    _killed = true;
+  }
+
+  bool get isDead => _killed;
 
   double randomDistance() {
     return random.nextDoubleRange(
