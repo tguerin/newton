@@ -24,11 +24,13 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     super.initState();
     _activeEffects.addAll(widget.activeEffects);
     _ticker = createTicker((elapsed) {
-      for (var element in _activeEffects) {
-        element.forward(elapsed.inMilliseconds - _lastElapsedMillis);
+      if(_activeEffects.isNotEmpty) {
+        for (var element in _activeEffects) {
+          element.forward(elapsed.inMilliseconds - _lastElapsedMillis);
+        }
+        _lastElapsedMillis = elapsed.inMilliseconds;
+        setState(() {});
       }
-      _lastElapsedMillis = elapsed.inMilliseconds;
-      setState(() {});
     });
     _ticker.start();
   }
