@@ -10,3 +10,11 @@
 ### Fixed
 
 - [Fix] Fix documentation.
+
+## [0.0.3] - 2023-07-31
+
+### Feature
+
+- [Feature] Rework how effects are configured for better configurability.
+- [Feature] Allow to configure angle in smoke effect from configurator.
+- [Feature] Add pulse effect.

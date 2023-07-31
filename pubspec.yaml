@@ -1,6 +1,6 @@
 name: newton_particles
 description: An Easy To Use Particle Engine.
-version: 0.0.2
+version: 0.0.3
 homepage: https://newton.7omtech.fr
 
 environment:

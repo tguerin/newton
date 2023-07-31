@@ -22,6 +22,7 @@ class RainEffect extends Effect<AnimatedParticle> {
 
   RainEffect({
     required super.particleConfiguration,
+    required super.effectConfiguration,
   });
 
   @override
@@ -39,7 +40,9 @@ In Newton effects, the `AnimatedParticle` serves as the default particle, moving
 upon emission.
 The `surfaceSize` represents the available animation area.
 
-The `particleConfiguration` describes the aspect of the particle (size, shape, color etc.)
+The `particleConfiguration` describes the aspect of the particle (size, shape, color etc.).
+
+The `EffectConfiguration` describes how particles will be emitted (angle, distance, etc.). 
 
 For the rain effect, particles will originate randomly along the top side at various x-coordinates,
 and each particle will travel a distance equivalent to `surfaceSize.height`.
@@ -49,8 +52,7 @@ class RainEffect extends Effect<AnimatedParticle> {
 
   RainEffect({
     required super.particleConfiguration,
-    super.minDuration,
-    super.maxDuration,
+    required super.effectConfiguration,
   });
 
   @override
@@ -75,11 +77,10 @@ class RainEffect extends Effect<AnimatedParticle> {
 `startTime` is necessary to know when particle is emitted an be able to compute the animation
 duration properly.
 Most of the time it will `totalElapsed` a property from the effect, which is the total elapsed time
-in milliseconds since
-the effect started.
+in milliseconds since the effect started.
 
-`randomDuration` is provided by the `Effect` class and will provide random duration based
-on `minDuration` and `maxDuration`.
+`randomDuration` is provided by the `Effect` class and will give random duration based
+on `EffectConfiguration.minDuration` and `EffectConfiguration.maxDuration`.
 This `animationDuration` property will give the effect that particles don't fall at the same pace.
 
 And “voilà” you have a rain effect, to use it just reuse the code
@@ -107,6 +108,8 @@ from [Getting Started](/docs/intro)
 - `minFadeInLimit`: `double` - Minimum opacity limit for particle fade-in. Default: `0`
 - `maxFadeInLimit`: `double` - Maximum opacity limit for particle fade-in. Default: `0`
 - `fadeInCurve`: `Curve` - Curve to control particle fade-in animation. Default: `Curves.linear`
+- `minAngle`: `double` - Min angle in degrees for particle. Default: `0`
+- `maxAngle`: `double` - Max angle in degrees for particle. Default: `0`
 
 ## Particle Configuration
 
