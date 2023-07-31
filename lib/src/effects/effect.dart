@@ -14,6 +14,8 @@ abstract class Effect<T extends AnimatedParticle> {
   double _lastInstantiation = 0;
   Size _surfaceSize = const Size(0, 0);
 
+  bool _stopEmission = false;
+
   final EffectConfiguration effectConfiguration;
 
   final ParticleConfiguration particleConfiguration;
@@ -30,8 +32,10 @@ abstract class Effect<T extends AnimatedParticle> {
     totalElapsed += elapsedMillis;
     if (totalElapsed - _lastInstantiation > effectConfiguration.emitDuration) {
       _lastInstantiation = totalElapsed;
-      for (int i = 0; i < effectConfiguration.particlesPerEmit; i++) {
-        activeParticles.add(instantiateParticle(_surfaceSize));
+      if (!_stopEmission) {
+        for (int i = 0; i < effectConfiguration.particlesPerEmit; i++) {
+          activeParticles.add(instantiateParticle(_surfaceSize));
+        }
       }
     }
     activeParticles.removeWhere((activeParticle) {
@@ -50,6 +54,19 @@ abstract class Effect<T extends AnimatedParticle> {
     }
     _surfaceSize = value;
   }
+
+  start() {
+    _stopEmission = false;
+  }
+
+  stop({bool cancel = false}) {
+    _stopEmission = true;
+    if (cancel) {
+      activeParticles.clear();
+    }
+  }
+
+  bool get isStopped => _stopEmission;
 
   double randomDistance() {
     return random.nextDoubleRange(
