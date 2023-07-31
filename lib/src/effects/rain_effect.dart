@@ -6,18 +6,7 @@ import 'package:newton_particles/src/particles/particle.dart';
 class RainEffect extends Effect<AnimatedParticle> {
   RainEffect({
     required super.particleConfiguration,
-    super.emitDuration,
-    super.particlesPerEmit,
-    super.minDuration,
-    super.maxDuration,
-    super.minBeginScale,
-    super.maxBeginScale,
-    super.minEndScale,
-    super.maxEndScale,
-    super.minFadeOutThreshold,
-    super.maxFadeOutThreshold,
-    super.minFadeInLimit,
-    super.maxFadeInLimit,
+    required super.effectConfiguration,
   });
 
   @override
@@ -37,10 +26,10 @@ class RainEffect extends Effect<AnimatedParticle> {
       scaleRange: randomScaleRange(),
       fadeOutThreshold: randomFadeOutThreshold(),
       fadeInLimit: randomFadeInLimit(),
-      distanceCurve: distanceCurve,
-      fadeInCurve: fadeInCurve,
-      fadeOutCurve: fadeOutCurve,
-      scaleCurve: scaleCurve,
+      distanceCurve: effectConfiguration.distanceCurve,
+      fadeInCurve: effectConfiguration.fadeInCurve,
+      fadeOutCurve: effectConfiguration.fadeOutCurve,
+      scaleCurve: effectConfiguration.scaleCurve,
     );
   }
 }

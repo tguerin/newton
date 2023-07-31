@@ -7,22 +7,7 @@ import 'package:newton_particles/src/utils/random_extensions.dart';
 class ExplodeEffect extends Effect<AnimatedParticle> {
   ExplodeEffect({
     required super.particleConfiguration,
-    super.particlesPerEmit,
-    super.emitDuration,
-    super.emitCurve,
-    super.origin,
-    super.minDistance,
-    super.maxDistance,
-    super.minDuration,
-    super.maxDuration,
-    super.minBeginScale,
-    super.maxBeginScale,
-    super.minEndScale,
-    super.maxEndScale,
-    super.minFadeOutThreshold,
-    super.maxFadeOutThreshold,
-    super.minFadeInLimit,
-    super.maxFadeInLimit,
+    required super.effectConfiguration,
   });
 
   @override
@@ -30,7 +15,8 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
     return AnimatedParticle(
       particle: Particle(
         configuration: particleConfiguration,
-        position: Offset(origin.dx, origin.dy),
+        position: Offset(
+            effectConfiguration.origin.dx, effectConfiguration.origin.dy),
       ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),
@@ -38,11 +24,11 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
       scaleRange: randomScaleRange(),
       fadeOutThreshold: randomFadeOutThreshold(),
       angle: random.nextDoubleRange(0, 360),
-      distanceCurve: distanceCurve,
+      distanceCurve: effectConfiguration.distanceCurve,
       fadeInLimit: randomFadeInLimit(),
-      fadeInCurve: fadeInCurve,
-      fadeOutCurve: fadeOutCurve,
-      scaleCurve: scaleCurve,
+      fadeInCurve: effectConfiguration.fadeInCurve,
+      fadeOutCurve: effectConfiguration.fadeOutCurve,
+      scaleCurve: effectConfiguration.scaleCurve,
     );
   }
 }

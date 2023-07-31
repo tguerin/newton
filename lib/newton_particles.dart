@@ -1,5 +1,7 @@
 export 'src/effects/effect.dart';
+export 'src/effects/effect_configuration.dart';
 export 'src/effects/explode_effect.dart';
+export 'src/effects/pulse_effect.dart';
 export 'src/effects/rain_effect.dart';
 export 'src/effects/smoke_effect.dart';
 export 'src/newton.dart';

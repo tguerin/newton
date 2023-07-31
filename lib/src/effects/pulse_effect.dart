@@ -1,39 +1,33 @@
-import 'dart:ui';
-
+import 'package:flutter/animation.dart';
 import 'package:newton_particles/src/effects/effect.dart';
 import 'package:newton_particles/src/particles/animated_particle.dart';
 import 'package:newton_particles/src/particles/particle.dart';
-import 'package:newton_particles/src/utils/random_extensions.dart';
 
-class SmokeEffect extends Effect<AnimatedParticle> {
-  final double smokeWidth;
-
-  SmokeEffect({
+class PulseEffect extends Effect<AnimatedParticle> {
+  PulseEffect({
     required super.particleConfiguration,
     required super.effectConfiguration,
-    this.smokeWidth = 30,
   });
 
   @override
   AnimatedParticle instantiateParticle(Size surfaceSize) {
-    final angleDegrees = -90 + randomAngle();
-    final beginX = random.nextDoubleRange(-smokeWidth / 2, smokeWidth / 2);
+    final particlesPerEmit = effectConfiguration.particlesPerEmit;
+    final angle =
+        360 / particlesPerEmit * (activeParticles.length % particlesPerEmit);
     return AnimatedParticle(
       particle: Particle(
         configuration: particleConfiguration,
         position: Offset(
-          beginX + effectConfiguration.origin.dx,
-          effectConfiguration.origin.dy,
-        ),
+            effectConfiguration.origin.dx, effectConfiguration.origin.dy),
       ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),
       distance: randomDistance(),
-      angle: angleDegrees,
-      fadeOutThreshold: randomFadeOutThreshold(),
-      fadeInLimit: randomFadeInLimit(),
       scaleRange: randomScaleRange(),
+      fadeOutThreshold: randomFadeOutThreshold(),
+      angle: angle,
       distanceCurve: effectConfiguration.distanceCurve,
+      fadeInLimit: randomFadeInLimit(),
       fadeInCurve: effectConfiguration.fadeInCurve,
       fadeOutCurve: effectConfiguration.fadeOutCurve,
       scaleCurve: effectConfiguration.scaleCurve,

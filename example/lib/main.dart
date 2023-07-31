@@ -53,18 +53,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   final _scrollController = ScrollController();
 
   AvailableEffect _selectedAnimation = AvailableEffect.rain;
-  int _particlesPerEmit = 1;
-  int _emitDuration = 100;
-  int _particleMinDuration = 4000;
-  int _particleMaxDuration = 7000;
-  double _particleMinDistance = 100;
-  double _particleMaxDistance = 200;
-  double _particleMinFadeOutThreshold = 0.6;
-  double _particleMaxFadeOutThreshold = 0.8;
-  double _particleMinBeginScale = 1;
-  double _particleMaxBeginScale = 1;
-  double _particleMinEndScale = 1;
-  double _particleMaxEndScale = 1;
+  EffectConfiguration _effectConfiguration =
+      AvailableEffect.rain.defaultEffectConfiguration;
 
   @override
   Widget build(BuildContext context) {
@@ -85,18 +75,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     final size = MediaQuery.of(context).size;
     return _selectedAnimation.instantiate(
       size: size,
-      particlesPerEmit: _particlesPerEmit,
-      emitDuration: _emitDuration,
-      particleMinDuration: _particleMinDuration,
-      particleMaxDuration: _particleMaxDuration,
-      particleMinDistance: _particleMinDistance,
-      particleMaxDistance: _particleMaxDistance,
-      particleMinFadeOutThreshold: _particleMinFadeOutThreshold,
-      particleMaxFadeOutThreshold: _particleMaxFadeOutThreshold,
-      particleMinBeginScale: _particleMinBeginScale,
-      particleMaxBeginScale: _particleMaxBeginScale,
-      particleMinEndScale: _particleMinEndScale,
-      particleMaxEndScale: _particleMaxEndScale,
+      effectConfiguration: _effectConfiguration,
     );
   }
 
@@ -129,6 +108,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
                 particleFadeoutProgressSection(),
               particleBeginScaleSection(),
               particleEndScaleSection(),
+              if (_selectedAnimation.supportParameter(AnimationParameter.angle))
+                particleAngleSection(),
             ],
           ),
         ),
@@ -149,6 +130,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
             // This is called when the user selects an item.
             setState(() {
               _selectedAnimation = AvailableEffect.of(value!);
+              _effectConfiguration =
+                  _selectedAnimation.defaultEffectConfiguration;
             });
           },
           items: AvailableEffect.values
@@ -163,15 +146,17 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget animationDurationSection() {
     return RangeSelection(
-      initialMin: _particleMinDuration.toDouble(),
-      initialMax: _particleMaxDuration.toDouble(),
+      initialMin: _effectConfiguration.minDuration.toDouble(),
+      initialMax: _effectConfiguration.maxDuration.toDouble(),
       min: 100,
       max: 8000,
       title: "Animation duration",
       onChanged: (values) {
         setState(() {
-          _particleMinDuration = values.start.round();
-          _particleMaxDuration = values.end.round();
+          _effectConfiguration = _effectConfiguration.copyWith(
+            minDuration: values.start.round(),
+            maxDuration: values.end.round(),
+          );
         });
       },
     );
@@ -179,11 +164,13 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget particlesPerEmitSection() {
     return SingleValueSelection(
-      value: _particlesPerEmit.toDouble(),
+      value: _effectConfiguration.particlesPerEmit.toDouble(),
       title: "Particles per emit",
       onChanged: (value) {
         setState(() {
-          _particlesPerEmit = value.round();
+          _effectConfiguration = _effectConfiguration.copyWith(
+            particlesPerEmit: value.round(),
+          );
         });
       },
       min: 1,
@@ -193,11 +180,13 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget emitDurationSection() {
     return SingleValueSelection(
-      value: _emitDuration.toDouble(),
+      value: _effectConfiguration.emitDuration.toDouble(),
       title: "Emit duration",
       onChanged: (value) {
         setState(() {
-          _emitDuration = value.round();
+          _effectConfiguration = _effectConfiguration.copyWith(
+            emitDuration: value.round(),
+          );
         });
       },
       min: 100,
@@ -207,15 +196,17 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget particleDistanceSection() {
     return RangeSelection(
-      initialMin: _particleMinDistance,
-      initialMax: _particleMaxDistance,
+      initialMin: _effectConfiguration.minDistance,
+      initialMax: _effectConfiguration.maxDistance,
       min: 100,
       max: 2000,
       title: "Particle distance",
       onChanged: (values) {
         setState(() {
-          _particleMinDistance = values.start;
-          _particleMaxDistance = values.end;
+          _effectConfiguration = _effectConfiguration.copyWith(
+            minDistance: values.start,
+            maxDistance: values.end,
+          );
         });
       },
     );
@@ -223,15 +214,17 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget particleFadeoutProgressSection() {
     return RangeSelection(
-      initialMin: _particleMinFadeOutThreshold,
-      initialMax: _particleMaxFadeOutThreshold,
+      initialMin: _effectConfiguration.minFadeOutThreshold,
+      initialMax: _effectConfiguration.maxFadeOutThreshold,
       min: 0,
       max: 1,
       title: "Particle fadeout threshold",
       onChanged: (values) {
         setState(() {
-          _particleMinFadeOutThreshold = values.start;
-          _particleMaxFadeOutThreshold = values.end;
+          _effectConfiguration = _effectConfiguration.copyWith(
+            minFadeOutThreshold: values.start,
+            maxFadeOutThreshold: values.end,
+          );
         });
       },
       roundValue: false,
@@ -240,16 +233,18 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget particleBeginScaleSection() {
     return RangeSelection(
-      initialMin: _particleMinBeginScale,
-      initialMax: _particleMaxBeginScale,
+      initialMin: _effectConfiguration.minBeginScale,
+      initialMax: _effectConfiguration.maxBeginScale,
       min: 0,
       max: 10,
       divisions: 100,
       title: "Particle begin scale",
       onChanged: (values) {
         setState(() {
-          _particleMinBeginScale = values.start;
-          _particleMaxBeginScale = values.end;
+          _effectConfiguration = _effectConfiguration.copyWith(
+            minBeginScale: values.start,
+            maxBeginScale: values.end,
+          );
         });
       },
       roundValue: false,
@@ -258,16 +253,38 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget particleEndScaleSection() {
     return RangeSelection(
-      initialMin: _particleMinEndScale,
-      initialMax: _particleMaxEndScale,
+      initialMin: _effectConfiguration.minEndScale,
+      initialMax: _effectConfiguration.maxEndScale,
       min: 0,
       max: 10,
       divisions: 100,
       title: "Particle end scale",
       onChanged: (values) {
         setState(() {
-          _particleMinEndScale = values.start;
-          _particleMaxEndScale = values.end;
+          _effectConfiguration = _effectConfiguration.copyWith(
+            minEndScale: values.start,
+            maxEndScale: values.end,
+          );
+        });
+      },
+      roundValue: false,
+    );
+  }
+
+  Widget particleAngleSection() {
+    return RangeSelection(
+      initialMin: _effectConfiguration.minAngle,
+      initialMax: _effectConfiguration.maxAngle,
+      min: -180,
+      max: 180,
+      divisions: 360,
+      title: "Particle angle",
+      onChanged: (values) {
+        setState(() {
+          _effectConfiguration = _effectConfiguration.copyWith(
+            minAngle: values.start,
+            maxAngle: values.end,
+          );
         });
       },
       roundValue: false,

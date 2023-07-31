@@ -6,7 +6,7 @@ class ParticleConfiguration {
   final Size size;
   final Color color;
 
-  ParticleConfiguration({
+  const ParticleConfiguration({
     required this.shape,
     required this.size,
     this.color = Colors.black,
