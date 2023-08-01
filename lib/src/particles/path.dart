@@ -3,54 +3,52 @@ import 'dart:ui';
 
 import 'package:vector_math/vector_math_64.dart';
 
-/// The `Path` class represents a path for calculating particle positions based on angles.
-///
-/// The `angleCos` and `angleSin` properties store the cosine and sine values of the `angle`,
-/// respectively, to be used for trigonometric calculations.
-sealed class Path {
-  /// The cosine value of the angle used for trigonometric calculations.
-  final double angleCos;
 
-  /// The sine value of the angle used for trigonometric calculations.
-  final double angleSin;
-
-  /// Creates a `Path` with the specified `angle` (in degrees).
+/// A sealed class representing a transformation applied to a path.
+sealed class PathTransformation {
+  /// Transforms the initial position based on the progress of the transformation.
   ///
-  /// The `angle` parameter is optional and represents the angle of the path in degrees.
-  Path({double angle = 0})
-      : angleCos = cos(radians(angle)),
-        angleSin = sin(radians(angle));
-
-  /// Computes the new position based on the `initialPosition` and `distance` along the path.
-  ///
-  /// The `initialPosition` parameter represents the starting position.
-  /// The `distance` parameter represents the distance along the path.
-  ///
-  /// Returns the calculated [Offset] of the new position.
-  Offset computePosition(Offset initialPosition, double distance);
+  /// The [initialPosition] is the starting position of the transformation.
+  /// The [progress] is a value between 0 and 1 representing the progress of the transformation.
+  /// Returns the new position after applying the transformation.
+  Offset transform(Offset initialPosition, double progress);
 }
 
-/// The `StraightPath` class represents a straight path for calculating particle positions.
-///
-/// The `StraightPath` class extends the [Path] class and overrides the `computePosition` method
-/// to calculate the position of particles in a straight line based on the angle of the path.
-class StraightPath extends Path {
-  /// Creates a `StraightPath` with the specified `angle` (in degrees).
-  ///
-  /// The `angle` parameter is optional and represents the angle of the straight path in degrees.
-  StraightPath({double angle = 0}) : super(angle: angle);
+/// A path transformation that moves the initial position along a straight line.
+class StraightPathTransformation extends PathTransformation {
+  final double _angleCos;
+  final double _angleSin;
+  final double distance;
 
-  /// Computes the new position based on the `initialPosition` and `distance` along the straight path.
-  ///
-  /// The `initialPosition` parameter represents the starting position.
-  /// The `distance` parameter represents the distance along the straight path.
-  ///
-  /// Returns the calculated [Offset] of the new position along the straight path.
+  /// Creates a [StraightPathTransformation] with the given [distance] and an optional [angle].
+  /// The [angle] parameter allows specifying the angle of the straight line in degrees.
+  /// The [distance] parameter specifies how far the position moves along the straight line.
+  StraightPathTransformation({required this.distance, double angle = 0})
+      : _angleCos = cos(radians(angle)),
+        _angleSin = sin(radians(angle));
+
   @override
-  Offset computePosition(Offset initialPosition, double distance) {
+  Offset transform(Offset initialPosition, double progress) {
     return Offset(
-      initialPosition.dx + distance * angleCos,
-      initialPosition.dy + distance * angleSin,
+      initialPosition.dx + distance * progress * _angleCos,
+      initialPosition.dy + distance * progress * _angleSin,
     );
+  }
+}
+
+/// A path transformation that moves the initial position along a path based on metrics.
+class PathMetricsTransformation extends PathTransformation {
+  final Path path;
+
+  /// Creates a [PathMetricsTransformation] with the given [path].
+  PathMetricsTransformation({required this.path});
+
+  @override
+  Offset transform(Offset initialPosition, double progress) {
+    final pathMetrics = path.computeMetrics();
+    final pathMetric = pathMetrics.elementAt(0);
+    final value = pathMetric.length * progress;
+    final tangent = pathMetric.getTangentForOffset(value)!;
+    return tangent.position;
   }
 }

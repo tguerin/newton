@@ -33,6 +33,25 @@ enum AvailableEffect {
         AnimationParameter.fadeout,
         AnimationParameter.scale,
       ]),
+  fountain("Fountain",
+      defaultEffectConfiguration: EffectConfiguration(
+        particlesPerEmit: 10,
+        minDuration: 4000,
+        maxDuration: 4000,
+        minDistance: 200,
+        maxDistance: 200,
+        minFadeOutThreshold: 0.6,
+        maxFadeOutThreshold: 0.8,
+        minBeginScale: 1,
+        maxBeginScale: 1,
+        minEndScale: 1,
+        maxEndScale: 1,
+      ),
+      supportedParameters: [
+        AnimationParameter.distance,
+        AnimationParameter.fadeout,
+        AnimationParameter.scale,
+      ]),
   pulse("Pulse",
       defaultEffectConfiguration: EffectConfiguration(
         particlesPerEmit: 15,
@@ -124,6 +143,22 @@ extension AvailableEffectExtension on AvailableEffect {
               size.height / 2,
             ),
           ),
+        );
+      case AvailableEffect.fountain:
+        return FountainEffect(
+          particleConfiguration: ParticleConfiguration(
+            shape: CircleShape(),
+            size: const Size(5, 5),
+            color: Colors.white,
+          ),
+          effectConfiguration: effectConfiguration.copyWith(
+            distanceCurve: Curves.decelerate,
+            origin: Offset(
+              size.width / 2,
+              size.height / 2,
+            ),
+          ),
+          width: 60.0,
         );
       case AvailableEffect.pulse:
         return PulseEffect(

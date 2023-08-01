@@ -1,8 +1,5 @@
 import 'package:flutter/animation.dart';
 import 'package:newton_particles/newton_particles.dart';
-import 'package:newton_particles/src/effects/effect.dart';
-import 'package:newton_particles/src/particles/animated_particle.dart';
-import 'package:newton_particles/src/particles/particle.dart';
 import 'package:newton_particles/src/utils/random_extensions.dart';
 
 /// A particle effect that creates an explosion animation in Newton.
@@ -26,10 +23,12 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
       ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),
-      distance: randomDistance(),
       scaleRange: randomScaleRange(),
       fadeOutThreshold: randomFadeOutThreshold(),
-      path: StraightPath(angle: random.nextDoubleRange(0, 360)),
+      path: StraightPathTransformation(
+        distance: randomDistance(),
+        angle: random.nextDoubleRange(0, 360),
+      ),
       distanceCurve: effectConfiguration.distanceCurve,
       fadeInLimit: randomFadeInLimit(),
       fadeInCurve: effectConfiguration.fadeInCurve,

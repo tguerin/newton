@@ -1,36 +1,46 @@
-import 'package:flutter/animation.dart';
+import 'dart:ui';
+
 import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/utils/random_extensions.dart';
 
-/// A particle effect that creates a smoke animation in Newton.
+/// A particle effect that creates a fountain like animation in Newton.
 ///
-/// The `SmokeEffect` class extends the `Effect` class and provides a particle effect
-/// that simulates rising smoke.
-class SmokeEffect extends Effect<AnimatedParticle> {
-  final double smokeWidth;
+/// The `FountainEffect` class extends the `Effect` class and provides a particle effect
+/// that creates particles going up and following a Bezier path to imitate a fountain.
+class FountainEffect extends Effect<AnimatedParticle> {
+  final double width;
 
-  SmokeEffect({
+  FountainEffect({
     required super.particleConfiguration,
     required super.effectConfiguration,
-    this.smokeWidth = 30,
+    required this.width,
   });
 
   @override
   AnimatedParticle instantiateParticle(Size surfaceSize) {
-    final angleDegrees = -90 + randomAngle();
-    final beginX = random.nextDoubleRange(-smokeWidth / 2, smokeWidth / 2);
+    Path path = Path();
+    final randomWidth = random.nextDoubleRange(-width / 2, width / 2);
+    final distance = randomDistance();
+    path.moveTo(surfaceSize.width / 2, surfaceSize.height / 2);
+    path.relativeQuadraticBezierTo(
+      randomWidth,
+      -distance,
+      randomWidth * 4,
+      -distance / random.nextIntRange(2, 6),
+    );
     return AnimatedParticle(
       particle: Particle(
         configuration: particleConfiguration,
         position: Offset(
-          beginX + effectConfiguration.origin.dx,
+          effectConfiguration.origin.dx,
           effectConfiguration.origin.dy,
         ),
       ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),
-      path: StraightPathTransformation(
-          distance: randomDistance(), angle: angleDegrees),
+      path: PathMetricsTransformation(
+        path: path,
+      ),
       fadeOutThreshold: randomFadeOutThreshold(),
       fadeInLimit: randomFadeInLimit(),
       scaleRange: randomScaleRange(),
