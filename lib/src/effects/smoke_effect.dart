@@ -1,4 +1,5 @@
 import 'package:flutter/animation.dart';
+import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/effect.dart';
 import 'package:newton_particles/src/particles/animated_particle.dart';
 import 'package:newton_particles/src/particles/particle.dart';
@@ -32,7 +33,7 @@ class SmokeEffect extends Effect<AnimatedParticle> {
       startTime: totalElapsed,
       animationDuration: randomDuration(),
       distance: randomDistance(),
-      angle: angleDegrees,
+      path: StraightPath(angle: angleDegrees),
       fadeOutThreshold: randomFadeOutThreshold(),
       fadeInLimit: randomFadeInLimit(),
       scaleRange: randomScaleRange(),

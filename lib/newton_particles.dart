@@ -8,4 +8,5 @@ export 'src/newton.dart';
 export 'src/particles/animated_particle.dart';
 export 'src/particles/particle.dart';
 export 'src/particles/particle_configuration.dart';
+export 'src/particles/path.dart';
 export 'src/particles/shape.dart';

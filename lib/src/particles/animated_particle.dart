@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/animation.dart';
-import 'package:newton_particles/src/particles/particle.dart';
-import 'package:vector_math/vector_math.dart';
+import 'package:newton_particles/newton_particles.dart';
 
 /// The `AnimatedParticle` class represents a particle with animation properties.
 ///
@@ -11,6 +8,9 @@ import 'package:vector_math/vector_math.dart';
 class AnimatedParticle {
   /// The [Particle] associated with this animated particle.
   final Particle particle;
+
+  /// The [Path] that will follow particle upon emission. Default: [StraightPath]
+  final Path path;
 
   /// The duration of the animation for this particle in milliseconds.
   final int animationDuration;
@@ -23,9 +23,6 @@ class AnimatedParticle {
 
   /// The curve used to control the distance animation progress.
   final Curve distanceCurve;
-
-  /// The angle (in degrees) at which the particle travels during the animation.
-  final double angle;
 
   /// The threshold at which the particle starts to fade out during the animation.
   final double fadeOutThreshold;
@@ -45,27 +42,20 @@ class AnimatedParticle {
   /// The curve used to control the scaling animation progress.
   final Curve scaleCurve;
 
-  /// The cosine value of the `angle` used for trigonometric calculations.
-  final double _angleCos;
-
-  /// The sine value of the `angle` used for trigonometric calculations.
-  final double _angleSin;
-
   AnimatedParticle({
     required this.particle,
+    required this.path,
     required this.startTime,
     required this.animationDuration,
     required this.distance,
     required this.distanceCurve,
-    required this.angle,
     required this.fadeInLimit,
     required this.fadeInCurve,
     required this.fadeOutThreshold,
     required this.fadeOutCurve,
     required this.scaleRange,
     required this.scaleCurve,
-  })  : _angleCos = cos(radians(angle)),
-        _angleSin = sin(radians(angle));
+  });
 
   /// Called when the animation updates to apply transformations and positioning to the particle.
   ///
@@ -93,9 +83,9 @@ class AnimatedParticle {
     );
 
     var distanceProgress = distanceCurve.transform(progress);
-    particle.position = Offset(
-      particle.initialPosition.dx + (distance * distanceProgress) * _angleCos,
-      particle.initialPosition.dy + (distance * distanceProgress) * _angleSin,
+    particle.position = path.computePosition(
+      particle.initialPosition,
+      distance * distanceProgress,
     );
   }
 

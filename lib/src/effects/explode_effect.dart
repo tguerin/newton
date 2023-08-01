@@ -1,4 +1,5 @@
 import 'package:flutter/animation.dart';
+import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/effect.dart';
 import 'package:newton_particles/src/particles/animated_particle.dart';
 import 'package:newton_particles/src/particles/particle.dart';
@@ -28,7 +29,7 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
       distance: randomDistance(),
       scaleRange: randomScaleRange(),
       fadeOutThreshold: randomFadeOutThreshold(),
-      angle: random.nextDoubleRange(0, 360),
+      path: StraightPath(angle: random.nextDoubleRange(0, 360)),
       distanceCurve: effectConfiguration.distanceCurve,
       fadeInLimit: randomFadeInLimit(),
       fadeInCurve: effectConfiguration.fadeInCurve,

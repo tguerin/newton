@@ -1,7 +1,5 @@
 import 'package:flutter/animation.dart';
-import 'package:newton_particles/src/effects/effect.dart';
-import 'package:newton_particles/src/particles/animated_particle.dart';
-import 'package:newton_particles/src/particles/particle.dart';
+import 'package:newton_particles/newton_particles.dart';
 
 /// A particle effect that creates a pulsing animation in Newton.
 ///
@@ -30,7 +28,7 @@ class PulseEffect extends Effect<AnimatedParticle> {
       distance: randomDistance(),
       scaleRange: randomScaleRange(),
       fadeOutThreshold: randomFadeOutThreshold(),
-      angle: angle,
+      path: StraightPath(angle: angle),
       distanceCurve: effectConfiguration.distanceCurve,
       fadeInLimit: randomFadeInLimit(),
       fadeInCurve: effectConfiguration.fadeInCurve,

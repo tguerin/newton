@@ -1,7 +1,5 @@
 import 'package:flutter/animation.dart';
-import 'package:newton_particles/src/effects/effect.dart';
-import 'package:newton_particles/src/particles/animated_particle.dart';
-import 'package:newton_particles/src/particles/particle.dart';
+import 'package:newton_particles/newton_particles.dart';
 
 /// A particle effect that creates a rain animation in Newton.
 ///
@@ -24,7 +22,7 @@ class RainEffect extends Effect<AnimatedParticle> {
           0,
         ),
       ),
-      angle: 90,
+      path: StraightPath(angle: 90),
       distance: surfaceSize.height,
       startTime: totalElapsed,
       animationDuration: randomDuration(),
