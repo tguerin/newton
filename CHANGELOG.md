@@ -18,3 +18,14 @@
 - [Feature] Rework how effects are configured for better configurability.
 - [Feature] Allow to configure angle in smoke effect from configurator.
 - [Feature] Add pulse effect.
+
+## [0.0.4] - 2023-08-01
+
+### Feature
+
+- [Feature] Add dart docs.
+- [Feature] Allow to stop/start/kill an effect.
+
+### Fixed
+
+- [Fix] Fix some imports.
