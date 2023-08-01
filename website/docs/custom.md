@@ -65,8 +65,10 @@ class RainEffect extends Effect<AnimatedParticle> {
           0,
         ),
       ),
-      angle: 90,
-      distance: surfaceSize.height,
+      pathTransformation: StraightPathTransformation(
+        distance: surfaceSize.height,
+        angle: 90,
+      ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),
     );
@@ -78,6 +80,9 @@ class RainEffect extends Effect<AnimatedParticle> {
 duration properly.
 Most of the time it will `totalElapsed` a property from the effect, which is the total elapsed time
 in milliseconds since the effect started.
+
+`StraightPathTransformation` is the function applied to know what is the position of the particle given
+a `progress`. In this example, the particle will travel in a straight line following an angle of 90 degrees (going down).
 
 `randomDuration` is provided by the `Effect` class and will give random duration based
 on `EffectConfiguration.minDuration` and `EffectConfiguration.maxDuration`.
