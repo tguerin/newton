@@ -1,4 +1,4 @@
 # Newton Example App
 
-Example For Newton Library.
+Configurator to tweak Newton effects.
 
