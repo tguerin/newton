@@ -1,29 +1,80 @@
 import 'package:flutter/animation.dart';
 
+/// Configuration class for defining particle emission properties in Newton effects.
+///
+/// The `EffectConfiguration` class provides customizable properties to control particle emission
+/// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
+/// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
 class EffectConfiguration {
+  /// Duration between particle emissions in milliseconds. Default: `100`.
   final int emitDuration;
+
+  /// Number of particles emitted per emission. Default: `1`.
   final int particlesPerEmit;
+
+  /// Curve to control the emission timing. Default: [Curves.decelerate].
   final Curve emitCurve;
+
+  /// Origin point for particle emission. Default: `Offset(0, 0)`.
   final Offset origin;
+
+  /// Minimum angle in degrees for particle trajectory. Default: `0`.
   final double minAngle;
+
+  /// Maximum angle in degrees for particle trajectory. Default: `0`.
   final double maxAngle;
+
+  /// Minimum distance traveled by particles. Default: `100`.
   final double minDistance;
+
+  /// Maximum distance traveled by particles. Default: `200`.
   final double maxDistance;
+
+  /// Curve to control particle travel distance. Default: [Curves.linear].
   final Curve distanceCurve;
+
+  /// Minimum particle animation duration in milliseconds. Default: `1000`.
   final int minDuration;
+
+  /// Maximum particle animation duration in milliseconds. Default: `1000`.
   final int maxDuration;
+
+  /// Minimum initial particle scale. Default: `1`.
   final double minBeginScale;
+
+  /// Maximum initial particle scale. Default: `1`.
   final double maxBeginScale;
+
+  /// Minimum final particle scale. Default: `-1`.
   final double minEndScale;
+
+  /// Maximum final particle scale. Default: `-1`.
   final double maxEndScale;
+
+  /// Curve to control particle scaling animation. Default: [Curves.linear].
   final Curve scaleCurve;
+
+  /// Minimum opacity threshold for particle fade-out. Default: `1`.
   final double minFadeOutThreshold;
+
+  /// Maximum opacity threshold for particle fade-out. Default: `1`.
   final double maxFadeOutThreshold;
+
+  /// Curve to control particle fade-out animation. Default: [Curves.linear].
   final Curve fadeOutCurve;
+
+  /// Minimum opacity limit for particle fade-in. Default: `0`.
   final double minFadeInLimit;
+
+  /// Maximum opacity limit for particle fade-in. Default: `0`.
   final double maxFadeInLimit;
+
+  /// Curve to control particle fade-in animation. Default: [Curves.linear].
   final Curve fadeInCurve;
 
+  /// Creates an instance of `EffectConfiguration` with the specified parameters.
+  ///
+  /// All parameters have default values that can be overridden during object creation.
   const EffectConfiguration({
     this.emitDuration = 100,
     this.emitCurve = Curves.decelerate,

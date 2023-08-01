@@ -1,9 +1,13 @@
 import 'package:flutter/animation.dart';
-
 import 'package:newton_particles/src/effects/effect.dart';
 import 'package:newton_particles/src/particles/animated_particle.dart';
 import 'package:newton_particles/src/particles/particle.dart';
 
+/// A particle effect that creates a rain animation in Newton.
+///
+/// The `RainEffect` class extends the `Effect` class and provides a particle effect
+/// that simulates falling raindrops. The rain effect emits particles from random x-coordinates
+/// at the top of the animation surface, creating a realistic rain animation.
 class RainEffect extends Effect<AnimatedParticle> {
   RainEffect({
     required super.particleConfiguration,

@@ -1,10 +1,14 @@
 import 'package:flutter/animation.dart';
-
 import 'package:newton_particles/src/effects/effect.dart';
 import 'package:newton_particles/src/particles/animated_particle.dart';
 import 'package:newton_particles/src/particles/particle.dart';
 import 'package:newton_particles/src/utils/random_extensions.dart';
 
+/// A particle effect that creates an explosion animation in Newton.
+///
+/// The `ExplodeEffect` class extends the `Effect` class and provides a particle effect
+/// that resembles an explosion. The explosion effect emits particles from a specific origin
+/// point in a burst-like manner.
 class ExplodeEffect extends Effect<AnimatedParticle> {
   ExplodeEffect({
     required super.particleConfiguration,
