@@ -10,7 +10,7 @@ class AnimatedParticle {
   final Particle particle;
 
   /// The [PathTransformation] that will follow particle upon emission. Default: [StraightPathTransformation]
-  final PathTransformation path;
+  final PathTransformation pathTransformation;
 
   /// The duration of the animation for this particle in milliseconds.
   final int animationDuration;
@@ -41,7 +41,7 @@ class AnimatedParticle {
 
   AnimatedParticle({
     required this.particle,
-    required this.path,
+    required this.pathTransformation,
     required this.startTime,
     required this.animationDuration,
     required this.distanceCurve,
@@ -79,7 +79,7 @@ class AnimatedParticle {
     );
 
     var distanceProgress = distanceCurve.transform(progress);
-    particle.position = path.transform(
+    particle.position = pathTransformation.transform(
       particle.initialPosition,
       distanceProgress,
     );

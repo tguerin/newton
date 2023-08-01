@@ -22,7 +22,7 @@ class RainEffect extends Effect<AnimatedParticle> {
           0,
         ),
       ),
-      path: StraightPathTransformation(
+      pathTransformation: StraightPathTransformation(
         distance: surfaceSize.height,
         angle: 90,
       ),

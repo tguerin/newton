@@ -38,7 +38,7 @@ class FountainEffect extends Effect<AnimatedParticle> {
       ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),
-      path: PathMetricsTransformation(
+      pathTransformation: PathMetricsTransformation(
         path: path,
       ),
       fadeOutThreshold: randomFadeOutThreshold(),

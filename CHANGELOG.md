@@ -29,3 +29,11 @@
 ### Fixed
 
 - [Fix] Fix some imports.
+
+## [0.0.5] - 2023-08-01
+
+### Feature
+
+- [Feature] Introduce the notion of PathTransformation for particles.
+- [Feature] Add a fountain like effect.
+

@@ -29,7 +29,7 @@ class SmokeEffect extends Effect<AnimatedParticle> {
       ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),
-      path: StraightPathTransformation(
+      pathTransformation: StraightPathTransformation(
           distance: randomDistance(), angle: angleDegrees),
       fadeOutThreshold: randomFadeOutThreshold(),
       fadeInLimit: randomFadeInLimit(),
