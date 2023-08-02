@@ -1,8 +1,15 @@
-# Newton - Particle Emitter for Flutter
+![Newton logo](./graphics/newton-dark.png#gh-dark-mode-only)
+![Newton logo](./graphics/newton-light.png#gh-light-mode-only)
 
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 
+## Particle Emitter for Flutter
+
 Newton is a highly configurable particle emitter package for Flutter that allows you to create captivating animations such as rain, smoke, explosions, and more. With Newton, you can easily add visually stunning effects to your Flutter applications.
+
+| Rain                       | Smoke                        | Pulse                         | Explode                          | Fountain                           |
+|----------------------------|------------------------------|-------------------------------|----------------------------------|------------------------------------|
+| ![Rain](graphics/rain.gif) | ![Smoke](graphics/smoke.gif) | ![Pulse](graphics/pulse.gif)  | ![Explode](graphics/explode.gif) | ![Fountain](graphics/fountain.gif) |
 
 ## Features
 
