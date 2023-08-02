@@ -43,3 +43,9 @@
 
 - [Feature] Doc update with logo and sample gifs.
 
+## [0.0.7] - 2023-08-02
+
+### Fixed
+
+- [Fix] Fix display of doc on pub site.
+
