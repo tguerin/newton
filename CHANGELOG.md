@@ -37,3 +37,9 @@
 - [Feature] Introduce the notion of PathTransformation for particles.
 - [Feature] Add a fountain like effect.
 
+## [0.0.6] - 2023-08-02
+
+### Feature
+
+- [Feature] Doc update with logo and sample gifs.
+
