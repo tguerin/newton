@@ -55,3 +55,9 @@
 
 - [Fix] Fix display of the logo on pub.dev.
 
+## [0.0.9] - 2023-08-02
+
+### Fixed
+
+- [Fix] Center title for effects.
+
