@@ -35,7 +35,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.0.7
+  newton_particles: ^0.0.8
 ```
 
 Then, run `flutter pub get` to fetch the package.

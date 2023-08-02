@@ -49,3 +49,9 @@
 
 - [Fix] Fix display of doc on pub site.
 
+## [0.0.8] - 2023-08-02
+
+### Fixed
+
+- [Fix] Fix display of the logo on pub.dev.
+
