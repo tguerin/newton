@@ -141,5 +141,5 @@ class MyCustomParticle extends AnimatedParticle {
 ```
 
 Just override the `onAnimationUpdate(double progress)` method to fine-tune your particle travel.
-From this place you can adjust `position`, `size`, `color, shape over time and achieve whatever effect
+From this place you can adjust `position`, `size`, `color`, `shape` over time and achieve whatever effect
 you have in mind.
