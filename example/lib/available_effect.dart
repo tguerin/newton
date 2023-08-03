@@ -115,7 +115,8 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.white,
+            color: const LinearInterpolationParticleColor(
+                colors: [Colors.white, Colors.blue]),
           ),
           effectConfiguration: effectConfiguration,
         );
@@ -124,7 +125,8 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.white,
+            color: const LinearInterpolationParticleColor(
+                colors: [Colors.white, Colors.blue]),
           ),
           effectConfiguration: effectConfiguration.copyWith(
             origin: Offset(size.width / 2, size.height / 2),
@@ -135,7 +137,8 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.white,
+            color: const LinearInterpolationParticleColor(
+                colors: [Colors.white, Colors.blue]),
           ),
           effectConfiguration: effectConfiguration.copyWith(
             origin: Offset(
@@ -149,7 +152,8 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.white,
+            color: const LinearInterpolationParticleColor(
+                colors: [Colors.white, Colors.blue]),
           ),
           effectConfiguration: effectConfiguration.copyWith(
             distanceCurve: Curves.decelerate,
@@ -165,7 +169,8 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.white,
+            color: const LinearInterpolationParticleColor(
+                colors: [Colors.white, Colors.blue]),
           ),
           effectConfiguration: effectConfiguration.copyWith(
             origin: Offset(

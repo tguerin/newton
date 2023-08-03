@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:vector_math/vector_math_64.dart';
 
-
 /// A sealed class representing a transformation applied to a path.
 sealed class PathTransformation {
   /// Transforms the initial position based on the progress of the transformation.
