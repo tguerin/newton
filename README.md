@@ -35,7 +35,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.0.9
+  newton_particles: ^0.0.10
 ```
 
 Then, run `flutter pub get` to fetch the package.
@@ -59,7 +59,7 @@ Newton(
             particleConfiguration: ParticleConfiguration(
                 shape: CircleShape(),
                 size: const Size(5, 5),
-                color: Colors.black,
+                color: const SingleParticleColor(color: Colors.black),
             ),
         )
     ],
@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
                 particleConfiguration: ParticleConfiguration(
                     shape: CircleShape(),
                     size: const Size(5, 5),
-                    color: Colors.black,
+                    color: const SingleParticleColor(color: Colors.black),
                 ),
             )
           ],

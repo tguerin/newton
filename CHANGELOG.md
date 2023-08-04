@@ -61,3 +61,14 @@
 
 - [Fix] Center title for effects.
 
+## [0.0.10] - 2023-08-04
+
+### Feature
+
+- [Feature] Allow color configuration for particles.
+
+### Fixed
+
+- [Fix] Ensure repaint won't happen outside of Newton widget.
+- [Fix] Improve performance by disabling compositor cache.
+

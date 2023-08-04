@@ -122,7 +122,7 @@ from [Getting Started](/docs/intro)
 
 1. `shape`: can be `CircleShape`, `SquareShape` or `ImageShape`
 2. `size`: `width` and `height` of the particle
-3. `color`: the particle color, doesn't apply for the `ImageShape`
+3. `color`: the particle color see [ParticleColor](https://pub.dev/documentation/newton_particles/latest/newton_particles/ParticleColor-class.html), doesn't apply for the `ImageShape`
 
 ## Custom Particle
 
