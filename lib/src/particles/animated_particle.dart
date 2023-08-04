@@ -59,17 +59,18 @@ class AnimatedParticle {
   /// Based on the progress, the particle's opacity, size, and position will be updated
   /// according to the specified animation properties.
   onAnimationUpdate(double progress) {
+    particle.updateColor(progress);
     if (progress <= fadeInLimit && fadeInLimit != 0) {
       final fadeInProgress = progress / fadeInLimit;
       final opacity = fadeInCurve.transform(fadeInProgress);
-      particle.paint.color = particle.configuration.color.withOpacity(opacity);
+      particle.updateOpacity(opacity);
     }
 
     if (progress >= fadeOutThreshold && fadeOutThreshold != 1) {
       var fadeOutProgress =
           (progress - fadeOutThreshold) / (1 - fadeOutThreshold);
       final opacity = 1 - fadeOutCurve.transform(fadeOutProgress);
-      particle.paint.color = particle.configuration.color.withOpacity(opacity);
+      particle.updateOpacity(opacity);
     }
 
     final currentScale = scaleRange.transform(scaleCurve.transform(progress));

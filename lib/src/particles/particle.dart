@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:newton_particles/src/particles/particle_configuration.dart';
+import 'package:newton_particles/newton_particles.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 /// The `Particle` class represents a single particle in the animation.
@@ -47,11 +47,27 @@ class Particle {
       _transform.setRotationX(radians(rotation.x));
       _transform.setRotationY(radians(rotation.y));
     }
-    paint.color = configuration.color;
+    configuration.color.configure(0.0, this);
   }
 
   /// Gets the initial size of the particle as defined in its configuration.
   Size get initialSize => configuration.size;
+
+  /// Update the `color` of the particle.
+  ///
+  /// The `updateColor` will adjust the color of the particle according to the current progress of the effect.
+  /// If progress is outside the range [0,1] it will be clamped to the nearest value.
+  updateColor(double progress) {
+    configuration.color.configure(progress.clamp(0, 1), this);
+  }
+
+  /// Update the `opacity` of the particle.
+  ///
+  /// The `updateOpacity` will adjust the opacity accordingly.
+  /// If opacity is outside the range [0,1] it will be clamped to the nearest value.
+  void updateOpacity(double opacity) {
+    paint.color = paint.color.withOpacity(opacity.clamp(0, 1));
+  }
 
   /// Draws the particle on the given `canvas`.
   ///

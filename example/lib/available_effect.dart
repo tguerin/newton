@@ -4,11 +4,16 @@ import 'package:newton_particles/newton_particles.dart';
 enum AvailableEffect {
   rain(
     "Rain",
-    supportedParameters: [AnimationParameter.fadeout, AnimationParameter.scale],
+    supportedParameters: [
+      AnimationParameter.color,
+      AnimationParameter.fadeout,
+      AnimationParameter.scale,
+    ],
   ),
   explode(
     "Explode",
     supportedParameters: [
+      AnimationParameter.color,
       AnimationParameter.distance,
       AnimationParameter.fadeout,
       AnimationParameter.scale
@@ -28,6 +33,7 @@ enum AvailableEffect {
         maxEndScale: 1,
       ),
       supportedParameters: [
+        AnimationParameter.color,
         AnimationParameter.angle,
         AnimationParameter.distance,
         AnimationParameter.fadeout,
@@ -48,6 +54,7 @@ enum AvailableEffect {
         maxEndScale: 1,
       ),
       supportedParameters: [
+        AnimationParameter.color,
         AnimationParameter.distance,
         AnimationParameter.fadeout,
         AnimationParameter.scale,
@@ -68,6 +75,7 @@ enum AvailableEffect {
         maxEndScale: 1,
       ),
       supportedParameters: [
+        AnimationParameter.color,
         AnimationParameter.distance,
         AnimationParameter.fadeout,
         AnimationParameter.scale,
@@ -107,6 +115,7 @@ enum AvailableEffect {
 extension AvailableEffectExtension on AvailableEffect {
   Effect instantiate({
     required Size size,
+    required ParticleColor color,
     required EffectConfiguration effectConfiguration,
   }) {
     switch (this) {
@@ -115,7 +124,7 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.white,
+            color: color,
           ),
           effectConfiguration: effectConfiguration,
         );
@@ -124,7 +133,7 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.white,
+            color: color,
           ),
           effectConfiguration: effectConfiguration.copyWith(
             origin: Offset(size.width / 2, size.height / 2),
@@ -133,10 +142,7 @@ extension AvailableEffectExtension on AvailableEffect {
       case AvailableEffect.smoke:
         return SmokeEffect(
           particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
-            size: const Size(5, 5),
-            color: Colors.white,
-          ),
+              shape: CircleShape(), size: const Size(5, 5), color: color),
           effectConfiguration: effectConfiguration.copyWith(
             origin: Offset(
               size.width / 2,
@@ -149,7 +155,7 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.white,
+            color: color,
           ),
           effectConfiguration: effectConfiguration.copyWith(
             distanceCurve: Curves.decelerate,
@@ -165,7 +171,7 @@ extension AvailableEffectExtension on AvailableEffect {
           particleConfiguration: ParticleConfiguration(
             shape: CircleShape(),
             size: const Size(5, 5),
-            color: Colors.white,
+            color: color,
           ),
           effectConfiguration: effectConfiguration.copyWith(
             origin: Offset(
@@ -180,6 +186,7 @@ extension AvailableEffectExtension on AvailableEffect {
 
 enum AnimationParameter {
   angle,
+  color,
   distance,
   fadeout,
   scale,

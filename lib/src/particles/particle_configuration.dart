@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newton_particles/src/particles/color.dart';
 import 'package:newton_particles/src/particles/shape.dart';
 
 /// The `ParticleConfiguration` class represents the configuration for a particle in the animation.
@@ -12,8 +13,8 @@ class ParticleConfiguration {
   /// The size of the particle.
   final Size size;
 
-  /// The color of the particle.
-  final Color color;
+  /// The color of the particle. By default will use a single black color.
+  final ParticleColor color;
 
   /// Creates a `ParticleConfiguration` with the specified shape, size, and color.
   ///
@@ -26,6 +27,6 @@ class ParticleConfiguration {
   const ParticleConfiguration({
     required this.shape,
     required this.size,
-    this.color = Colors.black,
+    this.color = const SingleParticleColor(color: Colors.black),
   });
 }

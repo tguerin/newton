@@ -1,4 +1,5 @@
 import 'package:example/available_effect.dart';
+import 'package:example/color_selection.dart';
 import 'package:example/range_selection.dart';
 import 'package:example/single_value_selection.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   AvailableEffect _selectedAnimation = AvailableEffect.rain;
   EffectConfiguration _effectConfiguration =
       AvailableEffect.rain.defaultEffectConfiguration;
+  ParticleColor _currentParticleColor =
+      const SingleParticleColor(color: Colors.white);
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +79,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     return _selectedAnimation.instantiate(
       size: size,
       effectConfiguration: _effectConfiguration,
+      color: _currentParticleColor,
     );
   }
 
@@ -94,6 +98,11 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
                 height: 20,
               ),
               animationSelectionSection(defaultAnimation: _selectedAnimation),
+              const SizedBox(
+                height: 20,
+              ),
+              if (_selectedAnimation.supportParameter(AnimationParameter.color))
+                colorSelection(),
               const SizedBox(
                 height: 20,
               ),
@@ -289,5 +298,13 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       },
       roundValue: false,
     );
+  }
+
+  Widget colorSelection() {
+    return ColorSelection(onChanged: (color) {
+      setState(() {
+        _currentParticleColor = color;
+      });
+    });
   }
 }
