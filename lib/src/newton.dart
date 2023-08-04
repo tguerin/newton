@@ -58,17 +58,20 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      for (var effect in _activeEffects) {
-        effect.surfaceSize = constraints.biggest;
-      }
-      return CustomPaint(
-        painter: NewtonPainter(
-          effects: _activeEffects,
-        ),
-      );
-    });
+    return RepaintBoundary(
+      child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+        for (var effect in _activeEffects) {
+          effect.surfaceSize = constraints.biggest;
+        }
+        return CustomPaint(
+          willChange: true,
+          painter: NewtonPainter(
+            effects: _activeEffects,
+          ),
+        );
+      }),
+    );
   }
 
   /// Adds a new particle effect to the list of active effects.
