@@ -72,3 +72,10 @@
 - [Fix] Ensure repaint won't happen outside of Newton widget.
 - [Fix] Improve performance by disabling compositor cache.
 
+## [0.0.11] - 2023-08-06
+
+### Feature
+
+- [Feature] Allow to add a post effect to a particle.
+- [Feature] Allow a finite number of particles.
+- [Feature] Add firework example.

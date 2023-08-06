@@ -50,7 +50,7 @@ class LinearGradientParticleColor extends ParticleColor {
   @override
   void configure(double progress, Particle particle) {
     final (startOffset, endOffset) =
-    orientation.computeOffsets(particle.position, particle.size);
+        orientation.computeOffsets(particle.position, particle.size);
     particle.paint.color = Colors.black;
     particle.paint.shader = ui.Gradient.linear(
       startOffset,

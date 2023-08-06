@@ -1,6 +1,5 @@
 import 'package:flutter/animation.dart';
 import 'package:newton_particles/newton_particles.dart';
-import 'package:newton_particles/src/utils/random_extensions.dart';
 
 /// A particle effect that creates an explosion animation in Newton.
 ///

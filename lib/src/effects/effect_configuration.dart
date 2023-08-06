@@ -6,7 +6,6 @@ import 'package:flutter/animation.dart';
 /// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
 /// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
 class EffectConfiguration {
-
   /// Total number of particles to emit. Default: `0` means infinite count.
   final int particleCount;
 
