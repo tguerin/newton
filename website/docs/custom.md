@@ -101,7 +101,7 @@ ExplodeEffect(
       particleConfiguration: ParticleConfiguration(
           shape: CircleShape(),
           size: const Size(5, 5),
-          color: color,
+          color: const SingleParticleColor(color: Colors.white),
           postEffectBuilder: (particle) => ExplodeEffect(
             particleConfiguration: ParticleConfiguration(
               shape: CircleShape(),
