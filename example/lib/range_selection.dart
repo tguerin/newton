@@ -9,6 +9,7 @@ class RangeSelection extends StatefulWidget {
   final double initialMax;
   final bool roundValue;
   final int divisions;
+  final int precision;
   final ValueChanged<RangeValues> onChanged;
 
   const RangeSelection({
@@ -19,6 +20,7 @@ class RangeSelection extends StatefulWidget {
     required this.onChanged,
     this.roundValue = true,
     this.divisions = 100,
+    this.precision = 2,
     required this.initialMin,
     required this.initialMax,
   });
@@ -41,9 +43,9 @@ class _RangeSelectionState extends State<RangeSelection> {
   @override
   Widget build(BuildContext context) {
     final formattedMin =
-        widget.roundValue ? _min.round() : _min.toStringAsPrecision(2);
+        widget.roundValue ? _min.round() : _min.toStringAsPrecision(widget.precision);
     final formattedMax =
-        widget.roundValue ? _max.round() : _max.toStringAsPrecision(2);
+        widget.roundValue ? _max.round() : _max.toStringAsPrecision(widget.precision);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

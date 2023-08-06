@@ -198,6 +198,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           );
         });
       },
+      precision: 4,
       min: 100,
       max: 5000,
     );
@@ -296,6 +297,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           );
         });
       },
+      precision: 3,
       roundValue: false,
     );
   }

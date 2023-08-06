@@ -12,7 +12,42 @@ enum AvailableEffect {
   ),
   explode(
     "Explode",
+    defaultEffectConfiguration: EffectConfiguration(
+      minAngle: -180,
+      maxAngle: 180,
+      minDuration: 4000,
+      maxDuration: 7000,
+      minFadeOutThreshold: 0.6,
+      maxFadeOutThreshold: 0.8,
+      minBeginScale: 1,
+      maxBeginScale: 1,
+      minEndScale: 1,
+      maxEndScale: 1,
+    ),
     supportedParameters: [
+      AnimationParameter.angle,
+      AnimationParameter.color,
+      AnimationParameter.distance,
+      AnimationParameter.fadeout,
+      AnimationParameter.scale
+    ],
+  ),
+  firework(
+    "Firework",
+    defaultEffectConfiguration: EffectConfiguration(
+      minAngle: -120,
+      maxAngle: -60,
+      minDuration: 1000,
+      maxDuration: 2000,
+      minFadeOutThreshold: 0.6,
+      maxFadeOutThreshold: 0.8,
+      minBeginScale: 1,
+      maxBeginScale: 1,
+      minEndScale: 1,
+      maxEndScale: 1,
+    ),
+    supportedParameters: [
+      AnimationParameter.angle,
       AnimationParameter.color,
       AnimationParameter.distance,
       AnimationParameter.fadeout,
@@ -136,6 +171,34 @@ extension AvailableEffectExtension on AvailableEffect {
             color: color,
           ),
           effectConfiguration: effectConfiguration.copyWith(
+            origin: Offset(size.width / 2, size.height / 2),
+          ),
+        );
+      case AvailableEffect.firework:
+        return ExplodeEffect(
+          particleConfiguration: ParticleConfiguration(
+              shape: CircleShape(),
+              size: const Size(5, 5),
+              color: color,
+              postEffectBuilder: (particle) => ExplodeEffect(
+                particleConfiguration: ParticleConfiguration(
+                  shape: CircleShape(),
+                  size: const Size(5, 5),
+                  color: const SingleParticleColor(color: Colors.blue),
+                ),
+                effectConfiguration: effectConfiguration.copyWith(
+                  maxAngle: 180,
+                  minAngle: -180,
+                  particleCount: 10,
+                  particlesPerEmit: 10,
+                  distanceCurve: Curves.decelerate,
+                  origin: particle.position,
+                )
+              )
+          ),
+          effectConfiguration: effectConfiguration.copyWith(
+            emitDuration: 600,
+            distanceCurve: Curves.decelerate,
             origin: Offset(size.width / 2, size.height / 2),
           ),
         );
