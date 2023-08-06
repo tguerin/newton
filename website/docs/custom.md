@@ -91,6 +91,59 @@ This `animationDuration` property will give the effect that particles don't fall
 And “voilà” you have a rain effect, to use it just reuse the code
 from [Getting Started](/docs/intro)
 
+## Firework Example
+
+In this example, we will go further by chaining effects. To achieve the firework effect, we are just going
+to trigger a explode effect once the particle travel is over. To do that, it's pretty straightforward:
+
+```dart
+ExplodeEffect(
+      particleConfiguration: ParticleConfiguration(
+          shape: CircleShape(),
+          size: const Size(5, 5),
+          color: color,
+          postEffectBuilder: (particle) => ExplodeEffect(
+            particleConfiguration: ParticleConfiguration(
+              shape: CircleShape(),
+              size: const Size(5, 5),
+              color: const SingleParticleColor(color: Colors.blue),
+            ),
+            effectConfiguration: EffectConfiguration(
+              maxAngle: 180,
+              minAngle: -180,
+              minDuration: 1000,
+              maxDuration: 2000,
+              minFadeOutThreshold: 0.6,
+              maxFadeOutThreshold: 0.8,
+              particleCount: 10,
+              particlesPerEmit: 10,
+              distanceCurve: Curves.decelerate,
+              origin: particle.position,
+            )
+          )
+      ),
+      effectConfiguration: EffectConfiguration(
+        emitDuration: 600,
+        minAngle: -120,
+        maxAngle: -60,
+        minDuration: 1000,
+        maxDuration: 2000,
+        minFadeOutThreshold: 0.6,
+        maxFadeOutThreshold: 0.8,
+        distanceCurve: Curves.decelerate,
+        origin: Offset(size.width / 2, size.height / 2),
+      ),
+);
+```
+
+Here are the key concepts for this effect:
+1. We restrict the first explode effect angles so the particles only go upward with a reasonable angle.
+2. We customise the particle travel with a `decelerate`effect and a `fadeOut` so the particle will disappear just before it explodes.
+3. In the particle configuration we can add a post Effect by providing a `postEffectBuilder`. This builder takes the up to date particle upon explosion as parameter, thus you can trigger the explode from the particle `position`.
+4. We define `particleCount` so the animation is not infinite and a `particlePerEmit` in order to fire all the particles upon explosion. We don't restrict angles to have 360° explosion.
+
+Enjoy your firework!
+
 ## All Effect Properties
 
 - `emitDuration`: `int` - Duration between particle emissions. Default: `100`
@@ -123,6 +176,7 @@ from [Getting Started](/docs/intro)
 1. `shape`: can be `CircleShape`, `SquareShape` or `ImageShape`
 2. `size`: `width` and `height` of the particle
 3. `color`: the particle color see [ParticleColor](https://pub.dev/documentation/newton_particles/latest/newton_particles/ParticleColor-class.html), doesn't apply for the `ImageShape`
+4. `postEffectBuilder`: from last particle position you can trigger a chain reaction
 
 ## Custom Particle
 
