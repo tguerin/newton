@@ -79,3 +79,9 @@
 - [Feature] Allow to add a post effect to a particle.
 - [Feature] Allow a finite number of particles.
 - [Feature] Add firework example.
+
+## [0.0.12] - 2023-08-06
+
+### Fixed
+
+- [Fix] Fix concurrent modification when post effect is triggered.
