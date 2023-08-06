@@ -1,13 +1,13 @@
 
 <picture>
-    <source srcset="https://github.com/tguerin/newton/blob/main/graphics/newton-dark.png" media="(prefers-color-scheme: dark)">
+    <source srcset="https://raw.github.com/tguerin/newton/main/graphics/newton-dark.png" media="(prefers-color-scheme: dark)">
     <img
         src=""
         alt=""
       />
 </picture>
 
-![Newton logo](https://github.com/tguerin/newton/blob/main/graphics/newton-light.png#gh-light-mode-only)
+[![Newton logo](https://raw.github.com/tguerin/newton/main/graphics/newton-light.png#gh-light-mode-only)](https://github.com/tguerin/newton/blob/main/graphics/newton-light.png#gh-light-mode-only)
 
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 
@@ -15,9 +15,9 @@
 
 Newton is a highly configurable particle emitter package for Flutter that allows you to create captivating animations such as rain, smoke, explosions, and more. With Newton, you can easily add visually stunning effects to your Flutter applications.
 
-|                                   Rain                                   |                                   Smoke                                    |                                   Pulse                                    |                                    Explode                                     |                                     Fountain                                     |
-|:------------------------------------------------------------------------:|:--------------------------------------------------------------------------:|:--------------------------------------------------------------------------:|:------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------:|
-|  ![Rain](https://github.com/tguerin/newton/blob/main/graphics/rain.gif)  |  ![Smoke](https://github.com/tguerin/newton/blob/main/graphics/smoke.gif)  |  ![Pulse](https://github.com/tguerin/newton/blob/main/graphics/pulse.gif)  |  ![Explode](https://github.com/tguerin/newton/blob/main/graphics/explode.gif)  |  ![Fountain](https://github.com/tguerin/newton/blob/main/graphics/fountain.gif)  |
+|                                  Rain                                   |                                   Smoke                                   |                                   Pulse                                   |                                    Explode                                    |                                    Fountain                                     |
+|:-----------------------------------------------------------------------:|:-------------------------------------------------------------------------:|:-------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|:-------------------------------------------------------------------------------:|
+|  ![Rain](https://raw.github.com/tguerin/newton/main/graphics/rain.gif)  |  ![Smoke](https://raw.github.com/tguerin/newton/main/graphics/smoke.gif)  |  ![Pulse](https://raw.github.com/tguerin/newton/main/graphics/pulse.gif)  |  ![Explode](https://raw.github.com/tguerin/newton/main/graphics/explode.gif)  |  ![Fountain](https://raw.github.com/tguerin/newton/main/graphics/fountain.gif)  |
 
 ## Features
 
