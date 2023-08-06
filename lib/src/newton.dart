@@ -38,6 +38,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   late Ticker _ticker;
   int _lastElapsedMillis = 0;
   final List<Effect> _activeEffects = List.empty(growable: true);
+  final List<Effect> _pendingActiveEffects = List.empty(growable: true);
 
   @override
   void initState() {
@@ -57,6 +58,10 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   }
 
   void _updateActiveEffects(Duration elapsed) {
+    if (_pendingActiveEffects.isNotEmpty) {
+      _activeEffects.addAll(_pendingActiveEffects);
+      _pendingActiveEffects.clear();
+    }
     if (_activeEffects.isNotEmpty) {
       for (var element in _activeEffects) {
         element.forward(elapsed.inMilliseconds - _lastElapsedMillis);
@@ -119,6 +124,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   }
 
   void _setupEffectsFromWidget() {
+    _pendingActiveEffects.clear();
     _activeEffects
       ..clear()
       ..addAll(widget.activeEffects);
@@ -128,6 +134,6 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   }
 
   _onPostEffect(Effect<AnimatedParticle> effect) {
-    _activeEffects.add(effect..postEffectCallback = _onPostEffect);
+    _pendingActiveEffects.add(effect..postEffectCallback = _onPostEffect);
   }
 }
