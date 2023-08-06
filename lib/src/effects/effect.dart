@@ -60,6 +60,12 @@ abstract class Effect<T extends AnimatedParticle> {
   /// Configuration for particle properties. See [ParticleConfiguration].
   final ParticleConfiguration particleConfiguration;
 
+  /// Total number of emitted particles
+  int _totalEmittedCount = 0;
+
+  /// Register a callback if you want to be notified that a post effect is occurring
+  ValueChanged<Effect>? postEffectCallback;
+
   Effect({
     required this.particleConfiguration,
     required this.effectConfiguration,
@@ -86,22 +92,65 @@ abstract class Effect<T extends AnimatedParticle> {
   @mustCallSuper
   forward(int elapsedMillis) {
     totalElapsed += elapsedMillis;
+    _emitParticles();
+    _cleanParticles();
+    _updateParticles();
+    _killEffectWhenOver();
+  }
+
+  void _emitParticles() {
     if (totalElapsed - _lastInstantiation > effectConfiguration.emitDuration) {
       _lastInstantiation = totalElapsed;
       if (!_stopEmission) {
         for (int i = 0; i < effectConfiguration.particlesPerEmit; i++) {
-          _activeParticles.add(instantiateParticle(_surfaceSize));
+          if (_isEmissionAllowed()) {
+            _totalEmittedCount++;
+            _activeParticles.add(instantiateParticle(_surfaceSize));
+          } else {
+            break;
+          }
         }
       }
     }
+  }
+
+  void _cleanParticles() {
     _activeParticles.removeWhere((activeParticle) {
-      return activeParticle.animationDuration <
+      final animationOver = activeParticle.animationDuration <
           totalElapsed - activeParticle.startTime;
+      if (animationOver) {
+        final postEffectBuilder =
+            activeParticle.particle.configuration.postEffectBuilder;
+        if (postEffectBuilder != null) {
+          postEffectCallback?.call(postEffectBuilder(activeParticle.particle));
+        }
+      }
+      return animationOver;
     });
+  }
+
+  void _updateParticles() {
     for (var element in _activeParticles) {
       element.onAnimationUpdate(
           (totalElapsed - element.startTime) / element.animationDuration);
     }
+  }
+
+  void _killEffectWhenOver() {
+    if (_isEmissionOver()) {
+      kill();
+    }
+  }
+
+  bool _isEmissionAllowed() {
+    return _totalEmittedCount < effectConfiguration.particleCount ||
+        effectConfiguration.particleCount <= 0;
+  }
+
+  bool _isEmissionOver() {
+    return activeParticles.isEmpty &&
+        _totalEmittedCount == effectConfiguration.particleCount &&
+        effectConfiguration.particleCount > 0;
   }
 
   /// Sets the size of the animation surface.
@@ -136,6 +185,7 @@ abstract class Effect<T extends AnimatedParticle> {
   kill() {
     stop(cancel: true);
     _killed = true;
+    postEffectCallback = null;
   }
 
   /// Checks if the effect is no longer active and has been killed.

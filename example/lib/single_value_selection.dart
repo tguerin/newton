@@ -7,6 +7,7 @@ class SingleValueSelection extends StatefulWidget {
   final double min;
   final double max;
   final bool roundValue;
+  final int precision;
   final ValueChanged<double> onChanged;
 
   const SingleValueSelection({
@@ -15,6 +16,7 @@ class SingleValueSelection extends StatefulWidget {
     required this.title,
     required this.onChanged,
     this.roundValue = true,
+    this.precision = 2,
     required this.min,
     required this.max,
   });
@@ -39,7 +41,7 @@ class _SingleValueSelectionState extends State<SingleValueSelection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "${widget.title}: $formattedValue",
+          "${widget.title}: ${formattedValue.toStringAsPrecision(widget.precision)}",
           style: textTheme.labelLarge,
         ),
         SizedBox(
@@ -48,7 +50,7 @@ class _SingleValueSelectionState extends State<SingleValueSelection> {
             value: _value,
             min: widget.min,
             max: widget.max,
-            label: "$formattedValue",
+            label: formattedValue.toStringAsPrecision(widget.precision),
             onChanged: (value) {
               setState(() {
                 _value = value;

@@ -27,7 +27,7 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
       fadeOutThreshold: randomFadeOutThreshold(),
       pathTransformation: StraightPathTransformation(
         distance: randomDistance(),
-        angle: random.nextDoubleRange(0, 360),
+        angle: randomAngle(),
       ),
       distanceCurve: effectConfiguration.distanceCurve,
       fadeInLimit: randomFadeInLimit(),
