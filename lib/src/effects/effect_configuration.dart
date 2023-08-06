@@ -6,12 +6,17 @@ import 'package:flutter/animation.dart';
 /// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
 /// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
 class EffectConfiguration {
+
+  /// Total number of particles to emit. Default: `0` means infinite count.
+  final int particleCount;
+
   /// Duration between particle emissions in milliseconds. Default: `100`.
   final int emitDuration;
 
   /// Number of particles emitted per emission. Default: `1`.
   final int particlesPerEmit;
 
+  // TODO Not used for now, will be once we can set a global effect duration
   /// Curve to control the emission timing. Default: [Curves.decelerate].
   final Curve emitCurve;
 
@@ -76,6 +81,7 @@ class EffectConfiguration {
   ///
   /// All parameters have default values that can be overridden during object creation.
   const EffectConfiguration({
+    this.particleCount = 0,
     this.emitDuration = 100,
     this.emitCurve = Curves.decelerate,
     this.particlesPerEmit = 1,
@@ -114,6 +120,7 @@ class EffectConfiguration {
             "Min fadeIn limit can't be greater than end max fadeIn threshold");
 
   EffectConfiguration copyWith({
+    int? particleCount,
     int? emitDuration,
     int? particlesPerEmit,
     Curve? emitCurve,
@@ -138,6 +145,7 @@ class EffectConfiguration {
     Curve? fadeInCurve,
   }) {
     return EffectConfiguration(
+      particleCount: particleCount ?? this.particleCount,
       emitDuration: emitDuration ?? this.emitDuration,
       particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,
       emitCurve: emitCurve ?? this.emitCurve,

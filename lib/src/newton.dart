@@ -9,7 +9,7 @@ library newton_particles;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:newton_particles/src/effects/effect.dart';
+import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/newton_painter.dart';
 
 /// The `Newton` widget is the entry point for creating captivating particle animations.
@@ -42,18 +42,28 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _activeEffects.addAll(widget.activeEffects);
-    _ticker = createTicker((elapsed) {
-      _activeEffects.removeWhere((effect) => effect.isDead);
-      if (_activeEffects.isNotEmpty) {
-        for (var element in _activeEffects) {
-          element.forward(elapsed.inMilliseconds - _lastElapsedMillis);
-        }
-        _lastElapsedMillis = elapsed.inMilliseconds;
-        setState(() {});
-      }
-    });
+    _setupEffectsFromWidget();
+    _ticker = createTicker(_onFrameUpdate);
     _ticker.start();
+  }
+
+  void _onFrameUpdate(elapsed) {
+    _cleanDeadEffects();
+    _updateActiveEffects(elapsed);
+  }
+
+  void _cleanDeadEffects() {
+    _activeEffects.removeWhere((effect) => effect.isDead);
+  }
+
+  void _updateActiveEffects(Duration elapsed) {
+    if (_activeEffects.isNotEmpty) {
+      for (var element in _activeEffects) {
+        element.forward(elapsed.inMilliseconds - _lastElapsedMillis);
+      }
+      _lastElapsedMillis = elapsed.inMilliseconds;
+      setState(() {});
+    }
   }
 
   @override
@@ -81,8 +91,11 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   /// and the `Newton` widget will render it on the canvas.
   addEffect(Effect effect) {
     setState(() {
-      effect.surfaceSize = MediaQuery.of(context).size;
-      _activeEffects.add(effect);
+      _activeEffects.add(
+        effect
+          ..surfaceSize = MediaQuery.of(context).size
+          ..postEffectCallback = _onPostEffect,
+      );
     });
   }
 
@@ -93,13 +106,28 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   }
 
   void clearEffects() {
-    _activeEffects.clear();
+    _activeEffects.removeWhere((effect) {
+      effect.postEffectCallback = null;
+      return true;
+    });
   }
 
   @override
   void didUpdateWidget(Newton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _activeEffects.clear();
-    _activeEffects.addAll(widget.activeEffects);
+    _setupEffectsFromWidget();
+  }
+
+  void _setupEffectsFromWidget() {
+    _activeEffects
+      ..clear()
+      ..addAll(widget.activeEffects);
+    for (var effect in _activeEffects) {
+      effect.postEffectCallback = _onPostEffect;
+    }
+  }
+
+  _onPostEffect(Effect<AnimatedParticle> effect) {
+    _activeEffects.add(effect..postEffectCallback = _onPostEffect);
   }
 }
