@@ -94,7 +94,8 @@ from [Getting Started](/docs/intro)
 ## Firework Example
 
 In this example, we will go further by chaining effects. To achieve the firework effect, we are just going
-to trigger a explode effect once the particle travel is over. To do that, it's pretty straightforward:
+to trigger a explode effect once the particle travel is over. We also add some trail effect to the particle. 
+To do that, it's pretty straightforward:
 
 ```dart
 ExplodeEffect(
@@ -119,6 +120,7 @@ ExplodeEffect(
               particlesPerEmit: 10,
               distanceCurve: Curves.decelerate,
               origin: particle.position,
+              trail: StraightTrail(trailProgress: 0.3, trailWidth: 3.0)
             )
           )
       ),
@@ -132,6 +134,7 @@ ExplodeEffect(
         maxFadeOutThreshold: 0.8,
         distanceCurve: Curves.decelerate,
         origin: Offset(size.width / 2, size.height / 2),
+        trail: StraightTrail(trailProgress: 0.3, trailWidth: 3.0),
       ),
 );
 ```
@@ -141,6 +144,7 @@ Here are the key concepts for this effect:
 2. We customise the particle travel with a `decelerate`effect and a `fadeOut` so the particle will disappear just before it explodes.
 3. In the particle configuration we can add a post Effect by providing a `postEffectBuilder`. This builder takes the up to date particle upon explosion as parameter, thus you can trigger the explode from the particle `position`.
 4. We define `particleCount` so the animation is not infinite and a `particlePerEmit` in order to fire all the particles upon explosion. We don't restrict angles to have 360° explosion.
+5. We customize the trail effect with a `StraightTrail`. The `trailProgress` means how far we want to go back for the trail.
 
 Enjoy your firework!
 
@@ -168,6 +172,7 @@ Enjoy your firework!
 - `fadeInCurve`: `Curve` - Curve to control particle fade-in animation. Default: `Curves.linear`
 - `minAngle`: `double` - Min angle in degrees for particle. Default: `0`
 - `maxAngle`: `double` - Max angle in degrees for particle. Default: `0`
+- `trail`: `Trail` - Define trail behavior, see [Trail](https://pub.dev/documentation/newton_particles/latest/newton_particles/Trail-class.html). Default: `NoTrail()`
 
 ## Particle Configuration
 

@@ -10,6 +10,7 @@ import 'package:newton_particles/newton_particles.dart';
 /// drawing logic.
 sealed class Trail {
   /// The progress of the trail, typically a value between 0 and 1.
+  /// To clarify, `trailProgress` means how far we want to go back for the trail to be drawn.
   final double trailProgress;
 
   /// Creates a [Trail] with the given [trailProgress].
