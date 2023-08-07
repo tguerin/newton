@@ -85,3 +85,9 @@
 ### Fixed
 
 - [Fix] Fix concurrent modification when post effect is triggered.
+
+## [0.0.13] - 2023-08-07
+
+### Feature
+
+- [Feature] Support trailing to achieve a `shooting star` effect.
