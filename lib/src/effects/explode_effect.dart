@@ -33,6 +33,7 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
       fadeInCurve: effectConfiguration.fadeInCurve,
       fadeOutCurve: effectConfiguration.fadeOutCurve,
       scaleCurve: effectConfiguration.scaleCurve,
+      trail: effectConfiguration.trail,
     );
   }
 }

@@ -45,13 +45,18 @@ enum AvailableEffect {
       maxBeginScale: 1,
       minEndScale: 1,
       maxEndScale: 1,
+      trail: StraightTrail(
+        trailWidth: 3,
+        trailProgress: 0.3,
+      ),
     ),
     supportedParameters: [
       AnimationParameter.angle,
       AnimationParameter.color,
       AnimationParameter.distance,
       AnimationParameter.fadeout,
-      AnimationParameter.scale
+      AnimationParameter.scale,
+      AnimationParameter.trail,
     ],
   ),
   smoke("Smoke",
@@ -181,21 +186,19 @@ extension AvailableEffectExtension on AvailableEffect {
               size: const Size(5, 5),
               color: color,
               postEffectBuilder: (particle) => ExplodeEffect(
-                particleConfiguration: ParticleConfiguration(
-                  shape: CircleShape(),
-                  size: const Size(5, 5),
-                  color: const SingleParticleColor(color: Colors.blue),
-                ),
-                effectConfiguration: effectConfiguration.copyWith(
-                  maxAngle: 180,
-                  minAngle: -180,
-                  particleCount: 10,
-                  particlesPerEmit: 10,
-                  distanceCurve: Curves.decelerate,
-                  origin: particle.position,
-                )
-              )
-          ),
+                  particleConfiguration: ParticleConfiguration(
+                    shape: CircleShape(),
+                    size: const Size(5, 5),
+                    color: const SingleParticleColor(color: Colors.blue),
+                  ),
+                  effectConfiguration: effectConfiguration.copyWith(
+                    maxAngle: 180,
+                    minAngle: -180,
+                    particleCount: 10,
+                    particlesPerEmit: 10,
+                    distanceCurve: Curves.decelerate,
+                    origin: particle.position,
+                  ))),
           effectConfiguration: effectConfiguration.copyWith(
             emitDuration: 600,
             distanceCurve: Curves.decelerate,
@@ -253,4 +256,5 @@ enum AnimationParameter {
   distance,
   fadeout,
   scale,
+  trail,
 }

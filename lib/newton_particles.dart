@@ -5,6 +5,7 @@ export 'src/effects/fountain_effect.dart';
 export 'src/effects/pulse_effect.dart';
 export 'src/effects/rain_effect.dart';
 export 'src/effects/smoke_effect.dart';
+export 'src/effects/trail.dart';
 export 'src/newton.dart';
 export 'src/particles/animated_particle.dart';
 export 'src/particles/color.dart';

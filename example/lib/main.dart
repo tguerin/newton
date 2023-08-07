@@ -119,6 +119,11 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
               particleEndScaleSection(),
               if (_selectedAnimation.supportParameter(AnimationParameter.angle))
                 particleAngleSection(),
+              if (_selectedAnimation
+                  .supportParameter(AnimationParameter.trail)) ...[
+                trailWidthSection(),
+                trailProgressSection()
+              ],
             ],
           ),
         ),
@@ -299,6 +304,49 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       },
       precision: 3,
       roundValue: false,
+    );
+  }
+
+  Widget trailProgressSection() {
+    return SingleValueSelection(
+      value: _effectConfiguration.trail.trailProgress,
+      title: "Trail Progress",
+      onChanged: (value) {
+        setState(() {
+          final trailWidth = _effectConfiguration.trail is NoTrail
+              ? 0.0
+              : (_effectConfiguration.trail as StraightTrail).trailWidth;
+          _effectConfiguration = _effectConfiguration.copyWith(
+            trail: StraightTrail(trailProgress: value, trailWidth: trailWidth),
+          );
+        });
+      },
+      roundValue: false,
+      precision: 3,
+      min: 0.0,
+      max: 1.0,
+    );
+  }
+
+  Widget trailWidthSection() {
+    final trailWidth = _effectConfiguration.trail is NoTrail
+        ? 0.0
+        : (_effectConfiguration.trail as StraightTrail).trailWidth;
+    return SingleValueSelection(
+      value: trailWidth,
+      title: "Trail Width",
+      onChanged: (value) {
+        setState(() {
+          _effectConfiguration = _effectConfiguration.copyWith(
+            trail: StraightTrail(
+                trailProgress: _effectConfiguration.trail.trailProgress,
+                trailWidth: value),
+          );
+        });
+      },
+      precision: 3,
+      min: 0.0,
+      max: 10,
     );
   }
 

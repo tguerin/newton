@@ -13,9 +13,7 @@ class NewtonPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    effects
-        .expand((effect) => effect.activeParticles.map((e) => e.particle))
-        .forEach((particle) {
+    effects.expand((effect) => effect.activeParticles).forEach((particle) {
       particle.draw(canvas);
     });
   }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/animation.dart';
 import 'package:newton_particles/newton_particles.dart';
 
@@ -39,6 +41,10 @@ class AnimatedParticle {
   /// The curve used to control the scaling animation progress.
   final Curve scaleCurve;
 
+  final Trail trail;
+
+  double _currentProgress = 0;
+
   AnimatedParticle({
     required this.particle,
     required this.pathTransformation,
@@ -51,6 +57,7 @@ class AnimatedParticle {
     required this.fadeOutCurve,
     required this.scaleRange,
     required this.scaleCurve,
+    required this.trail,
   });
 
   /// Called when the animation updates to apply transformations and positioning to the particle.
@@ -59,6 +66,7 @@ class AnimatedParticle {
   /// Based on the progress, the particle's opacity, size, and position will be updated
   /// according to the specified animation properties.
   onAnimationUpdate(double progress) {
+    _currentProgress = progress;
     particle.updateColor(progress);
     if (progress <= fadeInLimit && fadeInLimit != 0) {
       final fadeInProgress = progress / fadeInLimit;
@@ -91,4 +99,9 @@ class AnimatedParticle {
   /// The `oldSize` parameter represents the previous size of the surface.
   /// The `newSize` parameter represents the new size of the surface.
   onSurfaceSizeChanged(Size oldSize, Size newSize) {}
+
+  void draw(Canvas canvas) {
+    particle.draw(canvas);
+    trail.draw(canvas, _currentProgress, this);
+  }
 }

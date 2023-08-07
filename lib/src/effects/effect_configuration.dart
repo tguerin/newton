@@ -1,4 +1,5 @@
 import 'package:flutter/animation.dart';
+import 'package:newton_particles/src/effects/trail.dart';
 
 /// Configuration class for defining particle emission properties in Newton effects.
 ///
@@ -76,6 +77,8 @@ class EffectConfiguration {
   /// Curve to control particle fade-in animation. Default: [Curves.linear].
   final Curve fadeInCurve;
 
+  final Trail trail;
+
   /// Creates an instance of `EffectConfiguration` with the specified parameters.
   ///
   /// All parameters have default values that can be overridden during object creation.
@@ -103,6 +106,7 @@ class EffectConfiguration {
     this.minFadeInLimit = 0,
     this.maxFadeInLimit = 0,
     this.fadeInCurve = Curves.linear,
+    this.trail = const NoTrail(),
   })  : assert(minDistance <= maxDistance,
             "Min distance can't be greater than max distance"),
         assert(
@@ -142,6 +146,7 @@ class EffectConfiguration {
     double? minFadeInLimit,
     double? maxFadeInLimit,
     Curve? fadeInCurve,
+    Trail? trail,
   }) {
     return EffectConfiguration(
       particleCount: particleCount ?? this.particleCount,
@@ -167,6 +172,7 @@ class EffectConfiguration {
       minFadeInLimit: minFadeInLimit ?? this.minFadeInLimit,
       maxFadeInLimit: maxFadeInLimit ?? this.maxFadeInLimit,
       fadeInCurve: fadeInCurve ?? this.fadeInCurve,
+      trail: trail ?? this.trail,
     );
   }
 }
