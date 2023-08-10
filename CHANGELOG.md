@@ -97,3 +97,9 @@
 ### Fix
 
 - [Fixed] Improve performance drastically by using drawAtlas as much as possible.
+
+## [0.1.1] - 2023-08-10
+
+### Fix
+
+- [Fixed] Fix logo display on pub.dev.
