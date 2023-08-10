@@ -103,3 +103,9 @@
 ### Fix
 
 - [Fixed] Fix logo display on pub.dev.
+
+## [0.1.2] - 2023-08-10
+
+### Fix
+
+- [Fixed] Use raw.github for logo display.
