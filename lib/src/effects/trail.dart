@@ -76,13 +76,17 @@ class StraightTrail extends Trail {
 
     final trailPaint = Paint();
     trailPaint.shader = ui.Gradient.linear(
-        animatedParticle.particle.position, endTrailPosition, [
-      animatedParticle.particle.paint.color,
-      Colors.transparent,
-    ], [
-      0.2,
-      1.0,
-    ]);
+      animatedParticle.particle.position,
+      endTrailPosition,
+      [
+        animatedParticle.particle.color,
+        Colors.transparent,
+      ],
+      [
+        0.2,
+        1.0,
+      ],
+    );
     trailPaint.strokeCap = StrokeCap.round;
     trailPaint.strokeWidth = trailWidth;
 

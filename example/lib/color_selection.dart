@@ -141,17 +141,6 @@ class _ColorSelectionState extends State<ColorSelection> {
         }
         widget.onChanged(SingleParticleColor(color: _currentColors[0]));
         break;
-      case ColorType.gradient:
-        if (_currentColors.length > 2) {
-          _currentColors.removeRange(2, _currentColors.length - 1);
-        } else if (_currentColors.length == 1) {
-          _currentColors.add(Colors.white);
-        }
-        widget.onChanged(LinearGradientParticleColor(
-          startColor: _currentColors[0],
-          endColor: _currentColors[1],
-        ));
-        break;
       case ColorType.linearInterpolation:
         if (_currentColors.length == 1) {
           _currentColors.add(Colors.white);
