@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:newton_particles/src/particles/particle.dart';
 import 'package:newton_particles/src/utils/color_extensions.dart';
 
 /// An abstract class representing the configuration of particle colors.

@@ -91,3 +91,9 @@
 ### Feature
 
 - [Feature] Support trailing to achieve a `shooting star` effect.
+
+## [0.1.0] - 2023-08-10
+
+### Fix
+
+- [Fixed] Improve performance drastically by using drawAtlas as much as possible.

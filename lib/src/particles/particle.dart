@@ -67,7 +67,6 @@ class Particle {
     _color = _color.withOpacity(opacity.clamp(0, 1));
   }
 
-
   /// Computes the transformation for rendering the image using the particle state.
   ///
   /// Returns the computed transformation for rendering the image with the current particle state.

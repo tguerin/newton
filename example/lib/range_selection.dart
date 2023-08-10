@@ -42,10 +42,12 @@ class _RangeSelectionState extends State<RangeSelection> {
 
   @override
   Widget build(BuildContext context) {
-    final formattedMin =
-        widget.roundValue ? _min.round() : _min.toStringAsPrecision(widget.precision);
-    final formattedMax =
-        widget.roundValue ? _max.round() : _max.toStringAsPrecision(widget.precision);
+    final formattedMin = widget.roundValue
+        ? _min.round()
+        : _min.toStringAsPrecision(widget.precision);
+    final formattedMax = widget.roundValue
+        ? _max.round()
+        : _max.toStringAsPrecision(widget.precision);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

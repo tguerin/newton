@@ -2,12 +2,10 @@
 <picture>
     <source srcset="https://raw.github.com/tguerin/newton/main/graphics/newton-dark.png" media="(prefers-color-scheme: dark)">
     <img
-        src=""
-        alt=""
+        src="https://raw.github.com/tguerin/newton/main/graphics/newton-light.png"
+        alt="Newton"
       />
 </picture>
-
-[![Newton logo](https://raw.github.com/tguerin/newton/main/graphics/newton-light.png#gh-light-mode-only)](https://github.com/tguerin/newton/blob/main/graphics/newton-light.png#gh-light-mode-only)
 
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 
@@ -35,7 +33,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.0.13
+  newton_particles: ^0.1.0
 ```
 
 Then, run `flutter pub get` to fetch the package.

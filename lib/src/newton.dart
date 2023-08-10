@@ -39,7 +39,8 @@ class Newton extends StatefulWidget {
 /// and handles their animation updates. Additionally, it uses a `CustomPainter` to render the
 /// particle effects on a custom canvas.
 class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
-  static const _shapeSpriteSheetPath = "packages/newton_particles/assets/images/newton.png";
+  static const _shapeSpriteSheetPath =
+      "packages/newton_particles/assets/images/newton.png";
   late Ticker _ticker;
   int _lastElapsedMillis = 0;
   final List<Effect> _activeEffects = List.empty(growable: true);
