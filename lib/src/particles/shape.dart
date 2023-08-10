@@ -1,86 +1,110 @@
+import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
-import 'package:vector_math/vector_math_64.dart';
+import 'package:newton_particles/newton_particles.dart';
 
-/// The `Shape` class represents a drawable shape that can be rendered on a canvas.
+/// A base class representing various shapes for rendering particles.
 ///
-/// The `Shape` class is an abstract class with a `draw` method that handles drawing the shape
-/// on the provided canvas. The `draw` method applies the specified `transform` and `paint`
-/// to the shape and then calls the `applyDraw` method to perform the actual drawing.
-/// Subclasses of `Shape` must implement the `applyDraw` method to define how the shape is drawn.
+/// This sealed class defines different shapes that can be used for rendering particles.
+/// It provides a method to compute the transformation parameters required for rendering
+/// particles using the specified shape.
+///
+/// Each shape must override the [computeTransformation] method to calculate the necessary
+/// transformation based on the particle's properties and the shape's specifications.
 sealed class Shape {
-  /// Draws the shape on the given canvas at the specified position and size.
-  ///
-  /// The `draw` method handles applying the `transform` matrix and the `paint` to the shape
-  /// before calling the `applyDraw` method to perform the actual drawing of the shape.
-  @nonVirtual
-  draw(Canvas canvas, Offset position, Size size, Matrix4 transform,
-      Paint paint) {
-    var isCanvasTransformed = !transform.isIdentity();
-    if (isCanvasTransformed) {
-      canvas.save();
-      canvas.transform(transform.storage);
-    }
-    applyDraw(canvas, position, size, paint);
-    if (isCanvasTransformed) {
-      canvas.restore();
-    }
-  }
+  static const double defaultSpriteWidth = 500.0;
+  static const double defaultSpriteHeight = 500.0;
 
-  /// Applies the actual drawing of the shape on the provided canvas.
+  /// Computes the transformation parameters for rendering particles using this shape.
   ///
-  /// The `applyDraw` method must be implemented by subclasses to define how the shape
-  /// is drawn on the canvas. The `position`, `size`, and `paint` parameters are used
-  /// to determine the position, size, and style of the shape when drawn.
-  @protected
-  applyDraw(Canvas canvas, Offset position, Size size, Paint paint);
+  /// see [Canvas.drawAtlas]
+  (Image, Rect, RSTransform, Color) computeTransformation(
+      Particle particle, Image defaultShapes);
 }
 
-/// The `CircleShape` class represents a circular shape that can be drawn on a canvas.
-///
-/// The `CircleShape` class extends the `Shape` class and implements the `applyDraw` method
-/// to draw a circle on the canvas with the specified position, size, and paint.
+/// Represents a circular shape for rendering particles.
 class CircleShape extends Shape {
   @override
-  applyDraw(Canvas canvas, Offset position, Size size, Paint paint) {
-    if (size.width != size.height) {
-      throw ArgumentError("width and height must be the same for a circle");
-    }
-    canvas.drawCircle(position, size.width / 2, paint);
+  (Image, Rect, RSTransform, Color) computeTransformation(
+    Particle particle,
+    Image defaultShapes,
+  ) {
+    const rect = Rect.fromLTWH(
+      Shape.defaultSpriteWidth,
+      0,
+      Shape.defaultSpriteWidth,
+      Shape.defaultSpriteHeight,
+    );
+    final transform = RSTransform.fromComponents(
+      rotation: 0,
+      scale: min(
+        particle.size.width / Shape.defaultSpriteWidth,
+        particle.size.height / Shape.defaultSpriteHeight,
+      ),
+      anchorX: Shape.defaultSpriteWidth / 2,
+      anchorY: Shape.defaultSpriteHeight / 2,
+      translateX: particle.position.dx,
+      translateY: particle.position.dy,
+    );
+    final color = particle.color;
+    return (defaultShapes, rect, transform, color);
   }
 }
 
-/// The `SquareShape` class represents a square shape that can be drawn on a canvas.
-///
-/// The `SquareShape` class extends the `Shape` class and implements the `applyDraw` method
-/// to draw a square on the canvas with the specified position, size, and paint.
+/// Represents a square shape for rendering particles.
 class SquareShape extends Shape {
   @override
-  applyDraw(Canvas canvas, Offset position, Size size, Paint paint) {
-    canvas.drawRect(
-      Rect.fromLTWH(
-        position.dx - size.width / 2,
-        position.dy - size.height / 2,
-        size.width,
-        size.height,
-      ),
-      paint,
+  (Image, Rect, RSTransform, Color) computeTransformation(
+      Particle particle, Image defaultShapes) {
+    const rect = Rect.fromLTWH(
+      0,
+      0,
+      Shape.defaultSpriteWidth,
+      Shape.defaultSpriteHeight,
     );
+    final transform = RSTransform.fromComponents(
+      rotation: 0,
+      scale: min(
+        particle.size.width / Shape.defaultSpriteWidth,
+        particle.size.height / Shape.defaultSpriteHeight,
+      ),
+      anchorX: Shape.defaultSpriteWidth / 2,
+      anchorY: Shape.defaultSpriteHeight / 2,
+      translateX: particle.position.dx,
+      translateY: particle.position.dy,
+    );
+    final color = particle.color;
+    return (defaultShapes, rect, transform, color);
   }
 }
 
-/// The `ImageShape` class represents an image shape that can be drawn on a canvas.
-///
-/// The `ImageShape` class extends the `Shape` class and implements the `applyDraw` method
-/// to draw an image on the canvas with the specified position, size, and paint.
+/// Represents a shape based on an image for rendering particles.
 class ImageShape extends Shape {
   final Image image;
 
   ImageShape(this.image);
 
   @override
-  applyDraw(Canvas canvas, Offset position, Size size, Paint paint) {
-    canvas.drawImage(image, position, paint);
+  (Image, Rect, RSTransform, Color) computeTransformation(
+      Particle particle, Image defaultShapes) {
+    const rect = Rect.fromLTWH(
+      0,
+      0,
+      Shape.defaultSpriteWidth,
+      Shape.defaultSpriteHeight,
+    );
+    final transform = RSTransform.fromComponents(
+      rotation: 0,
+      scale: min(
+        particle.size.width / image.width,
+        particle.size.height / image.height,
+      ),
+      anchorX: image.width / 2,
+      anchorY: image.height / 2,
+      translateX: particle.position.dx,
+      translateY: particle.position.dy,
+    );
+    final color = particle.color;
+    return (image, rect, transform, color);
   }
 }

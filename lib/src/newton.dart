@@ -7,10 +7,14 @@
 /// of the active particle effects on a custom canvas.
 library newton_particles;
 
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/newton_painter.dart';
+import 'package:newton_particles/src/utils/bundle_extensions.dart';
 
 /// The `Newton` widget is the entry point for creating captivating particle animations.
 ///
@@ -35,14 +39,17 @@ class Newton extends StatefulWidget {
 /// and handles their animation updates. Additionally, it uses a `CustomPainter` to render the
 /// particle effects on a custom canvas.
 class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
+  static const _shapeSpriteSheetPath = "packages/newton_particles/assets/images/newton.png";
   late Ticker _ticker;
   int _lastElapsedMillis = 0;
   final List<Effect> _activeEffects = List.empty(growable: true);
   final List<Effect> _pendingActiveEffects = List.empty(growable: true);
+  late Future<ui.Image> _shapeSpriteSheet;
 
   @override
   void initState() {
     super.initState();
+    _shapeSpriteSheet = rootBundle.loadImage(_shapeSpriteSheetPath);
     _setupEffectsFromWidget();
     _ticker = createTicker(_onFrameUpdate);
     _ticker.start();
@@ -73,20 +80,29 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-        for (var effect in _activeEffects) {
-          effect.surfaceSize = constraints.biggest;
-        }
-        return CustomPaint(
-          willChange: true,
-          painter: NewtonPainter(
-            effects: _activeEffects,
-          ),
-        );
-      }),
-    );
+    return FutureBuilder(
+        future: _shapeSpriteSheet,
+        builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+          if (snapshot.hasData) {
+            return RepaintBoundary(
+              child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                for (var effect in _activeEffects) {
+                  effect.surfaceSize = constraints.biggest;
+                }
+                return CustomPaint(
+                  willChange: true,
+                  painter: NewtonPainter(
+                    shapesSpriteSheet: snapshot.data!,
+                    effects: _activeEffects,
+                  ),
+                );
+              }),
+            );
+          } else {
+            return Container();
+          }
+        });
   }
 
   /// Adds a new particle effect to the list of active effects.

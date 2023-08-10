@@ -100,8 +100,10 @@ class AnimatedParticle {
   /// The `newSize` parameter represents the new size of the surface.
   onSurfaceSizeChanged(Size oldSize, Size newSize) {}
 
-  void draw(Canvas canvas) {
-    particle.draw(canvas);
+  /// Draw extra shapes if any
+  ///
+  /// For now mainly use to draw [Tail]
+  void drawExtra(Canvas canvas) {
     trail.draw(canvas, _currentProgress, this);
   }
 }

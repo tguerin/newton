@@ -1,7 +1,7 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 
+import 'package:flutter/material.dart';
 import 'package:newton_particles/newton_particles.dart';
-import 'package:vector_math/vector_math_64.dart';
 
 /// The `Particle` class represents a single particle in the animation.
 ///
@@ -12,12 +12,6 @@ class Particle {
   /// The configuration of the particle, defining its shape, size, and color.
   final ParticleConfiguration configuration;
 
-  /// The transformation matrix for the particle's rotation.
-  final Matrix4 _transform = Matrix4.identity();
-
-  /// The paint used to style the particle when drawn on the canvas.
-  final Paint paint = Paint();
-
   /// The initial position of the particle when it was created.
   final Offset initialPosition;
 
@@ -27,6 +21,16 @@ class Particle {
   /// The current size of the particle.
   Size size;
 
+  /// The rotation in degrees of the particle
+  double rotation;
+
+  Color _color = Colors.black;
+
+  /// The current color of the particle
+  ///
+  /// Use [updateColor] and [updateOpacity] to adjust the color of the particle
+  Color get color => _color;
+
   /// Creates a `Particle` with the specified configuration and position.
   ///
   /// The `configuration` parameter is required and represents the particle's configuration, defining
@@ -34,20 +38,14 @@ class Particle {
   ///
   /// The `position` parameter is required and represents the initial position of the particle on the canvas.
   ///
-  /// The `rotation` parameter is optional and represents the rotation of the particle as a `Vector2` of
-  /// rotation angles in degrees. If provided, the particle will be rotated based on the `x` and `y` angles
-  /// specified in the `rotation` vector.
+  /// The `rotation` parameter is optional and represents the rotation of the particle expressed in degrees
   Particle({
     required this.configuration,
     required this.position,
-    Vector2? rotation,
+    this.rotation = 0,
   })  : size = configuration.size,
         initialPosition = position {
-    if (rotation != null) {
-      _transform.setRotationX(radians(rotation.x));
-      _transform.setRotationY(radians(rotation.y));
-    }
-    configuration.color.configure(0.0, this);
+    _color = configuration.color.computeColor(0.0);
   }
 
   /// Gets the initial size of the particle as defined in its configuration.
@@ -58,7 +56,7 @@ class Particle {
   /// The `updateColor` will adjust the color of the particle according to the current progress of the effect.
   /// If progress is outside the range [0,1] it will be clamped to the nearest value.
   updateColor(double progress) {
-    configuration.color.configure(progress.clamp(0, 1), this);
+    _color = configuration.color.computeColor(progress.clamp(0, 1));
   }
 
   /// Update the `opacity` of the particle.
@@ -66,19 +64,15 @@ class Particle {
   /// The `updateOpacity` will adjust the opacity accordingly.
   /// If opacity is outside the range [0,1] it will be clamped to the nearest value.
   void updateOpacity(double opacity) {
-    paint.color = paint.color.withOpacity(opacity.clamp(0, 1));
+    _color = _color.withOpacity(opacity.clamp(0, 1));
   }
 
-  /// Draws the particle on the given `canvas`.
+
+  /// Computes the transformation for rendering the image using the particle state.
   ///
-  /// The `draw` method uses the particle's `configuration` and `paint` to draw the particle's shape
-  /// at its current `position` and `size` on the canvas. Any specified transformations are applied
-  /// using the `_transform` matrix before drawing the particle.
-  draw(Canvas canvas) => configuration.shape.draw(
-        canvas,
-        position,
-        size,
-        _transform,
-        paint,
-      );
+  /// Returns the computed transformation for rendering the image with the current particle state.
+  (ui.Image, ui.Rect, ui.RSTransform, ui.Color) computeTransformation(
+      ui.Image defaultShapes) {
+    return configuration.shape.computeTransformation(this, defaultShapes);
+  }
 }
