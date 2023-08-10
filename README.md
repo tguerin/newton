@@ -2,10 +2,12 @@
 <picture>
     <source srcset="https://raw.github.com/tguerin/newton/main/graphics/newton-dark.png" media="(prefers-color-scheme: dark)">
     <img
-        src="https://raw.github.com/tguerin/newton/main/graphics/newton-light.png"
-        alt="Newton"
+        src=""
+        alt=""
       />
 </picture>
+
+[![Newton logo](#gh-light-mode-only)](https://github.com/tguerin/newton/blob/main/graphics/newton-light.png#gh-light-mode-only)
 
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 
