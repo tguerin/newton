@@ -109,3 +109,9 @@
 ### Fix
 
 - [Fixed] Use raw.github for logo display.
+
+## [0.1.3] - 2023-08-13
+
+### Fix
+
+- [Fixed] Properly dispose animation ticker.
