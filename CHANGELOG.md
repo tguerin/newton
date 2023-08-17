@@ -1,65 +1,46 @@
-## [0.0.1] - 2023-07-30
+## [0.1.3] - 2023-08-13
 
-### Added
+### Fix
 
-- [Feature] Initial release of Newton package.
-- [Feature] Implemented a highly configurable particle emitter with default effects.
+- [Fixed] Properly dispose animation ticker.
 
-## [0.0.2] - 2023-07-30
+## [0.1.2] - 2023-08-10
 
-### Fixed
+### Fix
 
-- [Fix] Fix documentation.
+- [Fixed] Use raw.github for logo display.
 
-## [0.0.3] - 2023-07-31
+## [0.1.1] - 2023-08-10
 
-### Feature
+### Fix
 
-- [Feature] Rework how effects are configured for better configurability.
-- [Feature] Allow to configure angle in smoke effect from configurator.
-- [Feature] Add pulse effect.
+- [Fixed] Fix logo display on pub.dev.
 
-## [0.0.4] - 2023-08-01
+## [0.1.0] - 2023-08-10
 
-### Feature
+### Fix
 
-- [Feature] Add dart docs.
-- [Feature] Allow to stop/start/kill an effect.
+- [Fixed] Improve performance drastically by using drawAtlas as much as possible.
 
-### Fixed
-
-- [Fix] Fix some imports.
-
-## [0.0.5] - 2023-08-01
+## [0.0.13] - 2023-08-07
 
 ### Feature
 
-- [Feature] Introduce the notion of PathTransformation for particles.
-- [Feature] Add a fountain like effect.
+- [Feature] Support trailing to achieve a `shooting star` effect.
 
-## [0.0.6] - 2023-08-02
+## [0.0.12] - 2023-08-06
+
+### Fixed
+
+- [Fix] Fix concurrent modification when post effect is triggered.
+
+## [0.0.11] - 2023-08-06
 
 ### Feature
 
-- [Feature] Doc update with logo and sample gifs.
-
-## [0.0.7] - 2023-08-02
-
-### Fixed
-
-- [Fix] Fix display of doc on pub site.
-
-## [0.0.8] - 2023-08-02
-
-### Fixed
-
-- [Fix] Fix display of the logo on pub.dev.
-
-## [0.0.9] - 2023-08-02
-
-### Fixed
-
-- [Fix] Center title for effects.
+- [Feature] Allow to add a post effect to a particle.
+- [Feature] Allow a finite number of particles.
+- [Feature] Add firework example.
 
 ## [0.0.10] - 2023-08-04
 
@@ -72,46 +53,66 @@
 - [Fix] Ensure repaint won't happen outside of Newton widget.
 - [Fix] Improve performance by disabling compositor cache.
 
-## [0.0.11] - 2023-08-06
-
-### Feature
-
-- [Feature] Allow to add a post effect to a particle.
-- [Feature] Allow a finite number of particles.
-- [Feature] Add firework example.
-
-## [0.0.12] - 2023-08-06
+## [0.0.9] - 2023-08-02
 
 ### Fixed
 
-- [Fix] Fix concurrent modification when post effect is triggered.
+- [Fix] Center title for effects.
 
-## [0.0.13] - 2023-08-07
+## [0.0.8] - 2023-08-02
+
+### Fixed
+
+- [Fix] Fix display of the logo on pub.dev.
+
+## [0.0.7] - 2023-08-02
+
+### Fixed
+
+- [Fix] Fix display of doc on pub site.
+
+## [0.0.6] - 2023-08-02
 
 ### Feature
 
-- [Feature] Support trailing to achieve a `shooting star` effect.
+- [Feature] Doc update with logo and sample gifs.
 
-## [0.1.0] - 2023-08-10
+## [0.0.5] - 2023-08-01
 
-### Fix
+### Feature
 
-- [Fixed] Improve performance drastically by using drawAtlas as much as possible.
+- [Feature] Introduce the notion of PathTransformation for particles.
+- [Feature] Add a fountain like effect.
 
-## [0.1.1] - 2023-08-10
 
-### Fix
+## [0.0.4] - 2023-08-01
 
-- [Fixed] Fix logo display on pub.dev.
+### Feature
 
-## [0.1.2] - 2023-08-10
+- [Feature] Add dart docs.
+- [Feature] Allow to stop/start/kill an effect.
 
-### Fix
+### Fixed
 
-- [Fixed] Use raw.github for logo display.
+- [Fix] Fix some imports.
 
-## [0.1.3] - 2023-08-13
+## [0.0.3] - 2023-07-31
 
-### Fix
+### Feature
 
-- [Fixed] Properly dispose animation ticker.
+- [Feature] Rework how effects are configured for better configurability.
+- [Feature] Allow to configure angle in smoke effect from configurator.
+- [Feature] Add pulse effect.
+
+## [0.0.2] - 2023-07-30
+
+### Fixed
+
+- [Fix] Fix documentation.
+
+## [0.0.1] - 2023-07-30
+
+### Added
+
+- [Feature] Initial release of Newton package.
+- [Feature] Implemented a highly configurable particle emitter with default effects.
