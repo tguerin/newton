@@ -2,9 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
-import 'package:newton_particles/src/effects/effect_configuration.dart';
-import 'package:newton_particles/src/particles/animated_particle.dart';
-import 'package:newton_particles/src/particles/particle_configuration.dart';
+import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/utils/random_extensions.dart';
 
 /// An abstract class representing an effect that emits particles for animations in Newton.
@@ -48,12 +46,6 @@ abstract class Effect<T extends AnimatedParticle> {
   /// Size of the animation surface.
   Size _surfaceSize = const Size(0, 0);
 
-  /// Flag indicating whether particle emission should stop.
-  bool _stopEmission = false;
-
-  /// Flag indicating if the effect is killed and no longer active.
-  bool _killed = false;
-
   /// Configuration for the effect. See [EffectConfiguration].
   final EffectConfiguration effectConfiguration;
 
@@ -65,6 +57,19 @@ abstract class Effect<T extends AnimatedParticle> {
 
   /// Register a callback if you want to be notified that a post effect is occurring
   ValueChanged<Effect>? postEffectCallback;
+
+  EffectState _state = EffectState.running;
+
+  /// Current state of the effect
+  EffectState get state => _state;
+
+  void Function(Effect, EffectState)? _stateChangeCallback;
+
+  /// Callback to be notified when state has changed
+  set stateChangeCallback(void Function(Effect, EffectState)? value) {
+    _stateChangeCallback = value;
+    _stateChangeCallback?.call(this, _state);
+  }
 
   Effect({
     required this.particleConfiguration,
@@ -101,7 +106,7 @@ abstract class Effect<T extends AnimatedParticle> {
   void _emitParticles() {
     if (totalElapsed - _lastInstantiation > effectConfiguration.emitDuration) {
       _lastInstantiation = totalElapsed;
-      if (!_stopEmission) {
+      if (_state == EffectState.running) {
         for (int i = 0; i < effectConfiguration.particlesPerEmit; i++) {
           if (_isEmissionAllowed()) {
             _totalEmittedCount++;
@@ -153,6 +158,11 @@ abstract class Effect<T extends AnimatedParticle> {
         effectConfiguration.particleCount > 0;
   }
 
+  void _updateState(EffectState state) {
+    _state = state;
+    _stateChangeCallback?.call(this, _state);
+  }
+
   /// Sets the size of the animation surface.
   set surfaceSize(Size value) {
     for (var particle in _activeParticles) {
@@ -163,33 +173,27 @@ abstract class Effect<T extends AnimatedParticle> {
 
   /// Starts the effect emission, allowing particles to be emitted.
   start() {
-    if (_killed) {
+    if (_state == EffectState.killed) {
       throw StateError("Can't start a killed effect");
     }
-    _stopEmission = false;
+    _updateState(EffectState.running);
   }
 
   /// Stops the effect emission, optionally cancelling all active particles.
   stop({bool cancel = false}) {
-    if (_killed) return;
-    _stopEmission = true;
+    if (_state == EffectState.killed) return;
+    _updateState(EffectState.stopped);
     if (cancel) {
       _activeParticles.clear();
     }
   }
 
-  /// Checks if the effect emission is stopped.
-  bool get isStopped => _stopEmission;
-
   /// Kills the effect, stopping all particle emission and removing active particles.
   kill() {
     stop(cancel: true);
-    _killed = true;
+    _updateState(EffectState.killed);
     postEffectCallback = null;
   }
-
-  /// Checks if the effect is no longer active and has been killed.
-  bool get isDead => _killed;
 
   /// Helper method to generate random distance
   /// within the range [EffectConfiguration.minDistance] - [EffectConfiguration.maxDistance].

@@ -1,5 +1,6 @@
 export 'src/effects/effect.dart';
 export 'src/effects/effect_configuration.dart';
+export 'src/effects/effect_state.dart';
 export 'src/effects/explode_effect.dart';
 export 'src/effects/fountain_effect.dart';
 export 'src/effects/pulse_effect.dart';

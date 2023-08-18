@@ -67,6 +67,9 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         children: [
           Newton(
             activeEffects: [currentActiveEffect()],
+            onEffectStateChanged: (effect, state) => {
+              // You can react to effect state
+            },
           ),
           configurationSection()
         ],

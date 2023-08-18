@@ -26,7 +26,14 @@ class Newton extends StatefulWidget {
   /// The list of active particle effects to be rendered.
   final List<Effect> activeEffects;
 
-  const Newton({this.activeEffects = const [], super.key});
+  /// Callback called when effect state has changed. See [EffectState].
+  final void Function(Effect, EffectState)? onEffectStateChanged;
+
+  const Newton({
+    this.activeEffects = const [],
+    this.onEffectStateChanged,
+    super.key,
+  });
 
   @override
   State<Newton> createState() => NewtonState();
@@ -62,7 +69,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   }
 
   void _cleanDeadEffects() {
-    _activeEffects.removeWhere((effect) => effect.isDead);
+    _activeEffects.removeWhere((effect) => effect.state == EffectState.killed);
   }
 
   void _updateActiveEffects(Duration elapsed) {
@@ -116,7 +123,8 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       _activeEffects.add(
         effect
           ..surfaceSize = MediaQuery.of(context).size
-          ..postEffectCallback = _onPostEffect,
+          ..postEffectCallback = _onPostEffect
+          ..stateChangeCallback = _onEffectStateChanged,
       );
     });
   }
@@ -147,11 +155,19 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       ..clear()
       ..addAll(widget.activeEffects);
     for (var effect in _activeEffects) {
-      effect.postEffectCallback = _onPostEffect;
+      effect
+        ..postEffectCallback = _onPostEffect
+        ..stateChangeCallback = _onEffectStateChanged;
     }
   }
 
   _onPostEffect(Effect<AnimatedParticle> effect) {
-    _pendingActiveEffects.add(effect..postEffectCallback = _onPostEffect);
+    _pendingActiveEffects.add(effect
+      ..postEffectCallback = _onPostEffect
+      ..stateChangeCallback = _onEffectStateChanged);
+  }
+
+  _onEffectStateChanged(Effect effect, EffectState state) {
+    widget.onEffectStateChanged?.call(effect, state);
   }
 }
