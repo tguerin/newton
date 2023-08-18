@@ -1,3 +1,9 @@
+## [0.1.4] - 2023-08-18
+
+### Feature
+
+- [Feature] Allow to listen to effect state changes.
+
 ## [0.1.3] - 2023-08-13
 
 ### Fix

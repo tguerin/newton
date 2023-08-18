@@ -1,6 +1,6 @@
 name: newton_particles
 description: Create stunning animations with configurable particle emitters. Add rain, smoke, and more effects to your Flutter app!
-version: 0.1.3
+version: 0.1.4
 homepage: https://newton.7omtech.fr
 
 environment:
