@@ -10,6 +10,7 @@
 [![Newton logo](https://raw.github.com/tguerin/newton/main/graphics/newton-light.png#gh-light-mode-only)](https://github.com/tguerin/newton/blob/main/graphics/newton-light.png#gh-light-mode-only)
 
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
+[![pub package](https://img.shields.io/pub/v/newton_particles.svg)](https://pub.dev/packages/newton_particles)
 
 ## Particle Emitter for Flutter
 
