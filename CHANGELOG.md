@@ -1,3 +1,9 @@
+## [0.1.5] - 2023-08-22
+
+### Feature
+
+- [Feature] Add links to repo and issue tracker + version badge.
+
 ## [0.1.4] - 2023-08-18
 
 ### Feature
