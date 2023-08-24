@@ -1,5 +1,5 @@
 enum EffectState {
   running,
   stopped,
-  killed
+  killed,
 }
