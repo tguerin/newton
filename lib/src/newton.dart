@@ -149,7 +149,9 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   @override
   void didUpdateWidget(Newton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _setupEffectsFromWidget();
+    if (oldWidget.activeEffects != widget.activeEffects) {
+      _setupEffectsFromWidget();
+    }
   }
 
   void _setupEffectsFromWidget() {
