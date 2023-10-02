@@ -25,12 +25,14 @@ import 'package:newton_particles/src/utils/bundle_extensions.dart';
 class Newton extends StatefulWidget {
   /// The list of active particle effects to be rendered.
   final List<Effect> activeEffects;
+  final Widget? child;
 
   /// Callback called when effect state has changed. See [EffectState].
   final void Function(Effect, EffectState)? onEffectStateChanged;
 
   const Newton({
     this.activeEffects = const [],
+    this.child,
     this.onEffectStateChanged,
     super.key,
   });
@@ -100,15 +102,16 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
                 }
                 return CustomPaint(
                   willChange: true,
-                  painter: NewtonPainter(
+                  foregroundPainter: NewtonPainter(
                     shapesSpriteSheet: snapshot.data!,
                     effects: _activeEffects,
                   ),
+                  child: widget.child,
                 );
               }),
             );
           } else {
-            return Container();
+            return widget.child ?? Container();
           }
         });
   }
