@@ -125,7 +125,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     setState(() {
       _activeEffects.add(
         effect
-          ..surfaceSize = MediaQuery.of(context).size
+          ..surfaceSize = MediaQuery.sizeOf(context)
           ..postEffectCallback = _onPostEffect
           ..stateChangeCallback = _onEffectStateChanged,
       );
