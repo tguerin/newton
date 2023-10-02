@@ -78,7 +78,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Effect currentActiveEffect() {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
     return _selectedAnimation.instantiate(
       size: size,
       effectConfiguration: _effectConfiguration,
