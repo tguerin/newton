@@ -24,14 +24,14 @@ import 'package:newton_particles/src/utils/bundle_extensions.dart';
 /// and rendering of the active particle effects on a custom canvas.
 class Newton extends StatefulWidget {
   /// The list of active particle effects to be rendered.
-  final List<Effect> activeEffects;
+  final List<Effect>? activeEffects;
   final Widget? child;
 
   /// Callback called when effect state has changed. See [EffectState].
   final void Function(Effect, EffectState)? onEffectStateChanged;
 
   const Newton({
-    this.activeEffects = const [],
+    this.activeEffects,
     this.child,
     this.onEffectStateChanged,
     super.key,
@@ -121,7 +121,12 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   /// The `addEffect` method allows you to dynamically add a new particle effect to the list
   /// of active effects. Simply provide an `Effect` instance representing the desired effect,
   /// and the `Newton` widget will render it on the canvas.
-  addEffect(Effect effect) {
+  /// This only works if widget.activeEffects is null.
+  void addEffect(Effect effect) {
+    assert(
+      widget.activeEffects == null,
+      "can only dynamically add effects when widget.activeEffects is null",
+    );
     setState(() {
       _activeEffects.add(
         effect
@@ -149,16 +154,18 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   @override
   void didUpdateWidget(Newton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.activeEffects != widget.activeEffects) {
-      _setupEffectsFromWidget();
-    }
+    _setupEffectsFromWidget();
   }
 
   void _setupEffectsFromWidget() {
+    final widgetEffects = widget.activeEffects;
+    if (widgetEffects == null) {
+      return;
+    }
     _pendingActiveEffects.clear();
     _activeEffects
       ..clear()
-      ..addAll(widget.activeEffects);
+      ..addAll(widgetEffects);
     for (var effect in _activeEffects) {
       effect
         ..postEffectCallback = _onPostEffect
@@ -166,13 +173,13 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     }
   }
 
-  _onPostEffect(Effect<AnimatedParticle> effect) {
+  void _onPostEffect(Effect<AnimatedParticle> effect) {
     _pendingActiveEffects.add(effect
       ..postEffectCallback = _onPostEffect
       ..stateChangeCallback = _onEffectStateChanged);
   }
 
-  _onEffectStateChanged(Effect effect, EffectState state) {
+  void _onEffectStateChanged(Effect effect, EffectState state) {
     widget.onEffectStateChanged?.call(effect, state);
   }
 }
