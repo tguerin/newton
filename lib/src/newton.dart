@@ -126,6 +126,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       _activeEffects.add(
         effect
           ..surfaceSize = MediaQuery.sizeOf(context)
+          ..addedAtRuntime = true
           ..postEffectCallback = _onPostEffect
           ..stateChangeCallback = _onEffectStateChanged,
       );
@@ -149,7 +150,16 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   @override
   void didUpdateWidget(Newton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _setupEffectsFromWidget();
+    if (widget.activeEffects != oldWidget.activeEffects) {
+      _pendingActiveEffects.removeWhere(_isEffectRemoved);
+      _activeEffects.removeWhere(_isEffectRemoved);
+    }
+  }
+
+  bool _isEffectRemoved(Effect<AnimatedParticle> effect) {
+    // Keep only pending effects that are still active even if it's a post effect
+    return !widget.activeEffects.contains(effect.rootEffect) &&
+        !effect.addedAtRuntime;
   }
 
   void _setupEffectsFromWidget() {
