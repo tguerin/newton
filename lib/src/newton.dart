@@ -133,6 +133,17 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     });
   }
 
+  /// Remove a effect from the list of active effects.
+  ///
+  /// The `removeEffect` method allows you to dynamically remove a particle effect from the list
+  /// of active effects.
+  removeEffect(Effect effect) {
+    setState(() {
+      _activeEffects.removeWhere((effect) => effect.rootEffect == effect);
+      _pendingActiveEffects.removeWhere((effect) => effect.rootEffect == effect);
+    });
+  }
+
   @override
   void dispose() {
     _ticker.stop(canceled: true);
