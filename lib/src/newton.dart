@@ -100,11 +100,19 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
                 for (var effect in _activeEffects) {
                   effect.surfaceSize = constraints.biggest;
                 }
+                final backgroundEffects =
+                    _activeEffects.where(_isBackgroundEffect).toList();
+                final foregroundEffects =
+                    _activeEffects.where(_isForegroundEffect).toList();
                 return CustomPaint(
                   willChange: true,
+                  painter: NewtonPainter(
+                    shapesSpriteSheet: snapshot.data!,
+                    effects: backgroundEffects,
+                  ),
                   foregroundPainter: NewtonPainter(
                     shapesSpriteSheet: snapshot.data!,
-                    effects: _activeEffects,
+                    effects: foregroundEffects,
                   ),
                   child: widget.child,
                 );
@@ -115,6 +123,10 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
           }
         });
   }
+
+  bool _isBackgroundEffect(effect) => !effect.foreground;
+
+  bool _isForegroundEffect(effect) => effect.foreground;
 
   /// Adds a new particle effect to the list of active effects.
   ///
