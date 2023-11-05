@@ -159,7 +159,8 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   removeEffect(Effect effect) {
     setState(() {
       _activeEffects.removeWhere((effect) => effect.rootEffect == effect);
-      _pendingActiveEffects.removeWhere((effect) => effect.rootEffect == effect);
+      _pendingActiveEffects
+          .removeWhere((effect) => effect.rootEffect == effect);
     });
   }
 
@@ -183,6 +184,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     if (widget.activeEffects != oldWidget.activeEffects) {
       _pendingActiveEffects.removeWhere(_isEffectRemoved);
       _activeEffects.removeWhere(_isEffectRemoved);
+      _setupEffectsFromWidget();
     }
   }
 
@@ -193,10 +195,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   }
 
   void _setupEffectsFromWidget() {
-    _pendingActiveEffects.clear();
-    _activeEffects
-      ..clear()
-      ..addAll(widget.activeEffects);
+    _activeEffects.addAll(widget.activeEffects);
     for (var effect in _activeEffects) {
       effect
         ..postEffectCallback = _onPostEffect
