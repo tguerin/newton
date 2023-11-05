@@ -145,9 +145,22 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       _activeEffects.add(
         effect
           ..surfaceSize = MediaQuery.sizeOf(context)
+          ..addedAtRuntime = true
           ..postEffectCallback = _onPostEffect
           ..stateChangeCallback = _onEffectStateChanged,
       );
+    });
+  }
+
+  /// Remove a effect from the list of active effects.
+  ///
+  /// The `removeEffect` method allows you to dynamically remove a particle effect from the list
+  /// of active effects.
+  removeEffect(Effect effect) {
+    setState(() {
+      _activeEffects.removeWhere((effect) => effect.rootEffect == effect);
+      _pendingActiveEffects
+          .removeWhere((effect) => effect.rootEffect == effect);
     });
   }
 
@@ -168,14 +181,21 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   @override
   void didUpdateWidget(Newton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _setupEffectsFromWidget();
+    if (widget.activeEffects != oldWidget.activeEffects) {
+      _pendingActiveEffects.removeWhere(_isEffectRemoved);
+      _activeEffects.removeWhere(_isEffectRemoved);
+      _setupEffectsFromWidget();
+    }
+  }
+
+  bool _isEffectRemoved(Effect<AnimatedParticle> effect) {
+    // Keep only pending effects that are still active even if it's a post effect
+    return !widget.activeEffects.contains(effect.rootEffect) &&
+        !effect.addedAtRuntime;
   }
 
   void _setupEffectsFromWidget() {
-    _pendingActiveEffects.clear();
-    _activeEffects
-      ..clear()
-      ..addAll(widget.activeEffects);
+    _activeEffects.addAll(widget.activeEffects);
     for (var effect in _activeEffects) {
       effect
         ..postEffectCallback = _onPostEffect

@@ -58,6 +58,17 @@ abstract class Effect<T extends AnimatedParticle> {
   /// Register a callback if you want to be notified that a post effect is occurring
   ValueChanged<Effect>? postEffectCallback;
 
+  /// Root effect that triggered this effect
+  Effect get rootEffect => _rootEffect ?? this;
+
+  set rootEffect(Effect rootEffect) {
+    _rootEffect = rootEffect;
+  }
+
+  Effect? _rootEffect;
+
+  bool addedAtRuntime = false;
+
   EffectState _state = EffectState.running;
 
   /// Current state of the effect
@@ -130,7 +141,11 @@ abstract class Effect<T extends AnimatedParticle> {
         final postEffectBuilder =
             activeParticle.particle.configuration.postEffectBuilder;
         if (postEffectBuilder != null) {
-          postEffectCallback?.call(postEffectBuilder(activeParticle.particle));
+          postEffectCallback?.call(
+            postEffectBuilder(activeParticle.particle)
+              ..rootEffect = rootEffect
+              ..addedAtRuntime = addedAtRuntime,
+          );
         }
       }
       return animationOver;
