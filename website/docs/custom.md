@@ -150,6 +150,7 @@ Enjoy your firework!
 
 ## All Effect Properties
 
+- `foreground`: `bool` - Should the effect be played in foreground? Default: `false`
 - `emitDuration`: `int` - Duration between particle emissions. Default: `100`
 - `particlesPerEmit`: `int` - Number of particles emitted per emission. Default: `1`
 - `emitCurve`: `Curve` - Curve to control the emission timing. Default: `Curves.decelerate`
