@@ -106,14 +106,18 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
                     _activeEffects.where(_isForegroundEffect).toList();
                 return CustomPaint(
                   willChange: true,
-                  painter: NewtonPainter(
-                    shapesSpriteSheet: snapshot.data!,
-                    effects: backgroundEffects,
-                  ),
-                  foregroundPainter: NewtonPainter(
-                    shapesSpriteSheet: snapshot.data!,
-                    effects: foregroundEffects,
-                  ),
+                  painter: backgroundEffects.isNotEmpty
+                      ? NewtonPainter(
+                          shapesSpriteSheet: snapshot.data!,
+                          effects: backgroundEffects,
+                        )
+                      : null,
+                  foregroundPainter: foregroundEffects.isNotEmpty
+                      ? NewtonPainter(
+                          shapesSpriteSheet: snapshot.data!,
+                          effects: foregroundEffects,
+                        )
+                      : null,
                   child: widget.child,
                 );
               }),
