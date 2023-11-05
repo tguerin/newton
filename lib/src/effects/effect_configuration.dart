@@ -79,6 +79,9 @@ class EffectConfiguration {
 
   final Trail trail;
 
+  /// Should the effect be played in foreground
+  final bool foreground;
+
   /// Creates an instance of `EffectConfiguration` with the specified parameters.
   ///
   /// All parameters have default values that can be overridden during object creation.
@@ -107,6 +110,7 @@ class EffectConfiguration {
     this.maxFadeInLimit = 0,
     this.fadeInCurve = Curves.linear,
     this.trail = const NoTrail(),
+    this.foreground = false,
   })  : assert(minDistance <= maxDistance,
             "Min distance can't be greater than max distance"),
         assert(
@@ -147,6 +151,7 @@ class EffectConfiguration {
     double? maxFadeInLimit,
     Curve? fadeInCurve,
     Trail? trail,
+    bool? foreground,
   }) {
     return EffectConfiguration(
       particleCount: particleCount ?? this.particleCount,
@@ -173,6 +178,7 @@ class EffectConfiguration {
       maxFadeInLimit: maxFadeInLimit ?? this.maxFadeInLimit,
       fadeInCurve: fadeInCurve ?? this.fadeInCurve,
       trail: trail ?? this.trail,
+      foreground: foreground ?? this.foreground,
     );
   }
 }

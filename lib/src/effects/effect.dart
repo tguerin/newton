@@ -74,6 +74,9 @@ abstract class Effect<T extends AnimatedParticle> {
   /// Current state of the effect
   EffectState get state => _state;
 
+  /// Should the effect be played in foreground?
+  bool get foreground => effectConfiguration.foreground;
+
   void Function(Effect, EffectState)? _stateChangeCallback;
 
   /// Callback to be notified when state has changed
