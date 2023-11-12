@@ -87,11 +87,11 @@ class ImageShape extends Shape {
   @override
   (Image, Rect, RSTransform, Color) computeTransformation(
       Particle particle, Image defaultShapes) {
-    const rect = Rect.fromLTWH(
+    final rect = Rect.fromLTWH(
       0,
       0,
-      Shape.defaultSpriteWidth,
-      Shape.defaultSpriteHeight,
+      image.width.toDouble(),
+      image.height.toDouble(),
     );
     final transform = RSTransform.fromComponents(
       rotation: 0,
