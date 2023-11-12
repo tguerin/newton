@@ -1,3 +1,9 @@
+## [0.1.7] - 2023-11-12
+
+### Fix
+
+- [Fix] Fix #20 use right size for image shap
+
 ## [0.1.6] - 2023-11-05
 
 ### Feature
