@@ -172,9 +172,11 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   }
 
   void clearEffects() {
-    _activeEffects.removeWhere((effect) {
-      effect.postEffectCallback = null;
-      return true;
+    setState(() {
+      _activeEffects.removeWhere((effect) {
+        effect.postEffectCallback = null;
+        return true;
+      });
     });
   }
 
