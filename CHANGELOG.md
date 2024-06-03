@@ -1,3 +1,11 @@
+## [0.1.8] - 2024-06-03
+
+### Fix
+
+- [Fix] Fix #24 Fix name collision in NewtonState.removeEffect by @KriseevM
+
+- [Fix] Add missing setState to clearEffects by @jannikhst
+
 ## [0.1.7] - 2023-11-12
 
 ### Fix
