@@ -158,9 +158,8 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   /// of active effects.
   removeEffect(Effect effect) {
     setState(() {
-      _activeEffects.removeWhere((effect) => effect.rootEffect == effect);
-      _pendingActiveEffects
-          .removeWhere((effect) => effect.rootEffect == effect);
+      _activeEffects.removeWhere((e) => e.rootEffect == effect);
+      _pendingActiveEffects.removeWhere((e) => e.rootEffect == effect);
     });
   }
 
