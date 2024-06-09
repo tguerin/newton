@@ -183,6 +183,7 @@ abstract class Effect<T extends AnimatedParticle> {
 
   /// Sets the size of the animation surface.
   set surfaceSize(Size value) {
+    if(_surfaceSize == value) return;
     for (var particle in _activeParticles) {
       particle.onSurfaceSizeChanged(_surfaceSize, value);
     }

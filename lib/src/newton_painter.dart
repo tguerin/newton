@@ -25,7 +25,10 @@ class NewtonPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     _clearTransformations();
-    effects.expand((effect) => effect.activeParticles).forEach(
+    effects.expand((effect) {
+      effect.surfaceSize = size;
+      return effect.activeParticles;
+    }).forEach(
       (activeParticle) {
         _updateTransformations(activeParticle);
         activeParticle.drawExtra(canvas);
