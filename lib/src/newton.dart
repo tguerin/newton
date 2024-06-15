@@ -152,6 +152,13 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     });
   }
 
+  /// Check if the list of active effects is empty.
+  ///
+  /// Returns `true` if the list of active effects is empty; otherwise, `false`.
+  isEffectsListEmpty() {
+    return _activeEffects.isEmpty;
+  }
+
   /// Remove a effect from the list of active effects.
   ///
   /// The `removeEffect` method allows you to dynamically remove a particle effect from the list
