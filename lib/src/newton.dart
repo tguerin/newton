@@ -152,6 +152,13 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     });
   }
 
+  /// Check if the list of active effects is empty.
+  ///
+  /// Returns `true` if the list of active effects is empty; otherwise, `false`.
+  isEffectsListEmpty() {
+    return _activeEffects.isEmpty;
+  }
+
   /// Remove a effect from the list of active effects.
   ///
   /// The `removeEffect` method allows you to dynamically remove a particle effect from the list
@@ -160,6 +167,26 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     setState(() {
       _activeEffects.removeWhere((e) => e.rootEffect == effect);
       _pendingActiveEffects.removeWhere((e) => e.rootEffect == effect);
+    });
+  }
+
+  /// Pause all active effects.
+  ///
+  /// The `pauseEffects` method allows you to pause all active effects.
+  /// The effects will be paused and will not be updated until they are resumed.
+  pauseEffects() {
+    setState(() {
+      _activeEffects.forEach((effect) => effect.stop());
+    });
+  }
+
+  /// Resume all paused effects.
+  ///
+  /// The `resumeEffects` method allows you to resume all paused effects.
+  /// The effects will be resumed and will be updated on the next frame.
+  resumeEffects() {
+    setState(() {
+      _activeEffects.forEach((effect) => effect.start());
     });
   }
 
