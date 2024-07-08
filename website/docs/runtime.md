@@ -17,25 +17,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: Text('Newton Rain Example')),
+        appBar: AppBar(title: const Text('Newton Rain Example')),
         body: Newton(
-          key: newtonKey,
-        ),
-        TextButton(
-          onPressed: () {
-            newtonKey.currentState?.addEffect(
-              RainEffect(
-                  particleConfiguration: ParticleConfiguration(
-                    shape: CircleShape(),
-                    size: const Size(5, 5),
-                    color: const SingleParticleColor(color: Colors.black),
-                  ),
-                  effectConfiguration: const EffectConfiguration()
-              )
-            );
-          },
-          child: const Text('Add Effect'),
-        )
+            key: newtonKey,
+            child: TextButton(
+              onPressed: () {
+                newtonKey.currentState?.addEffect(RainEffect(
+                    particleConfiguration: ParticleConfiguration(
+                      shape: CircleShape(),
+                      size: const Size(5, 5),
+                      color: const SingleParticleColor(color: Colors.black),
+                    ),
+                    effectConfiguration: const EffectConfiguration()));
+              },
+              child: const Text('Add Effect'),
+            )),
       ),
     );
   }
