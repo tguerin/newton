@@ -3,11 +3,14 @@ import 'package:example/color_selection.dart';
 import 'package:example/range_selection.dart';
 import 'package:example/single_value_selection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:newton_particles/newton_particles.dart';
+import 'dart:async';
+import 'dart:ui' as ui;
 
 void main() {
   runApp(const NewtonExampleApp());
-}
+} 
 
 class NewtonExampleApp extends StatelessWidget {
   const NewtonExampleApp({super.key});
@@ -37,27 +40,134 @@ class NewtonExampleApp extends StatelessWidget {
         ),
         canvasColor: const Color(0xff1b1b1d),
       ),
-      home: const NewtonConfigurationPage(),
+      home: ThumbUpExample(),
     );
   }
+}
+
+class ThumbUpExample extends StatefulWidget {
+  const ThumbUpExample({super.key});
+
+  @override
+  State<ThumbUpExample> createState() => _ThumbUpExampleState();
+}
+
+class _ThumbUpExampleState extends State<ThumbUpExample> {
+  final newtonKey = GlobalKey<NewtonState>();
+
+  List<String> imgNames = [
+    'images/thumb_up_1.png',
+    'images/thumb_up_2.png',
+    'images/thumb_up_3.png',
+  ];
+
+  List<ui.Image> imgs = []; 
+
+  @override
+  void initState() {
+    super.initState();
+    loadImgs();
+  }
+
+  void loadImgs() async {
+    for (var imgName in imgNames) {
+      imgs.add(await loadImageFromAsset(imgName));
+    }
+  }
+
+  double emojiSize = 50;
+  double btnSize = 50;
+  Effect currentActiveEffect(int index) {
+    return SmokeEffect(
+      particleConfiguration: ParticleConfiguration(
+        shape: ImageShape(imgs[index]), size: Size.square(emojiSize), color: const SingleParticleColor(color: Colors.black)),
+      effectConfiguration: EffectConfiguration(
+          particleCount: 100,
+          particlesPerEmit: 100,
+          distanceCurve: Curves.slowMiddle,
+          emitCurve: Curves.fastOutSlowIn,
+          fadeInCurve: Curves.easeIn,
+          fadeOutCurve: Curves.easeOut,
+          emitDuration: 250,
+          minAngle: -45,
+          maxAngle: 45,
+          minDistance: 90,
+          maxDistance: 220,
+          minDuration: 1000,
+          maxDuration: 3000,
+          minFadeOutThreshold: 0.6,
+          maxFadeOutThreshold: 0.8, 
+          minBeginScale: 0.7,
+          maxBeginScale: 0.9,
+          minEndScale: 1.0,
+          maxEndScale: 1.2,
+          origin: Offset(btnSize/2, 0)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 250,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [ 
+              Newton(
+                key: newtonKey,
+                blendMode: BlendMode.srcIn,
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    imgs.shuffle();
+                    for (var i = 0; i < imgs.length; i++) {
+                      Future.delayed(Duration(milliseconds: i * 100), () {
+                        newtonKey.currentState?.addEffect(currentActiveEffect(i));
+                      });
+                    }
+                  },
+                  child: Container(
+                    width: btnSize,
+                    height: btnSize,
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(btnSize/2),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Future<ui.Image> loadImageFromAsset(String assetName) async {
+  var buffer = await ImmutableBuffer.fromAsset(assetName);
+  var codec = await ui.instantiateImageCodecFromBuffer(buffer);
+  var frame = await codec.getNextFrame();
+  return frame.image;
 }
 
 class NewtonConfigurationPage extends StatefulWidget {
   const NewtonConfigurationPage({super.key});
 
   @override
-  State<NewtonConfigurationPage> createState() =>
-      _NewtonConfigurationPageState();
+  State<NewtonConfigurationPage> createState() => _NewtonConfigurationPageState();
 }
 
 class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   final _scrollController = ScrollController();
 
   AvailableEffect _selectedAnimation = AvailableEffect.rain;
-  EffectConfiguration _effectConfiguration =
-      AvailableEffect.rain.defaultEffectConfiguration;
-  ParticleColor _currentParticleColor =
-      const SingleParticleColor(color: Colors.white);
+  EffectConfiguration _effectConfiguration = AvailableEffect.rain.defaultEffectConfiguration;
+  ParticleColor _currentParticleColor = const SingleParticleColor(color: Colors.white);
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +177,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         children: [
           Newton(
             activeEffects: [currentActiveEffect()],
-            onEffectStateChanged: (effect, state) => {
-              // You can react to effect state
+            onEffectStateChanged: (effect, state) => { 
             },
           ),
           configurationSection()
@@ -104,29 +213,19 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
               const SizedBox(
                 height: 20,
               ),
-              if (_selectedAnimation.supportParameter(AnimationParameter.color))
-                colorSelection(),
+              if (_selectedAnimation.supportParameter(AnimationParameter.color)) colorSelection(),
               const SizedBox(
                 height: 20,
               ),
               particlesPerEmitSection(),
               emitDurationSection(),
               animationDurationSection(),
-              if (_selectedAnimation
-                  .supportParameter(AnimationParameter.distance))
-                particleDistanceSection(),
-              if (_selectedAnimation
-                  .supportParameter(AnimationParameter.fadeout))
-                particleFadeoutProgressSection(),
+              if (_selectedAnimation.supportParameter(AnimationParameter.distance)) particleDistanceSection(),
+              if (_selectedAnimation.supportParameter(AnimationParameter.fadeout)) particleFadeoutProgressSection(),
               particleBeginScaleSection(),
               particleEndScaleSection(),
-              if (_selectedAnimation.supportParameter(AnimationParameter.angle))
-                particleAngleSection(),
-              if (_selectedAnimation
-                  .supportParameter(AnimationParameter.trail)) ...[
-                trailWidthSection(),
-                trailProgressSection()
-              ],
+              if (_selectedAnimation.supportParameter(AnimationParameter.angle)) particleAngleSection(),
+              if (_selectedAnimation.supportParameter(AnimationParameter.trail)) ...[trailWidthSection(), trailProgressSection()],
             ],
           ),
         ),
@@ -134,8 +233,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     );
   }
 
-  Widget animationSelectionSection(
-      {required AvailableEffect defaultAnimation}) {
+  Widget animationSelectionSection({required AvailableEffect defaultAnimation}) {
     return SizedBox(
         width: 200,
         child: DropdownButton<String>(
@@ -147,12 +245,10 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
             // This is called when the user selects an item.
             setState(() {
               _selectedAnimation = AvailableEffect.of(value!);
-              _effectConfiguration =
-                  _selectedAnimation.defaultEffectConfiguration;
+              _effectConfiguration = _selectedAnimation.defaultEffectConfiguration..copyWith(particleCount: 3);
             });
           },
-          items: AvailableEffect.values
-              .map<DropdownMenuItem<String>>((AvailableEffect value) {
+          items: AvailableEffect.values.map<DropdownMenuItem<String>>((AvailableEffect value) {
             return DropdownMenuItem<String>(
               value: value.label,
               child: Text(value.label),
@@ -191,7 +287,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         });
       },
       min: 1,
-      max: 100,
+      max: 1001,
     );
   }
 
@@ -316,9 +412,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       title: "Trail Progress",
       onChanged: (value) {
         setState(() {
-          final trailWidth = _effectConfiguration.trail is NoTrail
-              ? 0.0
-              : (_effectConfiguration.trail as StraightTrail).trailWidth;
+          final trailWidth = _effectConfiguration.trail is NoTrail ? 0.0 : (_effectConfiguration.trail as StraightTrail).trailWidth;
           _effectConfiguration = _effectConfiguration.copyWith(
             trail: StraightTrail(trailProgress: value, trailWidth: trailWidth),
           );
@@ -332,18 +426,14 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget trailWidthSection() {
-    final trailWidth = _effectConfiguration.trail is NoTrail
-        ? 0.0
-        : (_effectConfiguration.trail as StraightTrail).trailWidth;
+    final trailWidth = _effectConfiguration.trail is NoTrail ? 0.0 : (_effectConfiguration.trail as StraightTrail).trailWidth;
     return SingleValueSelection(
       value: trailWidth,
       title: "Trail Width",
       onChanged: (value) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
-            trail: StraightTrail(
-                trailProgress: _effectConfiguration.trail.trailProgress,
-                trailWidth: value),
+            trail: StraightTrail(trailProgress: _effectConfiguration.trail.trailProgress, trailWidth: value),
           );
         });
       },

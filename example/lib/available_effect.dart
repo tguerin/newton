@@ -61,16 +61,17 @@ enum AvailableEffect {
   ),
   smoke("Smoke",
       defaultEffectConfiguration: EffectConfiguration(
+        particleCount: 3,
         minAngle: -5,
         maxAngle: 5,
         minDuration: 4000,
-        maxDuration: 7000,
+        maxDuration: 5000,
         minFadeOutThreshold: 0.6,
         maxFadeOutThreshold: 0.8,
         minBeginScale: 1,
         maxBeginScale: 1,
         minEndScale: 1,
-        maxEndScale: 1,
+        maxEndScale: 1, 
       ),
       supportedParameters: [
         AnimationParameter.color,
@@ -208,7 +209,7 @@ extension AvailableEffectExtension on AvailableEffect {
       case AvailableEffect.smoke:
         return SmokeEffect(
           particleConfiguration: ParticleConfiguration(
-              shape: CircleShape(), size: const Size(5, 5), color: color),
+              shape: CircleShape(), size: const Size(50, 50), color: color),
           effectConfiguration: effectConfiguration.copyWith(
             origin: Offset(
               size.width / 2,
