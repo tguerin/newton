@@ -7,14 +7,14 @@
 /// of the active particle effects on a custom canvas.
 library newton_particles;
 
-import 'dart:ui' as ui;
+import "dart:ui" as ui;
 
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:newton_particles/newton_particles.dart';
-import 'package:newton_particles/src/newton_painter.dart';
-import 'package:newton_particles/src/utils/bundle_extensions.dart';
+import "package:flutter/material.dart";
+import "package:flutter/scheduler.dart";
+import "package:flutter/services.dart";
+import "package:newton_particles/newton_particles.dart";
+import "package:newton_particles/src/newton_painter.dart";
+import "package:newton_particles/src/utils/bundle_extensions.dart";
 
 /// The `Newton` widget is the entry point for creating captivating particle animations.
 ///
@@ -65,7 +65,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     _ticker.start();
   }
 
-  void _onFrameUpdate(elapsed) {
+  void _onFrameUpdate(Duration elapsed) {
     _cleanDeadEffects();
     _updateActiveEffects(elapsed);
   }
@@ -100,29 +100,30 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
                 for (var effect in _activeEffects) {
                   effect.surfaceSize = constraints.biggest;
                 }
-                final backgroundEffects =
-                    _activeEffects.where(_isBackgroundEffect).toList();
-                final foregroundEffects =
-                    _activeEffects.where(_isForegroundEffect).toList();
-                return _activeEffects.isEmpty
-                    ? widget.child ?? Container()
-                    : CustomPaint(
-                        willChange: true,
-                        size: constraints.biggest,
-                        painter: backgroundEffects.isNotEmpty
-                            ? NewtonPainter(
-                                shapesSpriteSheet: snapshot.data!,
-                                effects: backgroundEffects,
-                              )
-                            : null,
-                        foregroundPainter: foregroundEffects.isNotEmpty
-                            ? NewtonPainter(
-                                shapesSpriteSheet: snapshot.data!,
-                                effects: foregroundEffects,
-                              )
-                            : null,
-                        child: widget.child,
-                      );
+                final backgroundEffects = _activeEffects
+                    .where(_isBackgroundEffect)
+                    .toList(growable: false);
+                final foregroundEffects = _activeEffects
+                    .where(_isForegroundEffect)
+                    .toList(growable: false);
+                return CustomPaint(
+                  willChange: backgroundEffects.isNotEmpty ||
+                      foregroundEffects.isNotEmpty,
+                  size: constraints.biggest,
+                  painter: backgroundEffects.isNotEmpty
+                      ? NewtonPainter(
+                          shapesSpriteSheet: snapshot.data!,
+                          effects: backgroundEffects,
+                        )
+                      : null,
+                  foregroundPainter: foregroundEffects.isNotEmpty
+                      ? NewtonPainter(
+                          shapesSpriteSheet: snapshot.data!,
+                          effects: foregroundEffects,
+                        )
+                      : null,
+                  child: widget.child,
+                );
               }),
             );
           } else {
@@ -131,9 +132,9 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
         });
   }
 
-  bool _isBackgroundEffect(effect) => !effect.foreground;
+  bool _isBackgroundEffect(Effect effect) => !effect.foreground;
 
-  bool _isForegroundEffect(effect) => effect.foreground;
+  bool _isForegroundEffect(Effect effect) => effect.foreground;
 
   /// Adds a new particle effect to the list of active effects.
   ///
