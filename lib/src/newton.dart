@@ -7,14 +7,14 @@
 /// of the active particle effects on a custom canvas.
 library newton_particles;
 
-import "dart:ui" as ui;
+import 'dart:ui' as ui;
 
-import "package:flutter/material.dart";
-import "package:flutter/scheduler.dart";
-import "package:flutter/services.dart";
-import "package:newton_particles/newton_particles.dart";
-import "package:newton_particles/src/newton_painter.dart";
-import "package:newton_particles/src/utils/bundle_extensions.dart";
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:newton_particles/newton_particles.dart';
+import 'package:newton_particles/src/newton_painter.dart';
+import 'package:newton_particles/src/utils/bundle_extensions.dart';
 
 /// The `Newton` widget is the entry point for creating captivating particle animations.
 ///
