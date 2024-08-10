@@ -9,14 +9,16 @@ import 'package:newton_particles/newton_particles.dart';
 /// Subclasses should override the [draw] method to implement their specific
 /// drawing logic.
 sealed class Trail {
-  /// The progress of the trail, typically a value between 0 and 1.
-  /// To clarify, `trailProgress` means how far we want to go back for the trail to be drawn.
-  final double trailProgress;
-
   /// Creates a [Trail] with the given [trailProgress].
   ///
   /// The [trailProgress] defaults to 0 if not specified.
   const Trail({this.trailProgress = 0});
+
+  /// The progress of the trail, typically a value between 0 and 1.
+  ///
+  /// `trailProgress` indicates how far back in time the trail should be drawn
+  /// relative to the current position of the particle.
+  final double trailProgress;
 
   /// Draws the trail on the [canvas] using the given [currentProgress] and
   /// [animatedParticle].
@@ -35,6 +37,7 @@ sealed class Trail {
 /// This class represents a trail with no specific drawing behavior. When
 /// drawn, it does nothing and leaves no visible trail on the canvas.
 class NoTrail extends Trail {
+  /// Creates an instance of [NoTrail] with no visible effect.
   const NoTrail();
 
   @override
@@ -50,15 +53,19 @@ class NoTrail extends Trail {
 /// A subclass of [Trail] representing a straight line trail.
 ///
 /// This class represents a trail that draws a straight line from the initial
-/// particle position to the current position of the [animatedParticle].
+/// particle position to the current position of the [AnimatedParticle].
 class StraightTrail extends Trail {
-  /// The width of the trail line.
-  final double trailWidth;
-
+  /// Creates a [StraightTrail] with the specified [trailProgress] and [trailWidth].
+  ///
+  /// - [trailProgress]: The progress indicating how far back the trail should be drawn.
+  /// - [trailWidth]: The width of the trail line.
   const StraightTrail({
     required super.trailProgress,
     required this.trailWidth,
   });
+
+  /// The width of the trail line.
+  final double trailWidth;
 
   @override
   void draw(
@@ -74,21 +81,21 @@ class StraightTrail extends Trail {
       endTrailAdjustedProgress,
     );
 
-    final trailPaint = Paint();
-    trailPaint.shader = ui.Gradient.linear(
-      animatedParticle.particle.position,
-      endTrailPosition,
-      [
-        animatedParticle.particle.color,
-        Colors.transparent,
-      ],
-      [
-        0.2,
-        1.0,
-      ],
-    );
-    trailPaint.strokeCap = StrokeCap.round;
-    trailPaint.strokeWidth = trailWidth;
+    final trailPaint = Paint()
+      ..shader = ui.Gradient.linear(
+        animatedParticle.particle.position,
+        endTrailPosition,
+        [
+          animatedParticle.particle.color,
+          Colors.transparent,
+        ],
+        [
+          0.2,
+          1.0,
+        ],
+      )
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = trailWidth;
 
     canvas.drawLine(
       endTrailPosition,
