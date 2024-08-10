@@ -69,17 +69,16 @@ class RainEffect extends Effect<AnimatedParticle> {
         distance: surfaceSize.height,
         angle: 90,
       ),
-      startTime: totalElapsed,
+      elapsedTimeOnStart: totalElapsed,
       animationDuration: randomDuration(),
     );
   }
 }
 ```
 
-`startTime` is necessary to know when particle is emitted an be able to compute the animation
+`elapsedTimeOnStart` is necessary to know when particle is emitted an be able to compute the animation
 duration properly.
-Most of the time it will `totalElapsed` a property from the effect, which is the total elapsed time
-in milliseconds since the effect started.
+Most of the time it will `totalElapsed` a property from the effect, which is the total elapsed time since the effect started.
 
 `StraightPathTransformation` is the function applied to know what is the position of the particle given
 a `progress`. In this example, the particle will travel in a straight line following an angle of 90 degrees (going down).
@@ -112,15 +111,15 @@ ExplodeEffect(
             effectConfiguration: EffectConfiguration(
               maxAngle: 180,
               minAngle: -180,
-              minDuration: 1000,
-              maxDuration: 2000,
+              minDuration: const Duration(seconds: 1),
+              maxDuration: const Duration(seconds: 2),
               minFadeOutThreshold: 0.6,
               maxFadeOutThreshold: 0.8,
               particleCount: 10,
               particlesPerEmit: 10,
               distanceCurve: Curves.decelerate,
               origin: particle.position,
-              trail: StraightTrail(trailProgress: 0.3, trailWidth: 3.0)
+              trail: const StraightTrail(trailProgress: 0.3, trailWidth: 3.0)
             )
           )
       ),
@@ -128,13 +127,13 @@ ExplodeEffect(
         emitDuration: 600,
         minAngle: -120,
         maxAngle: -60,
-        minDuration: 1000,
-        maxDuration: 2000,
+        minDuration: const Duration(seconds: 1),
+        maxDuration: const Duration(seconds: 2),
         minFadeOutThreshold: 0.6,
         maxFadeOutThreshold: 0.8,
         distanceCurve: Curves.decelerate,
         origin: Offset(size.width / 2, size.height / 2),
-        trail: StraightTrail(trailProgress: 0.3, trailWidth: 3.0),
+        trail: const StraightTrail(trailProgress: 0.3, trailWidth: 3.0),
       ),
 );
 ```
@@ -151,15 +150,15 @@ Enjoy your firework!
 ## All Effect Properties
 
 - `foreground`: `bool` - Should the effect be played in foreground? Default: `false`
-- `emitDuration`: `int` - Duration between particle emissions. Default: `100`
+- `emitDuration`: `Duration` - Duration between particle emissions. Default: `100ms`
 - `particlesPerEmit`: `int` - Number of particles emitted per emission. Default: `1`
 - `emitCurve`: `Curve` - Curve to control the emission timing. Default: `Curves.decelerate`
 - `origin`: `Offset` - Origin point for particle emission. Default: `Offset(0, 0)`
 - `minDistance`: `double` - Minimum distance traveled by particles. Default: `100`
 - `maxDistance`: `double` - Maximum distance traveled by particles. Default: `200`
 - `distanceCurve`: `Curve` - Curve to control particle travel distance. Default: `Curves.linear`
-- `minDuration`: `int` - Minimum particle animation duration. Default: `1000`
-- `maxDuration`: `int` - Maximum particle animation duration. Default: `1000`
+- `minDuration`: `Duration` - Minimum particle animation duration. Default: `1s`
+- `maxDuration`: `Duration` - Maximum particle animation duration. Default: `1s`
 - `minBeginScale`: `double` - Minimum initial particle scale. Default: `1`
 - `maxBeginScale`: `double` - Maximum initial particle scale. Default: `1`
 - `minEndScale`: `double` - Minimum final particle scale. Default: `-1`

@@ -7,16 +7,73 @@ import 'package:newton_particles/src/effects/trail.dart';
 /// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
 /// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
 class EffectConfiguration {
+  /// Creates an instance of `EffectConfiguration` with the specified parameters.
+  ///
+  /// All parameters have default values that can be overridden during object creation.
+  const EffectConfiguration({
+    this.particleCount = 0,
+    this.emitDuration = const Duration(milliseconds: 100),
+    this.emitCurve = Curves.decelerate,
+    this.particlesPerEmit = 1,
+    this.origin = Offset.zero,
+    this.minDistance = 100,
+    this.maxDistance = 200,
+    this.minAngle = 0,
+    this.maxAngle = 0,
+    this.distanceCurve = Curves.linear,
+    this.minDuration = const Duration(seconds: 1),
+    this.maxDuration = const Duration(seconds: 1),
+    this.minBeginScale = 1,
+    this.maxBeginScale = 1,
+    this.minEndScale = -1,
+    this.maxEndScale = -1,
+    this.scaleCurve = Curves.linear,
+    this.minFadeOutThreshold = 1,
+    this.maxFadeOutThreshold = 1,
+    this.fadeOutCurve = Curves.linear,
+    this.minFadeInLimit = 0,
+    this.maxFadeInLimit = 0,
+    this.fadeInCurve = Curves.linear,
+    this.trail = const NoTrail(),
+    this.foreground = false,
+  })  : assert(
+          minDistance <= maxDistance,
+          'Min distance can’t be greater than max distance',
+        ),
+        assert(
+          minAngle <= maxAngle,
+          'Min angle can’t be greater than max angle',
+        ),
+        assert(
+          minDuration <= maxDuration,
+          'Min duration can’t be greater than max duration',
+        ),
+        assert(
+          minBeginScale <= maxBeginScale,
+          'Begin min scale can’t be greater than begin max scale',
+        ),
+        assert(
+          minEndScale <= maxEndScale,
+          'End min scale can’t be greater than end max scale',
+        ),
+        assert(
+          minFadeOutThreshold <= maxFadeOutThreshold,
+          'Min fadeOut threshold can’t be greater than end max fadeOut threshold',
+        ),
+        assert(
+          minFadeInLimit <= maxFadeInLimit,
+          'Min fadeIn limit can’t be greater than end max fadeIn threshold',
+        );
+
   /// Total number of particles to emit. Default: `0` means infinite count.
   final int particleCount;
 
-  /// Duration between particle emissions in milliseconds. Default: `100`.
-  final int emitDuration;
+  /// Duration between particle emissions. Default: `100ms`.
+  final Duration emitDuration;
 
   /// Number of particles emitted per emission. Default: `1`.
   final int particlesPerEmit;
 
-  // TODO Not used for now, will be once we can set a global effect duration
   /// Curve to control the emission timing. Default: [Curves.decelerate].
   final Curve emitCurve;
 
@@ -38,11 +95,11 @@ class EffectConfiguration {
   /// Curve to control particle travel distance. Default: [Curves.linear].
   final Curve distanceCurve;
 
-  /// Minimum particle animation duration in milliseconds. Default: `1000`.
-  final int minDuration;
+  /// Minimum particle animation duration. Default: `1s`.
+  final Duration minDuration;
 
-  /// Maximum particle animation duration in milliseconds. Default: `1000`.
-  final int maxDuration;
+  /// Maximum particle animation duration. Default: `1s`.
+  final Duration maxDuration;
 
   /// Minimum initial particle scale. Default: `1`.
   final double minBeginScale;
@@ -77,58 +134,18 @@ class EffectConfiguration {
   /// Curve to control particle fade-in animation. Default: [Curves.linear].
   final Curve fadeInCurve;
 
+  /// The trail effect associated with emitted particles. Default: [NoTrail].
   final Trail trail;
 
-  /// Should the effect be played in foreground
+  /// Indicates whether the effect should be played in the foreground. Default: `false`.
   final bool foreground;
 
-  /// Creates an instance of `EffectConfiguration` with the specified parameters.
+  /// Returns a copy of this configuration with the given fields replaced with the new values.
   ///
-  /// All parameters have default values that can be overridden during object creation.
-  const EffectConfiguration({
-    this.particleCount = 0,
-    this.emitDuration = 100,
-    this.emitCurve = Curves.decelerate,
-    this.particlesPerEmit = 1,
-    this.origin = const Offset(0, 0),
-    this.minDistance = 100,
-    this.maxDistance = 200,
-    this.minAngle = 0,
-    this.maxAngle = 0,
-    this.distanceCurve = Curves.linear,
-    this.minDuration = 1000,
-    this.maxDuration = 1000,
-    this.minBeginScale = 1,
-    this.maxBeginScale = 1,
-    this.minEndScale = -1,
-    this.maxEndScale = -1,
-    this.scaleCurve = Curves.linear,
-    this.minFadeOutThreshold = 1,
-    this.maxFadeOutThreshold = 1,
-    this.fadeOutCurve = Curves.linear,
-    this.minFadeInLimit = 0,
-    this.maxFadeInLimit = 0,
-    this.fadeInCurve = Curves.linear,
-    this.trail = const NoTrail(),
-    this.foreground = false,
-  })  : assert(minDistance <= maxDistance,
-            "Min distance can't be greater than max distance"),
-        assert(
-            minAngle <= maxAngle, "Min angle can't be greater than max angle"),
-        assert(minDuration <= maxDuration,
-            "Min duration can't be greater than max duration"),
-        assert(minBeginScale <= maxBeginScale,
-            "Begin min scale can't be greater than begin max scale"),
-        assert(minEndScale <= maxEndScale,
-            "End min scale can't be greater than end max scale"),
-        assert(minFadeOutThreshold <= maxFadeOutThreshold,
-            "Min fadeOut threshold can't be greater than end max fadeOut threshold"),
-        assert(minFadeInLimit <= maxFadeInLimit,
-            "Min fadeIn limit can't be greater than end max fadeIn threshold");
-
+  /// This method allows for creating modified copies of the configuration by overriding specific parameters.
   EffectConfiguration copyWith({
     int? particleCount,
-    int? emitDuration,
+    Duration? emitDuration,
     int? particlesPerEmit,
     Curve? emitCurve,
     Offset? origin,
@@ -137,8 +154,8 @@ class EffectConfiguration {
     double? minDistance,
     double? maxDistance,
     Curve? distanceCurve,
-    int? minDuration,
-    int? maxDuration,
+    Duration? minDuration,
+    Duration? maxDuration,
     double? minBeginScale,
     double? maxBeginScale,
     double? minEndScale,

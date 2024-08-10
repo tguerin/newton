@@ -2,6 +2,12 @@ import 'package:example/theme_extensions.dart';
 import 'package:flutter/material.dart';
 
 class SingleValueSelection extends StatefulWidget {
+
+  const SingleValueSelection({
+    required this.value, required this.title, required this.onChanged, required this.min, required this.max, super.key,
+    this.roundValue = true,
+    this.precision = 2,
+  });
   final String title;
   final double value;
   final double min;
@@ -9,17 +15,6 @@ class SingleValueSelection extends StatefulWidget {
   final bool roundValue;
   final int precision;
   final ValueChanged<double> onChanged;
-
-  const SingleValueSelection({
-    super.key,
-    required this.value,
-    required this.title,
-    required this.onChanged,
-    this.roundValue = true,
-    this.precision = 2,
-    required this.min,
-    required this.max,
-  });
 
   @override
   State<SingleValueSelection> createState() => _SingleValueSelectionState();
@@ -41,7 +36,7 @@ class _SingleValueSelectionState extends State<SingleValueSelection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "${widget.title}: ${formattedValue.toStringAsPrecision(widget.precision)}",
+          '${widget.title}: ${formattedValue.toStringAsPrecision(widget.precision)}',
           style: textTheme.labelLarge,
         ),
         SizedBox(
@@ -58,7 +53,7 @@ class _SingleValueSelectionState extends State<SingleValueSelection> {
               });
             },
           ),
-        )
+        ),
       ],
     );
   }

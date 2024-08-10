@@ -7,6 +7,10 @@ import 'package:newton_particles/newton_particles.dart';
 /// that creates a pulsating animation. The pulsing effect emits particles from a specific origin
 /// point in a rhythmic manner, resembling a pulsing or beating motion.
 class PulseEffect extends Effect<AnimatedParticle> {
+  /// Creates a `PulseEffect` with the specified configurations.
+  ///
+  /// - [particleConfiguration]: Configuration for the individual particles.
+  /// - [effectConfiguration]: Configuration for the effect behavior.
   PulseEffect({
     required super.particleConfiguration,
     required super.effectConfiguration,
@@ -15,15 +19,16 @@ class PulseEffect extends Effect<AnimatedParticle> {
   @override
   AnimatedParticle instantiateParticle(Size surfaceSize) {
     final particlesPerEmit = effectConfiguration.particlesPerEmit;
-    final angle =
-        360 / particlesPerEmit * (activeParticles.length % particlesPerEmit);
+    final angle = 360 / particlesPerEmit * (activeParticles.length % particlesPerEmit);
     return AnimatedParticle(
       particle: Particle(
         configuration: particleConfiguration,
         position: Offset(
-            effectConfiguration.origin.dx, effectConfiguration.origin.dy),
+          effectConfiguration.origin.dx,
+          effectConfiguration.origin.dy,
+        ),
       ),
-      startTime: totalElapsed,
+      elapsedTimeOnStart: totalElapsed,
       animationDuration: randomDuration(),
       scaleRange: randomScaleRange(),
       fadeOutThreshold: randomFadeOutThreshold(),

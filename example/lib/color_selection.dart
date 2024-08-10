@@ -5,9 +5,9 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:newton_particles/newton_particles.dart';
 
 class ColorSelection extends StatefulWidget {
-  final ValueChanged<ParticleColor> onChanged;
 
-  const ColorSelection({super.key, required this.onChanged});
+  const ColorSelection({required this.onChanged, super.key});
+  final ValueChanged<ParticleColor> onChanged;
 
   @override
   State<ColorSelection> createState() => _ColorSelectionState();
@@ -24,7 +24,7 @@ class _ColorSelectionState extends State<ColorSelection> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Colors:"),
+          const Text('Colors:'),
           Row(
             children: [colorTypeSelection(), ...currentColorWidgets()],
           ),
@@ -42,7 +42,7 @@ class _ColorSelectionState extends State<ColorSelection> {
                       );
                     });
                   },
-                  child: const Text("Add"),
+                  child: const Text('Add'),
                 ),
                 if (_currentColors.length > 1)
                   TextButton(
@@ -58,13 +58,13 @@ class _ColorSelectionState extends State<ColorSelection> {
                         }
                       });
                     },
-                    child: const Text("Remove"),
-                  )
+                    child: const Text('Remove'),
+                  ),
               ],
-            )
+            ),
         ],
-      )
-    ]);
+      ),
+    ],);
   }
 
   List<Widget> currentColorWidgets() {
@@ -82,7 +82,7 @@ class _ColorSelectionState extends State<ColorSelection> {
                   ),
                 ),
                 onTap: () {
-                  showDialog(
+                  showDialog<dynamic>(
                       context: context,
                       builder: (buildContext) => AlertDialog(
                             title: const Text('Pick a color!'),
@@ -94,10 +94,10 @@ class _ColorSelectionState extends State<ColorSelection> {
                                 },
                               ),
                             ),
-                          ));
+                          ),);
                 },
               ),
-            )))
+            ),),)
         .toList();
   }
 
@@ -140,15 +140,13 @@ class _ColorSelectionState extends State<ColorSelection> {
           _currentColors.removeRange(1, _currentColors.length - 1);
         }
         widget.onChanged(SingleParticleColor(color: _currentColors[0]));
-        break;
       case ColorType.linearInterpolation:
         if (_currentColors.length == 1) {
           _currentColors.add(Colors.white);
         }
         widget.onChanged(LinearInterpolationParticleColor(
           colors: _currentColors,
-        ));
-        break;
+        ),);
     }
   }
 }

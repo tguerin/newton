@@ -5,20 +5,52 @@ import 'package:newton_particles/newton_particles.dart';
 
 /// The `AnimatedParticle` class represents a particle with animation properties.
 ///
-/// The `AnimatedParticle` class combines a [Particle] with animation-specific properties,
-/// such as animation duration, distance, angle, fading in/out effects, scaling, and more.
+/// This class combines a [Particle] with various animation properties, enabling
+/// complex visual effects such as movement along a path, scaling, fading, and more.
+/// It allows particles to be animated with customizable properties for enhanced visual
+/// presentation in particle systems.
 class AnimatedParticle {
+  /// Creates an instance of [AnimatedParticle] with the specified properties.
+  ///
+  /// - [particle]: The [Particle] instance associated with this animated particle.
+  /// - [pathTransformation]: The path transformation the particle follows upon emission.
+  /// - [elapsedTimeOnStart]: Total elapsed duration when particle was emitted.
+  /// - [animationDuration]: The duration of the animation.
+  /// - [distanceCurve]: The curve controlling distance animation progress.
+  /// - [fadeInLimit]: The threshold where the particle starts fading in.
+  /// - [fadeInCurve]: The curve controlling fade-in animation progress.
+  /// - [fadeOutThreshold]: The threshold where the particle starts fading out.
+  /// - [fadeOutCurve]: The curve controlling fade-out animation progress.
+  /// - [scaleRange]: The range of scaling applied during the animation.
+  /// - [scaleCurve]: The curve controlling scaling animation progress.
+  /// - [trail]: The trail effect associated with the particle.
+  AnimatedParticle({
+    required this.particle,
+    required this.pathTransformation,
+    required this.elapsedTimeOnStart,
+    required this.animationDuration,
+    required this.distanceCurve,
+    required this.fadeInLimit,
+    required this.fadeInCurve,
+    required this.fadeOutThreshold,
+    required this.fadeOutCurve,
+    required this.scaleRange,
+    required this.scaleCurve,
+    required this.trail,
+  });
+
   /// The [Particle] associated with this animated particle.
   final Particle particle;
 
-  /// The [PathTransformation] that will follow particle upon emission. Default: [StraightPathTransformation]
+  /// The [PathTransformation] that the particle will follow upon emission.
+  /// Default: [StraightPathTransformation].
   final PathTransformation pathTransformation;
 
-  /// The duration of the animation for this particle in milliseconds.
-  final int animationDuration;
+  /// The duration of the animation for this particle.
+  final Duration animationDuration;
 
-  /// The start time of the animation for this particle in milliseconds.
-  final double startTime;
+  /// Total elapsed duration when particle was emitted.
+  final Duration elapsedTimeOnStart;
 
   /// The curve used to control the distance animation progress.
   final Curve distanceCurve;
@@ -41,33 +73,21 @@ class AnimatedParticle {
   /// The curve used to control the scaling animation progress.
   final Curve scaleCurve;
 
+  /// The trail effect associated with the particle.
   final Trail trail;
 
+  /// The current progress of the animation, used internally.
   double _currentProgress = 0;
-
-  AnimatedParticle({
-    required this.particle,
-    required this.pathTransformation,
-    required this.startTime,
-    required this.animationDuration,
-    required this.distanceCurve,
-    required this.fadeInLimit,
-    required this.fadeInCurve,
-    required this.fadeOutThreshold,
-    required this.fadeOutCurve,
-    required this.scaleRange,
-    required this.scaleCurve,
-    required this.trail,
-  });
 
   /// Called when the animation updates to apply transformations and positioning to the particle.
   ///
   /// The `progress` parameter represents the animation progress in a range from 0.0 to 1.0.
   /// Based on the progress, the particle's opacity, size, and position will be updated
   /// according to the specified animation properties.
-  onAnimationUpdate(double progress) {
+  void onAnimationUpdate(double progress) {
     _currentProgress = progress;
     particle.updateColor(progress);
+
     if (progress <= fadeInLimit && fadeInLimit != 0) {
       final fadeInProgress = progress / fadeInLimit;
       final opacity = fadeInCurve.transform(fadeInProgress);
@@ -75,8 +95,7 @@ class AnimatedParticle {
     }
 
     if (progress >= fadeOutThreshold && fadeOutThreshold != 1) {
-      var fadeOutProgress =
-          (progress - fadeOutThreshold) / (1 - fadeOutThreshold);
+      final fadeOutProgress = (progress - fadeOutThreshold) / (1 - fadeOutThreshold);
       final opacity = 1 - fadeOutCurve.transform(fadeOutProgress);
       particle.updateOpacity(opacity);
     }
@@ -87,7 +106,7 @@ class AnimatedParticle {
       particle.initialSize.height * currentScale,
     );
 
-    var distanceProgress = distanceCurve.transform(progress);
+    final distanceProgress = distanceCurve.transform(progress);
     particle.position = pathTransformation.transform(
       particle.initialPosition,
       distanceProgress,
@@ -98,11 +117,11 @@ class AnimatedParticle {
   ///
   /// The `oldSize` parameter represents the previous size of the surface.
   /// The `newSize` parameter represents the new size of the surface.
-  onSurfaceSizeChanged(Size oldSize, Size newSize) {}
+  void onSurfaceSizeChanged(Size oldSize, Size newSize) {}
 
-  /// Draw extra shapes if any
+  /// Draws additional shapes or effects, such as trails, associated with the particle.
   ///
-  /// For now mainly use to draw [Tail]
+  /// This method is primarily used to render [Trail] effects.
   void drawExtra(Canvas canvas) {
     trail.draw(canvas, _currentProgress, this);
   }

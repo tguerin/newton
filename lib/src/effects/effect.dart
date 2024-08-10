@@ -29,22 +29,32 @@ import 'package:newton_particles/src/utils/random_extensions.dart';
 /// and animation. This allows you to achieve a wide range of stunning visual effects, such as
 /// rain, smoke, explosions, and more.
 abstract class Effect<T extends AnimatedParticle> {
-  final List<AnimatedParticle> _activeParticles = List.empty(growable: true);
+  /// Creates an `Effect` instance with the given particle and effect configurations.
+  ///
+  /// The `particleConfiguration` and `effectConfiguration` parameters allow customization
+  /// of particle behavior and emission characteristics.
+  Effect({
+    required this.particleConfiguration,
+    required this.effectConfiguration,
+  });
 
-  /// Immutable List of active particles managed by the effect.
-  List<AnimatedParticle> get activeParticles => _activeParticles.toList();
+  /// Immutable list of active particles managed by the effect.
+  final List<T> _activeParticles = List.empty(growable: true);
+
+  /// Provides access to the active particles as a read-only list.
+  List<T> get activeParticles => _activeParticles.toList();
 
   /// Random number generator for particle properties.
   final random = Random();
 
   /// Total elapsed time since the effect started.
-  double totalElapsed = 0;
+  Duration totalElapsed = Duration.zero;
 
-  /// Timestamp of the last particle emission.
-  double _lastInstantiation = 0;
+  /// Elapsed duration since start of the effect for the last emitted particle.
+  Duration _lastInstantiation = Duration.zero;
 
   /// Size of the animation surface.
-  Size _surfaceSize = const Size(0, 0);
+  Size _surfaceSize = Size.zero;
 
   /// Configuration for the effect. See [EffectConfiguration].
   final EffectConfiguration effectConfiguration;
@@ -52,13 +62,13 @@ abstract class Effect<T extends AnimatedParticle> {
   /// Configuration for particle properties. See [ParticleConfiguration].
   final ParticleConfiguration particleConfiguration;
 
-  /// Total number of emitted particles
+  /// Total number of emitted particles.
   int _totalEmittedCount = 0;
 
-  /// Register a callback if you want to be notified that a post effect is occurring
+  /// Callback to notify when a post effect is occurring.
   ValueChanged<Effect>? postEffectCallback;
 
-  /// Root effect that triggered this effect
+  /// Root effect that triggered this effect.
   Effect get rootEffect => _rootEffect ?? this;
 
   set rootEffect(Effect rootEffect) {
@@ -67,28 +77,26 @@ abstract class Effect<T extends AnimatedParticle> {
 
   Effect? _rootEffect;
 
+  /// Indicates if the effect was added at runtime.
   bool addedAtRuntime = false;
 
+  /// Current state of the effect.
   EffectState _state = EffectState.running;
 
-  /// Current state of the effect
+  /// Provides access to the current state of the effect.
   EffectState get state => _state;
 
-  /// Should the effect be played in foreground?
+  /// Indicates whether the effect should be played in the foreground.
   bool get foreground => effectConfiguration.foreground;
 
-  void Function(Effect, EffectState)? _stateChangeCallback;
-
-  /// Callback to be notified when state has changed
+  /// Callback to be notified when the state has changed.
+  //ignore: avoid_setters_without_getters
   set stateChangeCallback(void Function(Effect, EffectState)? value) {
     _stateChangeCallback = value;
     _stateChangeCallback?.call(this, _state);
   }
 
-  Effect({
-    required this.particleConfiguration,
-    required this.effectConfiguration,
-  });
+  void Function(Effect, EffectState)? _stateChangeCallback;
 
   /// Abstract method to be implemented by subclasses to define particle emission behavior.
   ///
@@ -104,24 +112,28 @@ abstract class Effect<T extends AnimatedParticle> {
   ///   // Create and add particles to the animation.
   /// }
   /// ```
-  AnimatedParticle instantiateParticle(Size surfaceSize);
+  T instantiateParticle(Size surfaceSize);
 
-  /// Advances the effect animation based on the elapsed time in milliseconds.
+  /// Advances the effect animation based on the elapsed duration.
+  ///
   /// This method is automatically called to update the particle animation.
+  /// It handles particle emission, cleaning up finished particles, updating
+  /// particle states, and managing the effect lifecycle.
   @mustCallSuper
-  forward(int elapsedMillis) {
-    totalElapsed += elapsedMillis;
+  void forward(Duration elapsedDuration) {
+    totalElapsed += elapsedDuration;
     _emitParticles();
     _cleanParticles();
     _updateParticles();
     _killEffectWhenOver();
   }
 
+  /// Emits particles based on the current configuration and elapsed time.
   void _emitParticles() {
     if (totalElapsed - _lastInstantiation > effectConfiguration.emitDuration) {
       _lastInstantiation = totalElapsed;
       if (_state == EffectState.running) {
-        for (int i = 0; i < effectConfiguration.particlesPerEmit; i++) {
+        for (var i = 0; i < effectConfiguration.particlesPerEmit; i++) {
           if (_isEmissionAllowed()) {
             _totalEmittedCount++;
             _activeParticles.add(instantiateParticle(_surfaceSize));
@@ -133,13 +145,12 @@ abstract class Effect<T extends AnimatedParticle> {
     }
   }
 
+  /// Cleans up particles that have finished their animation.
   void _cleanParticles() {
     _activeParticles.removeWhere((activeParticle) {
-      final animationOver = activeParticle.animationDuration <
-          totalElapsed - activeParticle.startTime;
+      final animationOver = activeParticle.animationDuration < totalElapsed - activeParticle.elapsedTimeOnStart;
       if (animationOver) {
-        final postEffectBuilder =
-            activeParticle.particle.configuration.postEffectBuilder;
+        final postEffectBuilder = activeParticle.particle.configuration.postEffectBuilder;
         if (postEffectBuilder != null) {
           postEffectCallback?.call(
             postEffectBuilder(activeParticle.particle)
@@ -152,53 +163,68 @@ abstract class Effect<T extends AnimatedParticle> {
     });
   }
 
+  /// Updates the state of all active particles based on the current progress.
   void _updateParticles() {
-    for (var element in _activeParticles) {
+    for (final element in _activeParticles) {
       element.onAnimationUpdate(
-          (totalElapsed - element.startTime) / element.animationDuration);
+        (totalElapsed - element.elapsedTimeOnStart).inMilliseconds / element.animationDuration.inMilliseconds,
+      );
     }
   }
 
+  /// Terminates the effect when all emissions are complete and no particles remain active.
   void _killEffectWhenOver() {
     if (_isEmissionOver()) {
       kill();
     }
   }
 
+  /// Checks if the emission of particles is allowed based on the configuration.
   bool _isEmissionAllowed() {
-    return _totalEmittedCount < effectConfiguration.particleCount ||
-        effectConfiguration.particleCount <= 0;
+    return _totalEmittedCount < effectConfiguration.particleCount || effectConfiguration.particleCount <= 0;
   }
 
+  /// Checks if the emission process is complete.
   bool _isEmissionOver() {
     return activeParticles.isEmpty &&
         _totalEmittedCount == effectConfiguration.particleCount &&
         effectConfiguration.particleCount > 0;
   }
 
+  /// Updates the effect's state and notifies listeners of the state change.
   void _updateState(EffectState state) {
     _state = state;
     _stateChangeCallback?.call(this, _state);
   }
 
+  /// Gets the size of the animation surface.
+  Size get surfaceSize => _surfaceSize;
+
   /// Sets the size of the animation surface.
   set surfaceSize(Size value) {
-    for (var particle in _activeParticles) {
+    if (_surfaceSize == value) return;
+    for (final particle in _activeParticles) {
       particle.onSurfaceSizeChanged(_surfaceSize, value);
     }
     _surfaceSize = value;
   }
 
   /// Starts the effect emission, allowing particles to be emitted.
-  start() {
+  ///
+  /// This method transitions the effect to the running state and enables
+  /// particle emission. If the effect has been killed, an error is thrown.
+  void start() {
     if (_state == EffectState.killed) {
-      throw StateError("Can't start a killed effect");
+      throw StateError('Can’t start a killed effect');
     }
     _updateState(EffectState.running);
   }
 
-  /// Stops the effect emission, optionally cancelling all active particles.
-  stop({bool cancel = false}) {
+  /// Stops the effect emission, optionally canceling all active particles.
+  ///
+  /// This method transitions the effect to the stopped state, halting
+  /// particle emission. If `cancel` is true, all active particles are cleared.
+  void stop({bool cancel = false}) {
     if (_state == EffectState.killed) return;
     _updateState(EffectState.stopped);
     if (cancel) {
@@ -207,13 +233,16 @@ abstract class Effect<T extends AnimatedParticle> {
   }
 
   /// Kills the effect, stopping all particle emission and removing active particles.
-  kill() {
+  ///
+  /// This method transitions the effect to the killed state, stops emission,
+  /// and clears all active particles and callbacks.
+  void kill() {
     stop(cancel: true);
     _updateState(EffectState.killed);
     postEffectCallback = null;
   }
 
-  /// Helper method to generate random distance
+  /// Helper method to generate a random distance
   /// within the range [EffectConfiguration.minDistance] - [EffectConfiguration.maxDistance].
   double randomDistance() {
     return random.nextDoubleRange(
@@ -222,7 +251,7 @@ abstract class Effect<T extends AnimatedParticle> {
     );
   }
 
-  /// Helper method to generate random angle
+  /// Helper method to generate a random angle
   /// within the range [EffectConfiguration.minAngle] - [EffectConfiguration.maxAngle].
   double randomAngle() {
     return random.nextDoubleRange(
@@ -231,35 +260,38 @@ abstract class Effect<T extends AnimatedParticle> {
     );
   }
 
-  /// Helper method to generate random duration
+  /// Helper method to generate a random duration
   /// within the range [EffectConfiguration.minDuration] - [EffectConfiguration.maxDuration].
-  int randomDuration() {
-    return random.nextIntRange(
-      effectConfiguration.minDuration,
-      effectConfiguration.maxDuration,
+  Duration randomDuration() {
+    return Duration(
+      milliseconds: random.nextIntRange(
+        effectConfiguration.minDuration.inMilliseconds,
+        effectConfiguration.maxDuration.inMilliseconds,
+      ),
     );
   }
 
-  /// Helper method to generate random scale range
+  /// Helper method to generate a random scale range
   /// within the range ([EffectConfiguration.minBeginScale] - [EffectConfiguration.maxBeginScale])
-  /// - ([EffectConfiguration.minEndScale] - [EffectConfiguration.maxEndScale] ).
+  /// - ([EffectConfiguration.minEndScale] - [EffectConfiguration.maxEndScale]).
   ///
-  /// If no endScale is defined, we us the beginScale as endScale.
+  /// If no end scale is defined, the beginning scale is used as the end scale.
   Tween<double> randomScaleRange() {
     final beginScale = random.nextDoubleRange(
       effectConfiguration.minBeginScale,
       effectConfiguration.maxBeginScale,
     );
-    final endScale = (effectConfiguration.minEndScale < 0 ||
-            effectConfiguration.maxEndScale < 0)
+    final endScale = (effectConfiguration.minEndScale < 0 || effectConfiguration.maxEndScale < 0)
         ? beginScale
         : random.nextDoubleRange(
-            effectConfiguration.minEndScale, effectConfiguration.maxEndScale);
+            effectConfiguration.minEndScale,
+            effectConfiguration.maxEndScale,
+          );
     return Tween(begin: beginScale, end: endScale);
   }
 
-  /// Helper method to generate random fadeOut threshold
-  /// within the range [EffectConfiguration.minFadeOutThreshold] - [EffectConfiguration.maxFadeOutThreshold]
+  /// Helper method to generate a random fade-out threshold
+  /// within the range [EffectConfiguration.minFadeOutThreshold] - [EffectConfiguration.maxFadeOutThreshold].
   double randomFadeOutThreshold() {
     return random.nextDoubleRange(
       effectConfiguration.minFadeOutThreshold,
@@ -267,8 +299,8 @@ abstract class Effect<T extends AnimatedParticle> {
     );
   }
 
-  /// Helper method to generate random fadeIn limit
-  /// within the range [EffectConfiguration.minFadeInLimit] - [EffectConfiguration.maxFadeInLimit]
+  /// Helper method to generate a random fade-in limit
+  /// within the range [EffectConfiguration.minFadeInLimit] - [EffectConfiguration.maxFadeInLimit].
   double randomFadeInLimit() {
     return random.nextDoubleRange(
       effectConfiguration.minFadeInLimit,

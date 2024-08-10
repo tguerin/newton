@@ -6,18 +6,6 @@ import 'package:newton_particles/newton_particles.dart';
 /// The `ParticleConfiguration` class holds information about the shape, size, and color of a particle.
 /// It is used to define the appearance of each particle in the animation.
 class ParticleConfiguration {
-  /// The shape of the particle.
-  final Shape shape;
-
-  /// The size of the particle.
-  final Size size;
-
-  /// The color of the particle. By default will use a single black color.
-  final ParticleColor color;
-
-  /// Effect to trigger once particle travel is over.
-  final Effect<AnimatedParticle> Function(Particle)? postEffectBuilder;
-
   /// Creates a `ParticleConfiguration` with the specified shape, size, and color.
   ///
   /// The `shape` parameter is required and represents the shape of the particle, which can be a `CircleShape`,
@@ -35,4 +23,16 @@ class ParticleConfiguration {
     this.color = const SingleParticleColor(color: Colors.black),
     this.postEffectBuilder,
   });
+
+  /// The shape of the particle.
+  final Shape shape;
+
+  /// The size of the particle.
+  final Size size;
+
+  /// The color of the particle. By default will use a single black color.
+  final ParticleColor color;
+
+  /// Effect to trigger once particle travel is over.
+  final Effect<AnimatedParticle> Function(Particle)? postEffectBuilder;
 }

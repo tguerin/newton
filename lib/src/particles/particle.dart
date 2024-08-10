@@ -9,6 +9,23 @@ import 'package:newton_particles/newton_particles.dart';
 /// and appearance. It is responsible for drawing the particle on the canvas using the provided
 /// `configuration` and applying any transformations specified by the `rotation`.
 class Particle {
+  /// Creates a `Particle` with the specified configuration and position.
+  ///
+  /// The `configuration` parameter is required and represents the particle's configuration, defining
+  /// its shape, size, and color.
+  ///
+  /// The `position` parameter is required and represents the initial position of the particle on the canvas.
+  ///
+  /// The `rotation` parameter is optional and represents the rotation of the particle expressed in degrees
+  Particle({
+    required this.configuration,
+    required this.position,
+    this.rotation = 0,
+  })  : size = configuration.size,
+        initialPosition = position {
+    _color = configuration.color.computeColor(0);
+  }
+
   /// The configuration of the particle, defining its shape, size, and color.
   final ParticleConfiguration configuration;
 
@@ -31,23 +48,6 @@ class Particle {
   /// Use [updateColor] and [updateOpacity] to adjust the color of the particle
   Color get color => _color;
 
-  /// Creates a `Particle` with the specified configuration and position.
-  ///
-  /// The `configuration` parameter is required and represents the particle's configuration, defining
-  /// its shape, size, and color.
-  ///
-  /// The `position` parameter is required and represents the initial position of the particle on the canvas.
-  ///
-  /// The `rotation` parameter is optional and represents the rotation of the particle expressed in degrees
-  Particle({
-    required this.configuration,
-    required this.position,
-    this.rotation = 0,
-  })  : size = configuration.size,
-        initialPosition = position {
-    _color = configuration.color.computeColor(0.0);
-  }
-
   /// Gets the initial size of the particle as defined in its configuration.
   Size get initialSize => configuration.size;
 
@@ -55,7 +55,7 @@ class Particle {
   ///
   /// The `updateColor` will adjust the color of the particle according to the current progress of the effect.
   /// If progress is outside the range [0,1] it will be clamped to the nearest value.
-  updateColor(double progress) {
+  void updateColor(double progress) {
     _color = configuration.color.computeColor(progress.clamp(0, 1));
   }
 
@@ -71,7 +71,8 @@ class Particle {
   ///
   /// Returns the computed transformation for rendering the image with the current particle state.
   (ui.Image, ui.Rect, ui.RSTransform, ui.Color) computeTransformation(
-      ui.Image defaultShapes) {
+    ui.Image defaultShapes,
+  ) {
     return configuration.shape.computeTransformation(this, defaultShapes);
   }
 }
