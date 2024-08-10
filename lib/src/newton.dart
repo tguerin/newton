@@ -59,7 +59,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   static const _shapeSpriteSheetPath =
       'packages/newton_particles/assets/images/newton.png';
   late Ticker _ticker;
-  int _lastElapsedMillis = 0;
+  Duration _lastElapsed = Duration.zero;
   final List<Effect> _activeEffects = List.empty(growable: true);
   final List<Effect> _pendingActiveEffects = List.empty(growable: true);
   late Future<ui.Image> _shapeSpriteSheet;
@@ -89,11 +89,9 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     }
     if (_activeEffects.isNotEmpty) {
       for (final element in _activeEffects) {
-        element.forward(
-          Duration(milliseconds: elapsed.inMilliseconds - _lastElapsedMillis),
-        );
+        element.forward(elapsed - _lastElapsed);
       }
-      _lastElapsedMillis = elapsed.inMilliseconds;
+      _lastElapsed = elapsed;
       setState(() {});
     }
   }
