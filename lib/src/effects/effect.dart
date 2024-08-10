@@ -48,10 +48,10 @@ abstract class Effect<T extends AnimatedParticle> {
   final random = Random();
 
   /// Total elapsed time since the effect started.
-  double totalElapsed = 0;
+  Duration totalElapsed = Duration.zero;
 
-  /// Timestamp of the last particle emission.
-  double _lastInstantiation = 0;
+  /// Elapsed duration since start of the effect for the last emitted particle.
+  Duration _lastInstantiation = Duration.zero;
 
   /// Size of the animation surface.
   Size _surfaceSize = Size.zero;
@@ -114,14 +114,14 @@ abstract class Effect<T extends AnimatedParticle> {
   /// ```
   T instantiateParticle(Size surfaceSize);
 
-  /// Advances the effect animation based on the elapsed time in milliseconds.
+  /// Advances the effect animation based on the elapsed duration.
   ///
   /// This method is automatically called to update the particle animation.
   /// It handles particle emission, cleaning up finished particles, updating
   /// particle states, and managing the effect lifecycle.
   @mustCallSuper
-  void forward(int elapsedMillis) {
-    totalElapsed += elapsedMillis;
+  void forward(Duration elapsedDuration) {
+    totalElapsed += elapsedDuration;
     _emitParticles();
     _cleanParticles();
     _updateParticles();
@@ -149,7 +149,7 @@ abstract class Effect<T extends AnimatedParticle> {
   void _cleanParticles() {
     _activeParticles.removeWhere((activeParticle) {
       final animationOver = activeParticle.animationDuration <
-          totalElapsed - activeParticle.startTime;
+          totalElapsed - activeParticle.elapsedTimeOnStart;
       if (animationOver) {
         final postEffectBuilder =
             activeParticle.particle.configuration.postEffectBuilder;
@@ -169,7 +169,8 @@ abstract class Effect<T extends AnimatedParticle> {
   void _updateParticles() {
     for (final element in _activeParticles) {
       element.onAnimationUpdate(
-        (totalElapsed - element.startTime) / element.animationDuration,
+        (totalElapsed - element.elapsedTimeOnStart).inMilliseconds /
+            element.animationDuration.inMilliseconds,
       );
     }
   }
@@ -265,10 +266,12 @@ abstract class Effect<T extends AnimatedParticle> {
 
   /// Helper method to generate a random duration
   /// within the range [EffectConfiguration.minDuration] - [EffectConfiguration.maxDuration].
-  int randomDuration() {
-    return random.nextIntRange(
-      effectConfiguration.minDuration,
-      effectConfiguration.maxDuration,
+  Duration randomDuration() {
+    return Duration(
+      milliseconds: random.nextIntRange(
+        effectConfiguration.minDuration.inMilliseconds,
+        effectConfiguration.maxDuration.inMilliseconds,
+      ),
     );
   }
 

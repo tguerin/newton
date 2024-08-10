@@ -46,7 +46,7 @@ class FountainEffect extends Effect<AnimatedParticle> {
           effectConfiguration.origin.dy,
         ),
       ),
-      startTime: totalElapsed,
+      elapsedTimeOnStart: totalElapsed,
       animationDuration: randomDuration(),
       pathTransformation: PathMetricsTransformation(
         path: path,

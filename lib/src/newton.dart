@@ -89,7 +89,9 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     }
     if (_activeEffects.isNotEmpty) {
       for (final element in _activeEffects) {
-        element.forward(elapsed.inMilliseconds - _lastElapsedMillis);
+        element.forward(
+          Duration(milliseconds: elapsed.inMilliseconds - _lastElapsedMillis),
+        );
       }
       _lastElapsedMillis = elapsed.inMilliseconds;
       setState(() {});

@@ -55,7 +55,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   AvailableEffect _selectedAnimation = AvailableEffect.rain;
   EffectConfiguration _effectConfiguration =
-      AvailableEffect.rain.defaultEffectConfiguration;
+      defaultEffectConfigurationsPerAnimation[AvailableEffect.rain] ??
+          defaultEffectConfiguration;
   ParticleColor _currentParticleColor =
       const SingleParticleColor(color: Colors.white);
 
@@ -148,7 +149,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
             setState(() {
               _selectedAnimation = AvailableEffect.of(value!);
               _effectConfiguration =
-                  _selectedAnimation.defaultEffectConfiguration;
+                  defaultEffectConfigurationsPerAnimation[_selectedAnimation] ??
+                      defaultEffectConfiguration;
             });
           },
           items: AvailableEffect.values
@@ -163,16 +165,16 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget animationDurationSection() {
     return RangeSelection(
-      initialMin: _effectConfiguration.minDuration.toDouble(),
-      initialMax: _effectConfiguration.maxDuration.toDouble(),
+      initialMin: _effectConfiguration.minDuration.inMilliseconds.toDouble(),
+      initialMax: _effectConfiguration.maxDuration.inMilliseconds.toDouble(),
       min: 100,
       max: 8000,
       title: "Animation duration",
       onChanged: (values) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
-            minDuration: values.start.round(),
-            maxDuration: values.end.round(),
+            minDuration: Duration(milliseconds: values.start.round()),
+            maxDuration: Duration(milliseconds: values.end.round()),
           );
         });
       },
@@ -197,12 +199,12 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget emitDurationSection() {
     return SingleValueSelection(
-      value: _effectConfiguration.emitDuration.toDouble(),
+      value: _effectConfiguration.emitDuration.inMilliseconds.toDouble(),
       title: "Emit duration",
       onChanged: (value) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
-            emitDuration: value.round(),
+            emitDuration: Duration(milliseconds: value.round()),
           );
         });
       },

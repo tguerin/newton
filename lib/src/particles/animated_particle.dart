@@ -14,8 +14,8 @@ class AnimatedParticle {
   ///
   /// - [particle]: The [Particle] instance associated with this animated particle.
   /// - [pathTransformation]: The path transformation the particle follows upon emission.
-  /// - [startTime]: The start time of the animation in milliseconds.
-  /// - [animationDuration]: The duration of the animation in milliseconds.
+  /// - [elapsedTimeOnStart]: Total elapsed duration when particle was emitted.
+  /// - [animationDuration]: The duration of the animation.
   /// - [distanceCurve]: The curve controlling distance animation progress.
   /// - [fadeInLimit]: The threshold where the particle starts fading in.
   /// - [fadeInCurve]: The curve controlling fade-in animation progress.
@@ -27,7 +27,7 @@ class AnimatedParticle {
   AnimatedParticle({
     required this.particle,
     required this.pathTransformation,
-    required this.startTime,
+    required this.elapsedTimeOnStart,
     required this.animationDuration,
     required this.distanceCurve,
     required this.fadeInLimit,
@@ -46,11 +46,11 @@ class AnimatedParticle {
   /// Default: [StraightPathTransformation].
   final PathTransformation pathTransformation;
 
-  /// The duration of the animation for this particle in milliseconds.
-  final int animationDuration;
+  /// The duration of the animation for this particle.
+  final Duration animationDuration;
 
-  /// The start time of the animation for this particle in milliseconds.
-  final double startTime;
+  /// Total elapsed duration when particle was emitted.
+  final Duration elapsedTimeOnStart;
 
   /// The curve used to control the distance animation progress.
   final Curve distanceCurve;
