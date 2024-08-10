@@ -12,7 +12,7 @@ class EffectConfiguration {
   /// All parameters have default values that can be overridden during object creation.
   const EffectConfiguration({
     this.particleCount = 0,
-    this.emitDuration = 100,
+    this.emitDuration = const Duration(milliseconds: 100),
     this.emitCurve = Curves.decelerate,
     this.particlesPerEmit = 1,
     this.origin = Offset.zero,
@@ -21,8 +21,8 @@ class EffectConfiguration {
     this.minAngle = 0,
     this.maxAngle = 0,
     this.distanceCurve = Curves.linear,
-    this.minDuration = 1000,
-    this.maxDuration = 1000,
+    this.minDuration = const Duration(seconds: 1),
+    this.maxDuration = const Duration(seconds: 1),
     this.minBeginScale = 1,
     this.maxBeginScale = 1,
     this.minEndScale = -1,
@@ -68,8 +68,8 @@ class EffectConfiguration {
   /// Total number of particles to emit. Default: `0` means infinite count.
   final int particleCount;
 
-  /// Duration between particle emissions in milliseconds. Default: `100`.
-  final int emitDuration;
+  /// Duration between particle emissions. Default: `100ms`.
+  final Duration emitDuration;
 
   /// Number of particles emitted per emission. Default: `1`.
   final int particlesPerEmit;
@@ -95,11 +95,11 @@ class EffectConfiguration {
   /// Curve to control particle travel distance. Default: [Curves.linear].
   final Curve distanceCurve;
 
-  /// Minimum particle animation duration in milliseconds. Default: `1000`.
-  final int minDuration;
+  /// Minimum particle animation duration. Default: `1s`.
+  final Duration minDuration;
 
-  /// Maximum particle animation duration in milliseconds. Default: `1000`.
-  final int maxDuration;
+  /// Maximum particle animation duration. Default: `1s`.
+  final Duration maxDuration;
 
   /// Minimum initial particle scale. Default: `1`.
   final double minBeginScale;
@@ -145,7 +145,7 @@ class EffectConfiguration {
   /// This method allows for creating modified copies of the configuration by overriding specific parameters.
   EffectConfiguration copyWith({
     int? particleCount,
-    int? emitDuration,
+    Duration? emitDuration,
     int? particlesPerEmit,
     Curve? emitCurve,
     Offset? origin,
@@ -154,8 +154,8 @@ class EffectConfiguration {
     double? minDistance,
     double? maxDistance,
     Curve? distanceCurve,
-    int? minDuration,
-    int? maxDuration,
+    Duration? minDuration,
+    Duration? maxDuration,
     double? minBeginScale,
     double? maxBeginScale,
     double? minEndScale,

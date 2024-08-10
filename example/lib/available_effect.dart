@@ -12,18 +12,6 @@ enum AvailableEffect {
   ),
   explode(
     "Explode",
-    defaultEffectConfiguration: EffectConfiguration(
-      minAngle: -180,
-      maxAngle: 180,
-      minDuration: 4000,
-      maxDuration: 7000,
-      minFadeOutThreshold: 0.6,
-      maxFadeOutThreshold: 0.8,
-      minBeginScale: 1,
-      maxBeginScale: 1,
-      minEndScale: 1,
-      maxEndScale: 1,
-    ),
     supportedParameters: [
       AnimationParameter.angle,
       AnimationParameter.color,
@@ -34,22 +22,6 @@ enum AvailableEffect {
   ),
   firework(
     "Firework",
-    defaultEffectConfiguration: EffectConfiguration(
-      minAngle: -120,
-      maxAngle: -60,
-      minDuration: 1000,
-      maxDuration: 2000,
-      minFadeOutThreshold: 0.6,
-      maxFadeOutThreshold: 0.8,
-      minBeginScale: 1,
-      maxBeginScale: 1,
-      minEndScale: 1,
-      maxEndScale: 1,
-      trail: StraightTrail(
-        trailWidth: 3,
-        trailProgress: 0.3,
-      ),
-    ),
     supportedParameters: [
       AnimationParameter.angle,
       AnimationParameter.color,
@@ -60,18 +32,6 @@ enum AvailableEffect {
     ],
   ),
   smoke("Smoke",
-      defaultEffectConfiguration: EffectConfiguration(
-        minAngle: -5,
-        maxAngle: 5,
-        minDuration: 4000,
-        maxDuration: 7000,
-        minFadeOutThreshold: 0.6,
-        maxFadeOutThreshold: 0.8,
-        minBeginScale: 1,
-        maxBeginScale: 1,
-        minEndScale: 1,
-        maxEndScale: 1,
-      ),
       supportedParameters: [
         AnimationParameter.color,
         AnimationParameter.angle,
@@ -80,19 +40,6 @@ enum AvailableEffect {
         AnimationParameter.scale,
       ]),
   fountain("Fountain",
-      defaultEffectConfiguration: EffectConfiguration(
-        particlesPerEmit: 10,
-        minDuration: 4000,
-        maxDuration: 4000,
-        minDistance: 200,
-        maxDistance: 200,
-        minFadeOutThreshold: 0.6,
-        maxFadeOutThreshold: 0.8,
-        minBeginScale: 1,
-        maxBeginScale: 1,
-        minEndScale: 1,
-        maxEndScale: 1,
-      ),
       supportedParameters: [
         AnimationParameter.color,
         AnimationParameter.distance,
@@ -100,20 +47,6 @@ enum AvailableEffect {
         AnimationParameter.scale,
       ]),
   pulse("Pulse",
-      defaultEffectConfiguration: EffectConfiguration(
-        particlesPerEmit: 15,
-        emitDuration: 1000,
-        minDuration: 4000,
-        maxDuration: 4000,
-        minDistance: 200,
-        maxDistance: 200,
-        minFadeOutThreshold: 0.8,
-        maxFadeOutThreshold: 0.8,
-        minBeginScale: 1,
-        maxBeginScale: 1,
-        minEndScale: 1,
-        maxEndScale: 1,
-      ),
       supportedParameters: [
         AnimationParameter.color,
         AnimationParameter.distance,
@@ -121,26 +54,11 @@ enum AvailableEffect {
         AnimationParameter.scale,
       ]);
 
-  const AvailableEffect(
-    this.label, {
-    this.defaultEffectConfiguration = const EffectConfiguration(
-      particlesPerEmit: 1,
-      minDuration: 4000,
-      maxDuration: 7000,
-      minDistance: 100,
-      maxDistance: 200,
-      minFadeOutThreshold: 0.6,
-      maxFadeOutThreshold: 0.8,
-      minBeginScale: 1,
-      maxBeginScale: 1,
-      minEndScale: 1,
-      maxEndScale: 1,
-    ),
+  const AvailableEffect(this.label, {
     this.supportedParameters = const [],
   });
 
   final String label;
-  final EffectConfiguration defaultEffectConfiguration;
   final List<AnimationParameter> supportedParameters;
 
   bool supportParameter(AnimationParameter parameter) {
@@ -151,6 +69,90 @@ enum AvailableEffect {
     return AvailableEffect.values.firstWhere((effect) => effect.label == label);
   }
 }
+
+final defaultEffectConfiguration =  EffectConfiguration(
+  particlesPerEmit: 1,
+  minDuration: const Duration(seconds: 4),
+  maxDuration: const Duration(seconds: 7),
+  minDistance: 100,
+  maxDistance: 200,
+  minFadeOutThreshold: 0.6,
+  maxFadeOutThreshold: 0.8,
+  minBeginScale: 1,
+  maxBeginScale: 1,
+  minEndScale: 1,
+  maxEndScale: 1,
+);
+
+Map<AvailableEffect, EffectConfiguration> defaultEffectConfigurationsPerAnimation = {
+  AvailableEffect.explode: EffectConfiguration(
+    minAngle: -180,
+    maxAngle: 180,
+    minDuration: const Duration(seconds: 4),
+    maxDuration: const Duration(seconds: 7),
+    minFadeOutThreshold: 0.6,
+    maxFadeOutThreshold: 0.8,
+    minBeginScale: 1,
+    maxBeginScale: 1,
+    minEndScale: 1,
+    maxEndScale: 1,
+  ),
+  AvailableEffect.firework: EffectConfiguration(
+    minAngle: -120,
+    maxAngle: -60,
+    minDuration: const Duration(seconds: 1),
+    maxDuration: const Duration(seconds: 2),
+    minFadeOutThreshold: 0.6,
+    maxFadeOutThreshold: 0.8,
+    minBeginScale: 1,
+    maxBeginScale: 1,
+    minEndScale: 1,
+    maxEndScale: 1,
+    trail: const StraightTrail(
+      trailWidth: 3,
+      trailProgress: 0.3,
+    ),
+  ),
+  AvailableEffect.fountain: EffectConfiguration(
+    particlesPerEmit: 10,
+    minDuration: const Duration(seconds: 4),
+    maxDuration: const Duration(seconds: 4),
+    minDistance: 200,
+    maxDistance: 200,
+    minFadeOutThreshold: 0.6,
+    maxFadeOutThreshold: 0.8,
+    minBeginScale: 1,
+    maxBeginScale: 1,
+    minEndScale: 1,
+    maxEndScale: 1,
+  ),
+  AvailableEffect.pulse: EffectConfiguration(
+    particlesPerEmit: 15,
+    emitDuration: const Duration(seconds: 1),
+    minDuration: const Duration(seconds: 4),
+    maxDuration: const Duration(seconds: 4),
+    minDistance: 200,
+    maxDistance: 200,
+    minFadeOutThreshold: 0.8,
+    maxFadeOutThreshold: 0.8,
+    minBeginScale: 1,
+    maxBeginScale: 1,
+    minEndScale: 1,
+    maxEndScale: 1,
+  ),
+  AvailableEffect.smoke: EffectConfiguration(
+    minAngle: -5,
+    maxAngle: 5,
+    minDuration: const Duration(seconds: 4),
+    maxDuration: const Duration(seconds: 7),
+    minFadeOutThreshold: 0.6,
+    maxFadeOutThreshold: 0.8,
+    minBeginScale: 1,
+    maxBeginScale: 1,
+    minEndScale: 1,
+    maxEndScale: 1,
+  ),
+};
 
 extension AvailableEffectExtension on AvailableEffect {
   Effect instantiate({
@@ -185,22 +187,23 @@ extension AvailableEffectExtension on AvailableEffect {
               shape: CircleShape(),
               size: const Size(5, 5),
               color: color,
-              postEffectBuilder: (particle) => ExplodeEffect(
-                  particleConfiguration: ParticleConfiguration(
-                    shape: CircleShape(),
-                    size: const Size(5, 5),
-                    color: const SingleParticleColor(color: Colors.blue),
-                  ),
-                  effectConfiguration: effectConfiguration.copyWith(
-                    maxAngle: 180,
-                    minAngle: -180,
-                    particleCount: 10,
-                    particlesPerEmit: 10,
-                    distanceCurve: Curves.decelerate,
-                    origin: particle.position,
-                  ))),
+              postEffectBuilder: (particle) =>
+                  ExplodeEffect(
+                      particleConfiguration: ParticleConfiguration(
+                        shape: CircleShape(),
+                        size: const Size(5, 5),
+                        color: const SingleParticleColor(color: Colors.blue),
+                      ),
+                      effectConfiguration: effectConfiguration.copyWith(
+                        maxAngle: 180,
+                        minAngle: -180,
+                        particleCount: 10,
+                        particlesPerEmit: 10,
+                        distanceCurve: Curves.decelerate,
+                        origin: particle.position,
+                      ))),
           effectConfiguration: effectConfiguration.copyWith(
-            emitDuration: 600,
+            emitDuration: const Duration(milliseconds: 600),
             distanceCurve: Curves.decelerate,
             origin: Offset(size.width / 2, size.height / 2),
           ),

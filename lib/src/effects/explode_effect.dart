@@ -26,7 +26,7 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
           effectConfiguration.origin.dy,
         ),
       ),
-      startTime: totalElapsed,
+      elapsedTimeOnStart: totalElapsed,
       animationDuration: randomDuration(),
       scaleRange: randomScaleRange(),
       fadeOutThreshold: randomFadeOutThreshold(),

@@ -36,7 +36,7 @@ class SmokeEffect extends Effect<AnimatedParticle> {
           effectConfiguration.origin.dy,
         ),
       ),
-      startTime: totalElapsed,
+      elapsedTimeOnStart: totalElapsed,
       animationDuration: randomDuration(),
       pathTransformation: StraightPathTransformation(
         distance: randomDistance(),

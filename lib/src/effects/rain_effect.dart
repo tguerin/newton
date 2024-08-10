@@ -30,7 +30,7 @@ class RainEffect extends Effect<AnimatedParticle> {
         distance: surfaceSize.height,
         angle: 90,
       ),
-      startTime: totalElapsed,
+      elapsedTimeOnStart: totalElapsed,
       animationDuration: randomDuration(),
       scaleRange: randomScaleRange(),
       fadeOutThreshold: randomFadeOutThreshold(),
