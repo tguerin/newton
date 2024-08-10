@@ -1,6 +1,6 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
 
 /// A custom painter that renders particle effects on a canvas in Newton.
@@ -8,6 +8,18 @@ import 'package:newton_particles/newton_particles.dart';
 /// The `NewtonPainter` class extends `CustomPainter` and is responsible for painting
 /// the active particles of the specified effects onto the provided canvas.
 class NewtonPainter extends CustomPainter {
+  /// Creates an instance of [NewtonPainter].
+  ///
+  /// The [effects] parameter specifies the list of effects to be rendered,
+  /// and the [shapesSpriteSheet] provides the graphical shapes to be drawn.
+  ///
+  /// - [effects]: A list of effects that define how the painter will render.
+  /// - [shapesSpriteSheet]: The sprite sheet containing shapes to be used in the painting.
+  NewtonPainter({
+    required this.effects,
+    required this.shapesSpriteSheet,
+  });
+
   /// The list of particle effects to be rendered on the canvas.
   final List<Effect> effects;
 
@@ -20,26 +32,28 @@ class NewtonPainter extends CustomPainter {
   final Map<ui.Image, List<Rect>> _rectsPerImage = {};
   final Map<ui.Image, List<Color>> _colorsPerImage = {};
 
-  NewtonPainter({required this.effects, required this.shapesSpriteSheet});
-
   @override
   void paint(Canvas canvas, Size size) {
     _clearTransformations();
-    effects.expand((effect) => effect.activeParticles).forEach(
+    effects.expand((effect) {
+      effect.surfaceSize = size;
+      return effect.activeParticles;
+    }).forEach(
       (activeParticle) {
         _updateTransformations(activeParticle);
         activeParticle.drawExtra(canvas);
       },
     );
-    for (var image in _allImages) {
+    for (final image in _allImages) {
       canvas.drawAtlas(
-          image,
-          _transformsPerImage[image] ?? [],
-          _rectsPerImage[image] ?? [],
-          _colorsPerImage[image] ?? [],
-          BlendMode.dstIn,
-          null,
-          Paint());
+        image,
+        _transformsPerImage[image] ?? [],
+        _rectsPerImage[image] ?? [],
+        _colorsPerImage[image] ?? [],
+        BlendMode.dstIn,
+        null,
+        Paint(),
+      );
     }
   }
 

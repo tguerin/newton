@@ -9,9 +9,9 @@ library newton_particles;
 
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/newton_painter.dart';
 import 'package:newton_particles/src/utils/bundle_extensions.dart';
@@ -23,19 +23,27 @@ import 'package:newton_particles/src/utils/bundle_extensions.dart';
 /// parameter to create the desired particle animations. The `Newton` widget handles the animation
 /// and rendering of the active particle effects on a custom canvas.
 class Newton extends StatefulWidget {
-  /// The list of active particle effects to be rendered.
-  final List<Effect> activeEffects;
-  final Widget? child;
-
-  /// Callback called when effect state has changed. See [EffectState].
-  final void Function(Effect, EffectState)? onEffectStateChanged;
-
+  /// Constructs a [Newton] widget with the specified list of active effects.
+  ///
+  /// - [activeEffects]: A list of `Effect` instances representing the particle
+  ///   effects to be rendered.
+  /// - [child]: An optional widget to be displayed behind or in front of the particle effects.
+  /// - [onEffectStateChanged]: A callback invoked when an effect's state changes.
   const Newton({
     this.activeEffects = const [],
     this.child,
     this.onEffectStateChanged,
     super.key,
   });
+
+  /// The list of active particle effects to be rendered.
+  final List<Effect> activeEffects;
+
+  /// An optional child widget to be displayed with the particle effects.
+  final Widget? child;
+
+  /// Callback called when effect state has changed. See [EffectState].
+  final void Function(Effect, EffectState)? onEffectStateChanged;
 
   @override
   State<Newton> createState() => NewtonState();
@@ -49,7 +57,7 @@ class Newton extends StatefulWidget {
 /// particle effects on a custom canvas.
 class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   static const _shapeSpriteSheetPath =
-      "packages/newton_particles/assets/images/newton.png";
+      'packages/newton_particles/assets/images/newton.png';
   late Ticker _ticker;
   int _lastElapsedMillis = 0;
   final List<Effect> _activeEffects = List.empty(growable: true);
@@ -80,7 +88,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       _pendingActiveEffects.clear();
     }
     if (_activeEffects.isNotEmpty) {
-      for (var element in _activeEffects) {
+      for (final element in _activeEffects) {
         element.forward(elapsed.inMilliseconds - _lastElapsedMillis);
       }
       _lastElapsedMillis = elapsed.inMilliseconds;
@@ -91,13 +99,13 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _shapeSpriteSheet,
-        builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
-          if (snapshot.hasData) {
-            return RepaintBoundary(
-              child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                for (var effect in _activeEffects) {
+      future: _shapeSpriteSheet,
+      builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+        if (snapshot.hasData) {
+          return RepaintBoundary(
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                for (final effect in _activeEffects) {
                   effect.surfaceSize = constraints.biggest;
                 }
                 final backgroundEffects = _activeEffects
@@ -124,24 +132,28 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
                       : null,
                   child: widget.child,
                 );
-              }),
-            );
-          } else {
-            return widget.child ?? Container();
-          }
-        });
+              },
+            ),
+          );
+        } else {
+          return widget.child ?? Container();
+        }
+      },
+    );
   }
 
-  bool _isBackgroundEffect(Effect effect) => !effect.foreground;
+  bool _isBackgroundEffect<T extends AnimatedParticle>(Effect<T> effect) =>
+      !effect.foreground;
 
-  bool _isForegroundEffect(Effect effect) => effect.foreground;
+  bool _isForegroundEffect<T extends AnimatedParticle>(Effect<T> effect) =>
+      effect.foreground;
 
   /// Adds a new particle effect to the list of active effects.
   ///
   /// The `addEffect` method allows you to dynamically add a new particle effect to the list
   /// of active effects. Simply provide an `Effect` instance representing the desired effect,
   /// and the `Newton` widget will render it on the canvas.
-  addEffect(Effect effect) {
+  void addEffect<T extends AnimatedParticle>(Effect<T> effect) {
     setState(() {
       _activeEffects.add(
         effect
@@ -157,7 +169,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   ///
   /// The `removeEffect` method allows you to dynamically remove a particle effect from the list
   /// of active effects.
-  removeEffect(Effect effect) {
+  void removeEffect<T extends AnimatedParticle>(Effect<T> effect) {
     setState(() {
       _activeEffects.removeWhere((e) => e.rootEffect == effect);
       _pendingActiveEffects.removeWhere((e) => e.rootEffect == effect);
@@ -166,11 +178,16 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _ticker.stop(canceled: true);
-    _ticker.dispose();
+    _ticker
+      ..stop(canceled: true)
+      ..dispose();
     super.dispose();
   }
 
+  /// Clears all active particle effects from the widget.
+  ///
+  /// This method removes all currently active particle effects, effectively
+  /// resetting the animation state of the `Newton` widget.
   void clearEffects() {
     setState(() {
       _activeEffects.removeWhere((effect) {
@@ -190,7 +207,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     }
   }
 
-  bool _isEffectRemoved(Effect<AnimatedParticle> effect) {
+  bool _isEffectRemoved<T extends AnimatedParticle>(Effect<T> effect) {
     // Keep only pending effects that are still active even if it's a post effect
     return !widget.activeEffects.contains(effect.rootEffect) &&
         !effect.addedAtRuntime;
@@ -198,20 +215,25 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
 
   void _setupEffectsFromWidget() {
     _activeEffects.addAll(widget.activeEffects);
-    for (var effect in _activeEffects) {
+    for (final effect in _activeEffects) {
       effect
         ..postEffectCallback = _onPostEffect
         ..stateChangeCallback = _onEffectStateChanged;
     }
   }
 
-  _onPostEffect(Effect<AnimatedParticle> effect) {
-    _pendingActiveEffects.add(effect
-      ..postEffectCallback = _onPostEffect
-      ..stateChangeCallback = _onEffectStateChanged);
+  void _onPostEffect<T extends AnimatedParticle>(Effect<T> effect) {
+    _pendingActiveEffects.add(
+      effect
+        ..postEffectCallback = _onPostEffect
+        ..stateChangeCallback = _onEffectStateChanged,
+    );
   }
 
-  _onEffectStateChanged(Effect effect, EffectState state) {
+  void _onEffectStateChanged<T extends AnimatedParticle>(
+    Effect<T> effect,
+    EffectState state,
+  ) {
     widget.onEffectStateChanged?.call(effect, state);
   }
 }

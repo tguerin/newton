@@ -12,37 +12,52 @@ import 'package:newton_particles/newton_particles.dart';
 /// Each shape must override the [computeTransformation] method to calculate the necessary
 /// transformation based on the particle's properties and the shape's specifications.
 sealed class Shape {
-  static const double defaultSpriteWidth = 500.0;
-  static const double defaultSpriteHeight = 500.0;
+  /// Constructs a [Shape] instance.
+  const Shape();
+
+  /// Default size of the sprite used to get shapes.
+  static const defaultSpriteSize = Size(500, 500);
 
   /// Computes the transformation parameters for rendering particles using this shape.
   ///
-  /// see [Canvas.drawAtlas]
+  /// The method returns a tuple containing an [Image], a [Rect], an [RSTransform],
+  /// and a [Color]. These parameters are used by the canvas to draw the particle
+  /// in the desired shape and orientation.
+  ///
+  /// - [particle]: The [Particle] instance containing properties such as size and position.
+  /// - [defaultShapes]: The [Image] representing default shape textures.
+  ///
+  /// Returns a tuple `(Image, Rect, RSTransform, Color)` with the computed parameters.
   (Image, Rect, RSTransform, Color) computeTransformation(
-      Particle particle, Image defaultShapes);
+    Particle particle,
+    Image defaultShapes,
+  );
 }
 
 /// Represents a circular shape for rendering particles.
+///
+/// This class calculates the transformation needed to render particles as circles
+/// using the default sprite size.
 class CircleShape extends Shape {
   @override
   (Image, Rect, RSTransform, Color) computeTransformation(
     Particle particle,
     Image defaultShapes,
   ) {
-    const rect = Rect.fromLTWH(
-      Shape.defaultSpriteWidth,
+    final rect = Rect.fromLTWH(
+      Shape.defaultSpriteSize.width,
       0,
-      Shape.defaultSpriteWidth,
-      Shape.defaultSpriteHeight,
+      Shape.defaultSpriteSize.width,
+      Shape.defaultSpriteSize.height,
     );
     final transform = RSTransform.fromComponents(
       rotation: 0,
       scale: min(
-        particle.size.width / Shape.defaultSpriteWidth,
-        particle.size.height / Shape.defaultSpriteHeight,
+        particle.size.width / Shape.defaultSpriteSize.width,
+        particle.size.height / Shape.defaultSpriteSize.height,
       ),
-      anchorX: Shape.defaultSpriteWidth / 2,
-      anchorY: Shape.defaultSpriteHeight / 2,
+      anchorX: Shape.defaultSpriteSize.width / 2,
+      anchorY: Shape.defaultSpriteSize.height / 2,
       translateX: particle.position.dx,
       translateY: particle.position.dy,
     );
@@ -52,24 +67,29 @@ class CircleShape extends Shape {
 }
 
 /// Represents a square shape for rendering particles.
+///
+/// This class calculates the transformation needed to render particles as squares
+/// using the default sprite size.
 class SquareShape extends Shape {
   @override
   (Image, Rect, RSTransform, Color) computeTransformation(
-      Particle particle, Image defaultShapes) {
-    const rect = Rect.fromLTWH(
+    Particle particle,
+    Image defaultShapes,
+  ) {
+    final rect = Rect.fromLTWH(
       0,
       0,
-      Shape.defaultSpriteWidth,
-      Shape.defaultSpriteHeight,
+      Shape.defaultSpriteSize.width,
+      Shape.defaultSpriteSize.height,
     );
     final transform = RSTransform.fromComponents(
       rotation: 0,
       scale: min(
-        particle.size.width / Shape.defaultSpriteWidth,
-        particle.size.height / Shape.defaultSpriteHeight,
+        particle.size.width / Shape.defaultSpriteSize.width,
+        particle.size.height / Shape.defaultSpriteSize.height,
       ),
-      anchorX: Shape.defaultSpriteWidth / 2,
-      anchorY: Shape.defaultSpriteHeight / 2,
+      anchorX: Shape.defaultSpriteSize.width / 2,
+      anchorY: Shape.defaultSpriteSize.height / 2,
       translateX: particle.position.dx,
       translateY: particle.position.dy,
     );
@@ -79,14 +99,21 @@ class SquareShape extends Shape {
 }
 
 /// Represents a shape based on an image for rendering particles.
+///
+/// This class allows particles to be rendered using a custom image. The image
+/// is used to define the shape and appearance of the particles.
 class ImageShape extends Shape {
-  final Image image;
+  /// Constructs an [ImageShape] with the specified [image].
+  const ImageShape(this.image);
 
-  ImageShape(this.image);
+  /// The image used to render particles.
+  final Image image;
 
   @override
   (Image, Rect, RSTransform, Color) computeTransformation(
-      Particle particle, Image defaultShapes) {
+    Particle particle,
+    Image defaultShapes,
+  ) {
     final rect = Rect.fromLTWH(
       0,
       0,

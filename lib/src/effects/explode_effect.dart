@@ -7,6 +7,10 @@ import 'package:newton_particles/newton_particles.dart';
 /// that resembles an explosion. The explosion effect emits particles from a specific origin
 /// point in a burst-like manner.
 class ExplodeEffect extends Effect<AnimatedParticle> {
+  /// Creates a `ExplodeEffect` with the specified configurations.
+  ///
+  /// - [particleConfiguration]: Configuration for the individual particles.
+  /// - [effectConfiguration]: Configuration for the effect behavior.
   ExplodeEffect({
     required super.particleConfiguration,
     required super.effectConfiguration,
@@ -18,7 +22,9 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
       particle: Particle(
         configuration: particleConfiguration,
         position: Offset(
-            effectConfiguration.origin.dx, effectConfiguration.origin.dy),
+          effectConfiguration.origin.dx,
+          effectConfiguration.origin.dy,
+        ),
       ),
       startTime: totalElapsed,
       animationDuration: randomDuration(),

@@ -5,20 +5,29 @@ import 'package:newton_particles/src/utils/random_extensions.dart';
 /// A particle effect that creates a smoke animation in Newton.
 ///
 /// The `SmokeEffect` class extends the `Effect` class and provides a particle effect
-/// that simulates rising smoke.
+/// that simulates rising smoke. It configures particles to move in a manner that
+/// resembles smoke rising, with adjustable properties for the width of the smoke
+/// and other customizable animation parameters.
 class SmokeEffect extends Effect<AnimatedParticle> {
-  final double smokeWidth;
-
+  /// Creates a `SmokeEffect` with the specified configurations.
+  ///
+  /// - [particleConfiguration]: Configuration for the individual particles.
+  /// - [effectConfiguration]: Configuration for the effect behavior.
+  /// - [smokeWidth]: The width of the smoke effect in logical pixels.
   SmokeEffect({
     required super.particleConfiguration,
     required super.effectConfiguration,
     this.smokeWidth = 30,
   });
 
+  /// The width of the smoke effect in logical pixels.
+  final double smokeWidth;
+
   @override
   AnimatedParticle instantiateParticle(Size surfaceSize) {
     final angleDegrees = -90 + randomAngle();
     final beginX = random.nextDoubleRange(-smokeWidth / 2, smokeWidth / 2);
+
     return AnimatedParticle(
       particle: Particle(
         configuration: particleConfiguration,
@@ -30,7 +39,9 @@ class SmokeEffect extends Effect<AnimatedParticle> {
       startTime: totalElapsed,
       animationDuration: randomDuration(),
       pathTransformation: StraightPathTransformation(
-          distance: randomDistance(), angle: angleDegrees),
+        distance: randomDistance(),
+        angle: angleDegrees,
+      ),
       fadeOutThreshold: randomFadeOutThreshold(),
       fadeInLimit: randomFadeInLimit(),
       scaleRange: randomScaleRange(),
