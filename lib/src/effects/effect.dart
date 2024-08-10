@@ -29,10 +29,10 @@ import 'package:newton_particles/src/utils/random_extensions.dart';
 /// and animation. This allows you to achieve a wide range of stunning visual effects, such as
 /// rain, smoke, explosions, and more.
 abstract class Effect<T extends AnimatedParticle> {
-  final List<AnimatedParticle> _activeParticles = List.empty(growable: true);
+  final List<T> _activeParticles = List.empty(growable: true);
 
   /// Immutable List of active particles managed by the effect.
-  List<AnimatedParticle> get activeParticles => _activeParticles.toList();
+  List<T> get activeParticles => _activeParticles.toList();
 
   /// Random number generator for particle properties.
   final random = Random();
@@ -104,7 +104,7 @@ abstract class Effect<T extends AnimatedParticle> {
   ///   // Create and add particles to the animation.
   /// }
   /// ```
-  AnimatedParticle instantiateParticle(Size surfaceSize);
+  T instantiateParticle(Size surfaceSize);
 
   /// Advances the effect animation based on the elapsed time in milliseconds.
   /// This method is automatically called to update the particle animation.

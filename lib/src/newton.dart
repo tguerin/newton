@@ -132,16 +132,16 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
         });
   }
 
-  bool _isBackgroundEffect(Effect effect) => !effect.foreground;
+  bool _isBackgroundEffect<T extends AnimatedParticle>(Effect<T> effect) => !effect.foreground;
 
-  bool _isForegroundEffect(Effect effect) => effect.foreground;
+  bool _isForegroundEffect<T extends AnimatedParticle>(Effect<T> effect) => effect.foreground;
 
   /// Adds a new particle effect to the list of active effects.
   ///
   /// The `addEffect` method allows you to dynamically add a new particle effect to the list
   /// of active effects. Simply provide an `Effect` instance representing the desired effect,
   /// and the `Newton` widget will render it on the canvas.
-  addEffect(Effect effect) {
+  addEffect<T extends AnimatedParticle>(Effect<T> effect) {
     setState(() {
       _activeEffects.add(
         effect
@@ -157,7 +157,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   ///
   /// The `removeEffect` method allows you to dynamically remove a particle effect from the list
   /// of active effects.
-  removeEffect(Effect effect) {
+  removeEffect<T extends AnimatedParticle>(Effect<T> effect) {
     setState(() {
       _activeEffects.removeWhere((e) => e.rootEffect == effect);
       _pendingActiveEffects.removeWhere((e) => e.rootEffect == effect);
@@ -190,7 +190,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     }
   }
 
-  bool _isEffectRemoved(Effect<AnimatedParticle> effect) {
+  bool _isEffectRemoved<T extends AnimatedParticle>(Effect<T> effect) {
     // Keep only pending effects that are still active even if it's a post effect
     return !widget.activeEffects.contains(effect.rootEffect) &&
         !effect.addedAtRuntime;
@@ -205,13 +205,13 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     }
   }
 
-  _onPostEffect(Effect<AnimatedParticle> effect) {
+  _onPostEffect<T extends AnimatedParticle>(Effect<T> effect) {
     _pendingActiveEffects.add(effect
       ..postEffectCallback = _onPostEffect
       ..stateChangeCallback = _onEffectStateChanged);
   }
 
-  _onEffectStateChanged(Effect effect, EffectState state) {
+  _onEffectStateChanged<T extends AnimatedParticle>(Effect<T> effect, EffectState state) {
     widget.onEffectStateChanged?.call(effect, state);
   }
 }
