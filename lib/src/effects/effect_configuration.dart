@@ -11,191 +11,191 @@ class EffectConfiguration {
   ///
   /// All parameters have default values that can be overridden during object creation.
   const EffectConfiguration({
-    this.particleCount = 0,
-    this.emitDuration = const Duration(milliseconds: 100),
-    this.emitCurve = Curves.decelerate,
-    this.particlesPerEmit = 1,
-    this.origin = Offset.zero,
-    this.minDistance = 100,
-    this.maxDistance = 200,
-    this.minAngle = 0,
-    this.maxAngle = 0,
     this.distanceCurve = Curves.linear,
-    this.minDuration = const Duration(seconds: 1),
-    this.maxDuration = const Duration(seconds: 1),
-    this.minBeginScale = 1,
-    this.maxBeginScale = 1,
-    this.minEndScale = -1,
-    this.maxEndScale = -1,
-    this.scaleCurve = Curves.linear,
-    this.minFadeOutThreshold = 1,
-    this.maxFadeOutThreshold = 1,
-    this.fadeOutCurve = Curves.linear,
-    this.minFadeInLimit = 0,
-    this.maxFadeInLimit = 0,
+    this.emitCurve = Curves.decelerate,
+    this.emitDuration = const Duration(milliseconds: 100),
     this.fadeInCurve = Curves.linear,
-    this.trail = const NoTrail(),
+    this.fadeOutCurve = Curves.linear,
     this.foreground = false,
+    this.maxAngle = 0,
+    this.maxBeginScale = 1,
+    this.maxDistance = 200,
+    this.maxDuration = const Duration(seconds: 1),
+    this.maxEndScale = -1,
+    this.maxFadeInLimit = 0,
+    this.maxFadeOutThreshold = 1,
+    this.minAngle = 0,
+    this.minBeginScale = 1,
+    this.minDistance = 100,
+    this.minDuration = const Duration(seconds: 1),
+    this.minEndScale = -1,
+    this.minFadeInLimit = 0,
+    this.minFadeOutThreshold = 1,
+    this.origin = Offset.zero,
+    this.particleCount = 0,
+    this.particlesPerEmit = 1,
+    this.scaleCurve = Curves.linear,
+    this.trail = const NoTrail(),
   })  : assert(
-          minDistance <= maxDistance,
-          'Min distance can’t be greater than max distance',
-        ),
-        assert(
           minAngle <= maxAngle,
           'Min angle can’t be greater than max angle',
-        ),
-        assert(
-          minDuration <= maxDuration,
-          'Min duration can’t be greater than max duration',
         ),
         assert(
           minBeginScale <= maxBeginScale,
           'Begin min scale can’t be greater than begin max scale',
         ),
         assert(
+          minDistance <= maxDistance,
+          'Min distance can’t be greater than max distance',
+        ),
+        assert(
+          minDuration <= maxDuration,
+          'Min duration can’t be greater than max duration',
+        ),
+        assert(
           minEndScale <= maxEndScale,
           'End min scale can’t be greater than end max scale',
         ),
         assert(
-          minFadeOutThreshold <= maxFadeOutThreshold,
-          'Min fadeOut threshold can’t be greater than end max fadeOut threshold',
-        ),
-        assert(
           minFadeInLimit <= maxFadeInLimit,
           'Min fadeIn limit can’t be greater than end max fadeIn threshold',
+        ),
+        assert(
+          minFadeOutThreshold <= maxFadeOutThreshold,
+          'Min fadeOut threshold can’t be greater than end max fadeOut threshold',
         );
-
-  /// Total number of particles to emit. Default: `0` means infinite count.
-  final int particleCount;
-
-  /// Duration between particle emissions. Default: `100ms`.
-  final Duration emitDuration;
-
-  /// Number of particles emitted per emission. Default: `1`.
-  final int particlesPerEmit;
-
-  /// Curve to control the emission timing. Default: [Curves.decelerate].
-  final Curve emitCurve;
-
-  /// Origin point for particle emission. Default: `Offset(0, 0)`.
-  final Offset origin;
-
-  /// Minimum angle in degrees for particle trajectory. Default: `0`.
-  final double minAngle;
-
-  /// Maximum angle in degrees for particle trajectory. Default: `0`.
-  final double maxAngle;
-
-  /// Minimum distance traveled by particles. Default: `100`.
-  final double minDistance;
-
-  /// Maximum distance traveled by particles. Default: `200`.
-  final double maxDistance;
 
   /// Curve to control particle travel distance. Default: [Curves.linear].
   final Curve distanceCurve;
 
-  /// Minimum particle animation duration. Default: `1s`.
-  final Duration minDuration;
+  /// Curve to control the emission timing. Default: [Curves.decelerate].
+  final Curve emitCurve;
 
-  /// Maximum particle animation duration. Default: `1s`.
-  final Duration maxDuration;
-
-  /// Minimum initial particle scale. Default: `1`.
-  final double minBeginScale;
-
-  /// Maximum initial particle scale. Default: `1`.
-  final double maxBeginScale;
-
-  /// Minimum final particle scale. Default: `-1`.
-  final double minEndScale;
-
-  /// Maximum final particle scale. Default: `-1`.
-  final double maxEndScale;
-
-  /// Curve to control particle scaling animation. Default: [Curves.linear].
-  final Curve scaleCurve;
-
-  /// Minimum opacity threshold for particle fade-out. Default: `1`.
-  final double minFadeOutThreshold;
-
-  /// Maximum opacity threshold for particle fade-out. Default: `1`.
-  final double maxFadeOutThreshold;
-
-  /// Curve to control particle fade-out animation. Default: [Curves.linear].
-  final Curve fadeOutCurve;
-
-  /// Minimum opacity limit for particle fade-in. Default: `0`.
-  final double minFadeInLimit;
-
-  /// Maximum opacity limit for particle fade-in. Default: `0`.
-  final double maxFadeInLimit;
+  /// Duration between particle emissions. Default: `100ms`.
+  final Duration emitDuration;
 
   /// Curve to control particle fade-in animation. Default: [Curves.linear].
   final Curve fadeInCurve;
 
-  /// The trail effect associated with emitted particles. Default: [NoTrail].
-  final Trail trail;
+  /// Curve to control particle fade-out animation. Default: [Curves.linear].
+  final Curve fadeOutCurve;
 
   /// Indicates whether the effect should be played in the foreground. Default: `false`.
   final bool foreground;
+
+  /// Maximum angle in degrees for particle trajectory. Default: `0`.
+  final double maxAngle;
+
+  /// Maximum initial particle scale. Default: `1`.
+  final double maxBeginScale;
+
+  /// Maximum distance traveled by particles. Default: `200`.
+  final double maxDistance;
+
+  /// Maximum particle animation duration. Default: `1s`.
+  final Duration maxDuration;
+
+  /// Maximum final particle scale. Default: `-1`.
+  final double maxEndScale;
+
+  /// Maximum opacity limit for particle fade-in. Default: `0`.
+  final double maxFadeInLimit;
+
+  /// Maximum opacity threshold for particle fade-out. Default: `1`.
+  final double maxFadeOutThreshold;
+
+  /// Minimum angle in degrees for particle trajectory. Default: `0`.
+  final double minAngle;
+
+  /// Minimum initial particle scale. Default: `1`.
+  final double minBeginScale;
+
+  /// Minimum distance traveled by particles. Default: `100`.
+  final double minDistance;
+
+  /// Minimum particle animation duration. Default: `1s`.
+  final Duration minDuration;
+
+  /// Minimum opacity limit for particle fade-in. Default: `0`.
+  final double minFadeInLimit;
+
+  /// Minimum opacity threshold for particle fade-out. Default: `1`.
+  final double minFadeOutThreshold;
+
+  /// Minimum final particle scale. Default: `-1`.
+  final double minEndScale;
+
+  /// Origin point for particle emission. Default: `Offset(0, 0)`.
+  final Offset origin;
+
+  /// Total number of particles to emit. Default: `0` means infinite count.
+  final int particleCount;
+
+  /// Number of particles emitted per emission. Default: `1`.
+  final int particlesPerEmit;
+
+  /// Curve to control particle scaling animation. Default: [Curves.linear].
+  final Curve scaleCurve;
+
+  /// The trail effect associated with emitted particles. Default: [NoTrail].
+  final Trail trail;
 
   /// Returns a copy of this configuration with the given fields replaced with the new values.
   ///
   /// This method allows for creating modified copies of the configuration by overriding specific parameters.
   EffectConfiguration copyWith({
-    int? particleCount,
-    Duration? emitDuration,
-    int? particlesPerEmit,
-    Curve? emitCurve,
-    Offset? origin,
-    double? minAngle,
-    double? maxAngle,
-    double? minDistance,
-    double? maxDistance,
     Curve? distanceCurve,
-    Duration? minDuration,
-    Duration? maxDuration,
-    double? minBeginScale,
-    double? maxBeginScale,
-    double? minEndScale,
-    double? maxEndScale,
-    Curve? scaleCurve,
-    double? minFadeOutThreshold,
-    double? maxFadeOutThreshold,
-    Curve? fadeOutCurve,
-    double? minFadeInLimit,
-    double? maxFadeInLimit,
+    Curve? emitCurve,
+    Duration? emitDuration,
     Curve? fadeInCurve,
-    Trail? trail,
+    Curve? fadeOutCurve,
     bool? foreground,
+    double? maxAngle,
+    double? maxBeginScale,
+    double? maxDistance,
+    Duration? maxDuration,
+    double? maxEndScale,
+    double? maxFadeInLimit,
+    double? maxFadeOutThreshold,
+    double? minAngle,
+    double? minBeginScale,
+    double? minDistance,
+    Duration? minDuration,
+    double? minEndScale,
+    double? minFadeInLimit,
+    double? minFadeOutThreshold,
+    Offset? origin,
+    int? particleCount,
+    int? particlesPerEmit,
+    Curve? scaleCurve,
+    Trail? trail,
   }) {
     return EffectConfiguration(
-      particleCount: particleCount ?? this.particleCount,
-      emitDuration: emitDuration ?? this.emitDuration,
-      particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,
-      emitCurve: emitCurve ?? this.emitCurve,
-      origin: origin ?? this.origin,
-      minAngle: minAngle ?? this.minAngle,
-      maxAngle: maxAngle ?? this.maxAngle,
-      minDistance: minDistance ?? this.minDistance,
-      maxDistance: maxDistance ?? this.maxDistance,
       distanceCurve: distanceCurve ?? this.distanceCurve,
-      minDuration: minDuration ?? this.minDuration,
-      maxDuration: maxDuration ?? this.maxDuration,
-      minBeginScale: minBeginScale ?? this.minBeginScale,
-      maxBeginScale: maxBeginScale ?? this.maxBeginScale,
-      minEndScale: minEndScale ?? this.minEndScale,
-      maxEndScale: maxEndScale ?? this.maxEndScale,
-      scaleCurve: scaleCurve ?? this.scaleCurve,
-      minFadeOutThreshold: minFadeOutThreshold ?? this.minFadeOutThreshold,
-      maxFadeOutThreshold: maxFadeOutThreshold ?? this.maxFadeOutThreshold,
-      fadeOutCurve: fadeOutCurve ?? this.fadeOutCurve,
-      minFadeInLimit: minFadeInLimit ?? this.minFadeInLimit,
-      maxFadeInLimit: maxFadeInLimit ?? this.maxFadeInLimit,
+      emitCurve: emitCurve ?? this.emitCurve,
+      emitDuration: emitDuration ?? this.emitDuration,
       fadeInCurve: fadeInCurve ?? this.fadeInCurve,
-      trail: trail ?? this.trail,
+      fadeOutCurve: fadeOutCurve ?? this.fadeOutCurve,
       foreground: foreground ?? this.foreground,
+      maxAngle: maxAngle ?? this.maxAngle,
+      maxBeginScale: maxBeginScale ?? this.maxBeginScale,
+      maxDistance: maxDistance ?? this.maxDistance,
+      maxDuration: maxDuration ?? this.maxDuration,
+      maxEndScale: maxEndScale ?? this.maxEndScale,
+      maxFadeInLimit: maxFadeInLimit ?? this.maxFadeInLimit,
+      maxFadeOutThreshold: maxFadeOutThreshold ?? this.maxFadeOutThreshold,
+      minAngle: minAngle ?? this.minAngle,
+      minBeginScale: minBeginScale ?? this.minBeginScale,
+      minDistance: minDistance ?? this.minDistance,
+      minDuration: minDuration ?? this.minDuration,
+      minEndScale: minEndScale ?? this.minEndScale,
+      minFadeInLimit: minFadeInLimit ?? this.minFadeInLimit,
+      minFadeOutThreshold: minFadeOutThreshold ?? this.minFadeOutThreshold,
+      origin: origin ?? this.origin,
+      particleCount: particleCount ?? this.particleCount,
+      particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,
+      scaleCurve: scaleCurve ?? this.scaleCurve,
+      trail: trail ?? this.trail,
     );
   }
 }
