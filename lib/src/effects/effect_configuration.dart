@@ -31,7 +31,7 @@ class EffectConfiguration {
     this.minEndScale = -1,
     this.minFadeInThreshold = 0,
     this.minFadeOutThreshold = 1,
-    this.origin = Offset.zero,
+    this.origin = const Offset(0.5, 0.5),
     this.particleCount = 0,
     this.particlesPerEmit = 1,
     this.scaleCurve = Curves.linear,
@@ -126,7 +126,7 @@ class EffectConfiguration {
   /// Minimum final particle scale. Default: `-1`.
   final double minEndScale;
 
-  /// Origin point for particle emission. Default: `Offset(0, 0)`.
+  /// Origin point for particle emission, origin is relative from top left of the container. Default: `Offset(0.5, 0.5)`.
   final Offset origin;
 
   /// Total number of particles to emit. Default: `0` means infinite count.

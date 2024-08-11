@@ -27,13 +27,12 @@ class SmokeEffect extends Effect<AnimatedParticle> {
   AnimatedParticle instantiateParticle(Size surfaceSize) {
     final angleDegrees = -90 + randomAngle();
     final beginX = random.nextDoubleRange(-smokeWidth / 2, smokeWidth / 2);
-
     return AnimatedParticle(
       particle: Particle(
         configuration: particleConfiguration,
         position: Offset(
-          beginX + effectConfiguration.origin.dx,
-          effectConfiguration.origin.dy,
+          beginX + effectConfiguration.origin.dx * surfaceSize.width,
+          effectConfiguration.origin.dy * surfaceSize.height,
         ),
       ),
       elapsedTimeOnStart: totalElapsed,
