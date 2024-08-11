@@ -32,9 +32,9 @@ Newton(
     activeEffects: [
         RainEffect(
             particleConfiguration: ParticleConfiguration(
+                color: const SingleParticleColor(color: Colors.white),
                 shape: CircleShape(),
                 size: const Size(5, 5),
-                color: const SingleParticleColor(color: Colors.white),
             ),
         )
     ],
@@ -65,9 +65,9 @@ class MyApp extends StatelessWidget {
           activeEffects: [
             RainEffect(
                 particleConfiguration: ParticleConfiguration(
+                    color: const SingleParticleColor(color: Colors.black),
                     shape: CircleShape(),
                     size: const Size(5, 5),
-                    color: const SingleParticleColor(color: Colors.black),
                 ),
                 effectConfiguration: const EffectConfiguration()
             )

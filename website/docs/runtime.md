@@ -24,9 +24,9 @@ class MyApp extends StatelessWidget {
               onPressed: () {
                 newtonKey.currentState?.addEffect(RainEffect(
                     particleConfiguration: ParticleConfiguration(
+                      color: const SingleParticleColor(color: Colors.black),
                       shape: CircleShape(),
                       size: const Size(5, 5),
-                      color: const SingleParticleColor(color: Colors.black),
                     ),
                     effectConfiguration: const EffectConfiguration()));
               },
