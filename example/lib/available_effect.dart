@@ -132,7 +132,7 @@ Map<AvailableEffect, EffectConfiguration> defaultEffectConfigurationsPerAnimatio
     maxEndScale: 1,
   ),
   AvailableEffect.smoke: EffectConfiguration(
-    particleCount: 3,
+    particlesPerEmit: 3,
     minAngle: -5,
     maxAngle: 5,
     minDuration: const Duration(seconds: 4),
@@ -201,7 +201,7 @@ extension AvailableEffectExtension on AvailableEffect {
         );
       case AvailableEffect.smoke:
         return SmokeEffect(
-          particleConfiguration: ParticleConfiguration(shape: CircleShape(), size: const Size(50, 50), color: color),
+          particleConfiguration: ParticleConfiguration(shape: CircleShape(), size: const Size(5, 5), color: color),
           effectConfiguration: effectConfiguration.copyWith(
             origin: Offset(
               size.width / 2,
