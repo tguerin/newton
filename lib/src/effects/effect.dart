@@ -98,7 +98,7 @@ abstract class Effect<T extends AnimatedParticle> {
 
   void Function(Effect, EffectState)? _stateChangeCallback;
 
-  bool _firstEmision = true;
+  bool _firstEmission = true;
 
   /// Abstract method to be implemented by subclasses to define particle emission behavior.
   ///
@@ -136,10 +136,10 @@ abstract class Effect<T extends AnimatedParticle> {
 
   /// Emits particles based on the current configuration and elapsed time.
   void _emitParticles() {
-    if (_firstEmision || (totalElapsed - _lastInstantiation > effectConfiguration.emitDuration)) {
+    if (_firstEmission || (totalElapsed - _lastInstantiation > effectConfiguration.emitDuration)) {
       _lastInstantiation = totalElapsed;
       if (_state == EffectState.running) {
-        _firstEmision = false;
+        _firstEmission = false;
         for (var i = 0; i < effectConfiguration.particlesPerEmit; i++) {
           if (_isEmissionAllowed()) {
             _totalEmittedCount++;
@@ -160,7 +160,8 @@ abstract class Effect<T extends AnimatedParticle> {
         final postEffectBuilder = activeParticle.particle.configuration.postEffectBuilder;
         if (postEffectBuilder != null) {
           postEffectCallback?.call(
-            postEffectBuilder(activeParticle.particle)
+            postEffectBuilder(activeParticle.particle, surfaceSize)
+              //..surfaceSize = surfaceSize
               ..rootEffect = rootEffect
               ..addedAtRuntime = addedAtRuntime,
           );
@@ -233,7 +234,7 @@ abstract class Effect<T extends AnimatedParticle> {
   /// particle emission. If `cancel` is true, all active particles are cleared.
   void stop({bool cancel = false}) {
     if (_state == EffectState.killed) return;
-    _firstEmision = true;
+    _firstEmission = true;
     _updateState(EffectState.stopped);
     if (cancel) {
       _activeParticles.clear();

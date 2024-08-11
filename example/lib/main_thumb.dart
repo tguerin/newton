@@ -54,11 +54,6 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
     ImageAssetShape('images/thumb_up_3.png'),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   final _emojiSize = 50.0;
   final _btnSize = 50.0;
 
@@ -88,8 +83,9 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
         minEndScale: 1,
         maxEndScale: 1.2,
         startDelay: delay,
-        origin: Offset(_btnSize / 2, 0),
+        origin: const Offset(0.5, 0),
       ),
+      smokeWidth: 0,
     );
   }
 
@@ -100,22 +96,26 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
         child: Newton(
           key: _newtonKey,
           blendMode: BlendMode.srcIn,
-          child: GestureDetector(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              _imageAssets.shuffle();
-              for (var i = 0; i < _imageAssets.length; i++) {
-                _newtonKey.currentState?.addEffect(currentActiveEffect(i, Duration(milliseconds: i * 2000)));
-              }
-            },
-            child: Container(
-              width: _btnSize,
-              height: _btnSize,
-              decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(_btnSize / 2),
+          child: SizedBox(
+            width: _btnSize,
+            height: _btnSize,
+            child: GestureDetector(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                _imageAssets.shuffle();
+                for (var i = 0; i < _imageAssets.length; i++) {
+                  _newtonKey.currentState?.addEffect(currentActiveEffect(i, Duration(milliseconds: i * 2000)));
+                }
+              },
+              child: Container(
+                width: _btnSize,
+                height: _btnSize,
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(_btnSize / 2),
+                ),
+                child: const Center(child: Text('click')),
               ),
-              child: const Center(child: Text('click')),
             ),
           ),
         ),

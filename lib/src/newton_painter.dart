@@ -1,37 +1,53 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
 
 /// A custom painter that renders particle effects on a canvas in Newton.
 ///
-/// The `NewtonPainter` class is responsible for painting the active particles
-/// of specified effects onto the provided canvas. It uses a sprite sheet for
-/// particle shapes and manages their transformations and rendering.
+/// The `NewtonPainter` class is responsible for painting active particles
+/// from specified effects onto the provided canvas. It utilizes a sprite sheet
+/// for particle shapes and manages their transformations and rendering.
 class NewtonPainter extends CustomPainter {
   /// Creates an instance of [NewtonPainter].
   ///
   /// - [blendMode]: Specifies how the particles should be blended on the canvas.
-  /// - [effectsNotifier]: Manages the list of effects to be rendered.
+  /// - [effects]: A list of particle effects to be rendered.
+  /// - [elapsedTimeNotifier]: A [ValueListenable] that notifies when the elapsed time changes,
+  ///   which is used to update the animations.
   /// - [shapesSpriteSheet]: Provides the graphical shapes used in painting particles.
   ///
-  /// The painter listens for changes in the [effectsNotifier] to update the canvas.
+  /// The painter listens for changes in the [elapsedTimeNotifier] to update the canvas.
   NewtonPainter({
     required this.blendMode,
-    required this.effectsNotifier,
+    required this.effects,
+    required this.elapsedTimeNotifier,
     required this.shapesSpriteSheet,
-  }) : super(repaint: effectsNotifier);
+  }) : super(repaint: elapsedTimeNotifier);
 
-  /// The blend mode to apply for images.
+  /// The blend mode to apply when rendering particles.
+  ///
+  /// This determines how the particles' colors blend with the background.
   final BlendMode blendMode;
 
-  /// The manager for the list of particle effects to be rendered.
-  final EffectsNotifier effectsNotifier;
+  /// The list of particle effects to be rendered by this painter.
+  ///
+  /// Each effect contains a collection of particles with specific behaviors
+  /// and transformations.
+  final List<Effect> effects;
+
+  /// Notifies listeners about changes in the elapsed time.
+  ///
+  /// This is used to update the animation state of the particles.
+  final ValueListenable<Duration> elapsedTimeNotifier;
 
   /// The sprite sheet containing shapes used in rendering particles.
+  ///
+  /// This image provides the graphical assets for particle shapes.
   final ui.Image shapesSpriteSheet;
 
-  // Internal state for transformations
+  // Internal state for managing transformations and rendering.
   final Set<ui.Image> _allImages = {};
   final Map<ui.Image, List<RSTransform>> _transformsPerImage = {};
   final Map<ui.Image, List<Rect>> _rectsPerImage = {};
@@ -43,16 +59,20 @@ class NewtonPainter extends CustomPainter {
   /// transformations for each active particle, and then draws them on the canvas.
   @override
   void paint(Canvas canvas, Size size) {
-    _clearTransformations();
-    effectsNotifier.effects.expand((effect) {
-      effect.surfaceSize = size;
+    _clearTransformations(); // Clear previous transformations.
+
+    // Iterate over each effect and update their active particles.
+    effects.expand((effect) {
+      effect
+        ..surfaceSize = size
+        ..forward(elapsedTimeNotifier.value); // Update the effect state.
       return effect.activeParticles;
-    }).forEach(
-      (activeParticle) {
-        _updateTransformations(activeParticle);
-        activeParticle.drawExtra(canvas);
-      },
-    );
+    }).forEach((activeParticle) {
+      _updateTransformations(activeParticle); // Compute transformations.
+      activeParticle.drawExtra(canvas); // Draw additional effects.
+    });
+
+    // Draw all particles using drawAtlas for efficiency.
     for (final image in _allImages) {
       canvas.drawAtlas(
         image,
@@ -68,18 +88,22 @@ class NewtonPainter extends CustomPainter {
 
   /// Determines whether the painter should repaint.
   ///
-  /// The painter will repaint if the effects managed by the [effectsNotifier]
+  /// The painter will repaint if the effects managed by the [effects]
   /// have changed.
   @override
   bool shouldRepaint(covariant NewtonPainter oldDelegate) {
-    return oldDelegate.effectsNotifier != effectsNotifier;
+    return !listEquals(oldDelegate.effects, effects);
   }
 
   /// Clears stored transformations for the current painting cycle.
+  ///
+  /// This ensures that old transformations do not interfere with
+  /// the current rendering of particle effects.
   void _clearTransformations() {
     _transformsPerImage.clear();
     _rectsPerImage.clear();
     _colorsPerImage.clear();
+    _allImages.clear();
   }
 
   /// Updates the transformation maps with the given particle's properties.
@@ -88,7 +112,9 @@ class NewtonPainter extends CustomPainter {
   /// to their respective maps for rendering.
   void _updateTransformations(AnimatedParticle activeParticle) {
     final transformationData = activeParticle.particle.computeTransformation(shapesSpriteSheet);
-    if (transformationData == null) return;
+    if (transformationData == null) return; // Skip if no transformation data.
+
+    // Add the image and its transformations to the respective maps.
     _allImages.add(transformationData.image);
     _rectsPerImage.update(
       transformationData.image,
@@ -105,66 +131,5 @@ class NewtonPainter extends CustomPainter {
       (colors) => colors..add(transformationData.color),
       ifAbsent: () => [transformationData.color],
     );
-  }
-}
-
-/// Manages a collection of effects for use in particle animations.
-///
-/// The `EffectsNotifier` class extends `ChangeNotifier` to provide reactive updates
-/// when the list of effects changes. It supports adding, removing, and cleaning up effects.
-class EffectsNotifier with ChangeNotifier {
-  /// Creates an instance of [EffectsNotifier].
-  EffectsNotifier();
-
-  /// The list of effects currently managed by the notifier.
-  final effects = <Effect>[];
-
-  /// Adds an effect to the list and notifies listeners.
-  ///
-  /// - [e]: The effect to add.
-  void add<T extends AnimatedParticle>(Effect<T> e) {
-    effects.add(e);
-    notifyListeners();
-  }
-
-  /// Adds multiple effects to the list and notifies listeners.
-  ///
-  /// - [es]: The effects to add.
-  void addAll<T extends AnimatedParticle>(Iterable<Effect<T>> es) {
-    effects.addAll(es);
-    notifyListeners();
-  }
-
-  /// Removes an effect from the list and notifies listeners.
-  ///
-  /// - [e]: The effect to remove.
-  void remove<T extends AnimatedParticle>(Effect<T> e) {
-    effects.remove(e);
-    notifyListeners();
-  }
-
-  /// Cleans up effects that are no longer active and notifies listeners.
-  void cleanDeadEffects() {
-    effects.removeWhere((effect) => effect.state == EffectState.killed);
-    notifyListeners();
-  }
-
-  /// Indicates whether the notifier has been disposed.
-  bool _disposed = false;
-
-  /// Disposes of the notifier, clearing all effects and preventing further notifications.
-  @override
-  void dispose() {
-    _disposed = true;
-    effects.clear();
-    super.dispose();
-  }
-
-  /// Notifies listeners of changes, unless the notifier has been disposed.
-  @override
-  void notifyListeners() {
-    if (!_disposed) {
-      super.notifyListeners();
-    }
   }
 }

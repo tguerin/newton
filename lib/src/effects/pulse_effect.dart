@@ -24,8 +24,8 @@ class PulseEffect extends Effect<AnimatedParticle> {
       particle: Particle(
         configuration: particleConfiguration,
         position: Offset(
-          effectConfiguration.origin.dx,
-          effectConfiguration.origin.dy,
+          effectConfiguration.origin.dx * surfaceSize.width,
+          effectConfiguration.origin.dy * surfaceSize.height,
         ),
       ),
       elapsedTimeOnStart: totalElapsed,

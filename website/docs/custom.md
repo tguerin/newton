@@ -132,7 +132,7 @@ ExplodeEffect(
         minAngle: -120,
         minDuration: const Duration(seconds: 1),
         minFadeOutThreshold: 0.6,
-        origin: Offset(size.width / 2, size.height / 2),
+        origin: Offset(0.5, 0.5), // Relative to the size of the child or container if child is not defined
         trail: const StraightTrail(trailProgress: 0.3, trailWidth: 3.0),
       ),
 );
@@ -169,7 +169,7 @@ Enjoy your firework!
 - `minEndScale`: `double` - Minimum final particle scale. Default: `-1`
 - `minFadeInThreshold`: `double` - Minimum opacity threshold for particle fade-in. Default: `0`
 - `minFadeOutThreshold`: `double` - Minimum opacity threshold for particle fade-out. Default: `1`
-- `origin`: `Offset` - Origin point for particle emission. Default: `Offset(0, 0)`
+- `origin`: `Offset` - Origin point for particle emission, relative to the top left of the container Offset(0, 0). Default: `Offset(0.5, 0.5)`
 - `particlesPerEmit`: `int` - Number of particles emitted per emission. Default: `1`
 - `scaleCurve`: `Curve` - Curve to control particle scaling animation. Default: `Curves.linear`
 - `startDelay`: `Duration` - Delay to wait before starting effect. Default: `Duration.zero`

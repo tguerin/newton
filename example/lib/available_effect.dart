@@ -168,7 +168,7 @@ extension AvailableEffectExtension on AvailableEffect {
             color: color,
           ),
           effectConfiguration: effectConfiguration.copyWith(
-            origin: Offset(size.width / 2, size.height / 2),
+            origin: const Offset(0.5, 0.5),
           ),
         );
       case AvailableEffect.firework:
@@ -177,7 +177,12 @@ extension AvailableEffectExtension on AvailableEffect {
             shape: CircleShape(),
             size: const Size(5, 5),
             color: color,
-            postEffectBuilder: (particle) => ExplodeEffect(
+            postEffectBuilder: (particle, surfaceSize) {
+              final offset = Offset(
+                  particle.position.dx / surfaceSize.width,
+                  particle.position.dy / surfaceSize.height,
+                );
+              return ExplodeEffect(
               particleConfiguration: ParticleConfiguration(
                 shape: CircleShape(),
                 size: const Size(5, 5),
@@ -189,23 +194,23 @@ extension AvailableEffectExtension on AvailableEffect {
                 particleCount: 10,
                 particlesPerEmit: 10,
                 distanceCurve: Curves.decelerate,
-                origin: particle.position,
+                origin: offset,
               ),
-            ),
+            );},
           ),
           effectConfiguration: effectConfiguration.copyWith(
             emitDuration: const Duration(milliseconds: 600),
             distanceCurve: Curves.decelerate,
-            origin: Offset(size.width / 2, size.height / 2),
+            origin: const Offset(0.5, 0.5),
           ),
         );
       case AvailableEffect.smoke:
         return SmokeEffect(
           particleConfiguration: ParticleConfiguration(shape: CircleShape(), size: const Size(5, 5), color: color),
           effectConfiguration: effectConfiguration.copyWith(
-            origin: Offset(
-              size.width / 2,
-              size.height / 2,
+            origin: const Offset(
+              0.5,
+              0.5,
             ),
           ),
         );
@@ -218,9 +223,9 @@ extension AvailableEffectExtension on AvailableEffect {
           ),
           effectConfiguration: effectConfiguration.copyWith(
             distanceCurve: Curves.decelerate,
-            origin: Offset(
-              size.width / 2,
-              size.height / 2,
+            origin: const Offset(
+              0.5,
+              0.5,
             ),
           ),
           width: 60,
@@ -233,9 +238,9 @@ extension AvailableEffectExtension on AvailableEffect {
             color: color,
           ),
           effectConfiguration: effectConfiguration.copyWith(
-            origin: Offset(
-              size.width / 2,
-              size.height / 2,
+            origin: const Offset(
+              0.5,
+              0.5,
             ),
           ),
         );

@@ -14,7 +14,8 @@ class Particle {
   /// The `configuration` parameter is required and represents the particle's configuration, defining
   /// its shape, size, and color.
   ///
-  /// The `position` parameter is required and represents the initial position of the particle on the canvas.
+  /// The `position` parameter is required and represents the initial relative position of the particle on the canvas.
+  /// The position is placed from top left Offset(0, 0) of the canvas.
   ///
   /// The `rotation` parameter is optional and represents the rotation of the particle expressed in degrees
   Particle({
@@ -32,7 +33,7 @@ class Particle {
   /// The initial position of the particle when it was created.
   final Offset initialPosition;
 
-  /// The current position of the particle.
+  /// The current position of the particle relative to the top left of the canvas.
   Offset position;
 
   /// The rotation in degrees of the particle
