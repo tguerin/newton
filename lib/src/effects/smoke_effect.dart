@@ -43,7 +43,7 @@ class SmokeEffect extends Effect<AnimatedParticle> {
         angle: angleDegrees,
       ),
       fadeOutThreshold: randomFadeOutThreshold(),
-      fadeInThreshold: randomFadeInLimit(),
+      fadeInThreshold: randomFadeInThreshold(),
       scaleRange: randomScaleRange(),
       distanceCurve: effectConfiguration.distanceCurve,
       fadeInCurve: effectConfiguration.fadeInCurve,

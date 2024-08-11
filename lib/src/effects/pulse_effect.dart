@@ -37,7 +37,7 @@ class PulseEffect extends Effect<AnimatedParticle> {
         angle: angle,
       ),
       distanceCurve: effectConfiguration.distanceCurve,
-      fadeInThreshold: randomFadeInLimit(),
+      fadeInThreshold: randomFadeInThreshold(),
       fadeInCurve: effectConfiguration.fadeInCurve,
       fadeOutCurve: effectConfiguration.fadeOutCurve,
       scaleCurve: effectConfiguration.scaleCurve,

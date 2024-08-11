@@ -52,7 +52,7 @@ class FountainEffect extends Effect<AnimatedParticle> {
         path: path,
       ),
       fadeOutThreshold: randomFadeOutThreshold(),
-      fadeInThreshold: randomFadeInLimit(),
+      fadeInThreshold: randomFadeInThreshold(),
       scaleRange: randomScaleRange(),
       distanceCurve: effectConfiguration.distanceCurve,
       fadeInCurve: effectConfiguration.fadeInCurve,

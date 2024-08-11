@@ -309,7 +309,7 @@ abstract class Effect<T extends AnimatedParticle> {
 
   /// Helper method to generate a random fade-in limit
   /// within the range [EffectConfiguration.minFadeInThreshold] - [EffectConfiguration.maxFadeInThreshold].
-  double randomFadeInLimit() {
+  double randomFadeInThreshold() {
     return random.nextDoubleRange(
       effectConfiguration.minFadeInThreshold,
       effectConfiguration.maxFadeInThreshold,
