@@ -5,8 +5,8 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:newton_particles/newton_particles.dart';
 
 class ColorSelection extends StatefulWidget {
-
   const ColorSelection({required this.onChanged, super.key});
+
   final ValueChanged<ParticleColor> onChanged;
 
   @override
@@ -20,56 +20,59 @@ class _ColorSelectionState extends State<ColorSelection> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(children: [
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Colors:'),
-          Row(
-            children: [colorTypeSelection(), ...currentColorWidgets()],
-          ),
-          if (_colorType == ColorType.linearInterpolation)
+    return Wrap(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Colors:'),
             Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _currentColors.add(Colors.white);
-                      widget.onChanged(
-                        LinearInterpolationParticleColor(
-                          colors: _currentColors,
-                        ),
-                      );
-                    });
-                  },
-                  child: const Text('Add'),
-                ),
-                if (_currentColors.length > 1)
+              children: [colorTypeSelection(), ...currentColorWidgets()],
+            ),
+            if (_colorType == ColorType.linearInterpolation)
+              Row(
+                children: [
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        if (_currentColors.length > 1) {
-                          _currentColors.removeLast();
-                          widget.onChanged(
-                            LinearInterpolationParticleColor(
-                              colors: _currentColors,
-                            ),
-                          );
-                        }
+                        _currentColors.add(Colors.white);
+                        widget.onChanged(
+                          LinearInterpolationParticleColor(
+                            colors: _currentColors,
+                          ),
+                        );
                       });
                     },
-                    child: const Text('Remove'),
+                    child: const Text('Add'),
                   ),
-              ],
-            ),
-        ],
-      ),
-    ],);
+                  if (_currentColors.length > 1)
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          if (_currentColors.length > 1) {
+                            _currentColors.removeLast();
+                            widget.onChanged(
+                              LinearInterpolationParticleColor(
+                                colors: _currentColors,
+                              ),
+                            );
+                          }
+                        });
+                      },
+                      child: const Text('Remove'),
+                    ),
+                ],
+              ),
+          ],
+        ),
+      ],
+    );
   }
 
   List<Widget> currentColorWidgets() {
     return _currentColors
-        .mapIndexed((index, color) => SizedBox(
+        .mapIndexed(
+          (index, color) => SizedBox(
             width: 30,
             height: 30,
             child: Padding(
@@ -83,21 +86,24 @@ class _ColorSelectionState extends State<ColorSelection> {
                 ),
                 onTap: () {
                   showDialog<dynamic>(
-                      context: context,
-                      builder: (buildContext) => AlertDialog(
-                            title: const Text('Pick a color!'),
-                            content: SingleChildScrollView(
-                              child: ColorPicker(
-                                pickerColor: color,
-                                onColorChanged: (newColor) {
-                                  changeColor(newColor, index);
-                                },
-                              ),
-                            ),
-                          ),);
+                    context: context,
+                    builder: (buildContext) => AlertDialog(
+                      title: const Text('Pick a color!'),
+                      content: SingleChildScrollView(
+                        child: ColorPicker(
+                          pickerColor: color,
+                          onColorChanged: (newColor) {
+                            changeColor(newColor, index);
+                          },
+                        ),
+                      ),
+                    ),
+                  );
                 },
               ),
-            ),),)
+            ),
+          ),
+        )
         .toList();
   }
 
@@ -144,9 +150,11 @@ class _ColorSelectionState extends State<ColorSelection> {
         if (_currentColors.length == 1) {
           _currentColors.add(Colors.white);
         }
-        widget.onChanged(LinearInterpolationParticleColor(
-          colors: _currentColors,
-        ),);
+        widget.onChanged(
+          LinearInterpolationParticleColor(
+            colors: _currentColors,
+          ),
+        );
     }
   }
 }

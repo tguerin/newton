@@ -2,12 +2,17 @@ import 'package:example/theme_extensions.dart';
 import 'package:flutter/material.dart';
 
 class SingleValueSelection extends StatefulWidget {
-
   const SingleValueSelection({
-    required this.value, required this.title, required this.onChanged, required this.min, required this.max, super.key,
+    required this.value,
+    required this.title,
+    required this.onChanged,
+    required this.min,
+    required this.max,
+    super.key,
     this.roundValue = true,
     this.precision = 2,
   });
+
   final String title;
   final double value;
   final double min;

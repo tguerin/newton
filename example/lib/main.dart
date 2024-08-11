@@ -1,12 +1,8 @@
-import 'dart:async';
-import 'dart:ui' as ui;
-
 import 'package:example/available_effect.dart';
 import 'package:example/color_selection.dart';
 import 'package:example/range_selection.dart';
 import 'package:example/single_value_selection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:newton_particles/newton_particles.dart';
 
 void main() {
@@ -16,7 +12,6 @@ void main() {
 class NewtonExampleApp extends StatelessWidget {
   const NewtonExampleApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     const primaryColor = <int, Color>{
@@ -41,121 +36,9 @@ class NewtonExampleApp extends StatelessWidget {
         ),
         canvasColor: const Color(0xff1b1b1d),
       ),
-      home: const ThumbUpExample(),
+      home: const NewtonConfigurationPage(),
     );
   }
-}
-
-class ThumbUpExample extends StatefulWidget {
-  const ThumbUpExample({super.key});
-
-  @override
-  State<ThumbUpExample> createState() => _ThumbUpExampleState();
-}
-
-class _ThumbUpExampleState extends State<ThumbUpExample> {
-  final newtonKey = GlobalKey<NewtonState>();
-
-  List<String> imgNames = [
-    'images/thumb_up_1.png',
-    'images/thumb_up_2.png',
-    'images/thumb_up_3.png',
-  ];
-
-  List<ui.Image> imgs = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadImgs();
-  }
-
-  Future<void> loadImgs() async {
-    for (final imgName in imgNames) {
-      imgs.add(await loadImageFromAsset(imgName));
-    }
-  }
-
-  double emojiSize = 50;
-  double btnSize = 50;
-
-  Effect currentActiveEffect(int index) {
-    return SmokeEffect(
-      particleConfiguration: ParticleConfiguration(
-        shape: ImageShape(imgs[index]),
-        size: Size.square(emojiSize),
-      ),
-      effectConfiguration: EffectConfiguration(
-          particleCount: 100,
-          particlesPerEmit: 100,
-          distanceCurve: Curves.slowMiddle,
-          emitCurve: Curves.fastOutSlowIn,
-          fadeInCurve: Curves.easeIn,
-          fadeOutCurve: Curves.easeOut,
-          emitDuration: const Duration(milliseconds: 250),
-          minAngle: -45,
-          maxAngle: 45,
-          minDistance: 90,
-          maxDistance: 220,
-          maxDuration: const Duration(seconds: 3),
-          minFadeOutThreshold: 0.6,
-          maxFadeOutThreshold: 0.8,
-          minBeginScale: 0.7,
-          maxBeginScale: 0.9,
-          minEndScale: 1,
-          maxEndScale: 1.2,
-          origin: Offset(btnSize / 2, 0),),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 250,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Newton(
-                key: newtonKey,
-                blendMode: BlendMode.srcIn,
-                child: GestureDetector(
-                  onTap: () {
-                    HapticFeedback.mediumImpact();
-                    imgs.shuffle();
-                    for (var i = 0; i < imgs.length; i++) {
-                      Future.delayed(Duration(milliseconds: i * 100), () {
-                        newtonKey.currentState?.addEffect(currentActiveEffect(i));
-                      });
-                    }
-                  },
-                  child: Container(
-                    width: btnSize,
-                    height: btnSize,
-                    decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(btnSize / 2),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-Future<ui.Image> loadImageFromAsset(String assetName) async {
-  final data = await rootBundle.load(assetName);
-  final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
-  final frame = await codec.getNextFrame();
-  return frame.image;
 }
 
 class NewtonConfigurationPage extends StatefulWidget {
@@ -241,27 +124,28 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget animationSelectionSection({required AvailableEffect defaultAnimation}) {
     return SizedBox(
-        width: 200,
-        child: DropdownButton<String>(
-          isExpanded: true,
-          value: defaultAnimation.label,
-          icon: const Icon(Icons.arrow_drop_down),
-          elevation: 16,
-          onChanged: (String? value) {
-            // This is called when the user selects an item.
-            setState(() {
-              _selectedAnimation = AvailableEffect.of(value!);
-              _effectConfiguration =
-                  defaultEffectConfigurationsPerAnimation[_selectedAnimation] ?? defaultEffectConfiguration;
-            });
-          },
-          items: AvailableEffect.values.map<DropdownMenuItem<String>>((AvailableEffect value) {
-            return DropdownMenuItem<String>(
-              value: value.label,
-              child: Text(value.label),
-            );
-          }).toList(),
-        ),);
+      width: 200,
+      child: DropdownButton<String>(
+        isExpanded: true,
+        value: defaultAnimation.label,
+        icon: const Icon(Icons.arrow_drop_down),
+        elevation: 16,
+        onChanged: (String? value) {
+          // This is called when the user selects an item.
+          setState(() {
+            _selectedAnimation = AvailableEffect.of(value!);
+            _effectConfiguration =
+                defaultEffectConfigurationsPerAnimation[_selectedAnimation] ?? defaultEffectConfiguration;
+          });
+        },
+        items: AvailableEffect.values.map<DropdownMenuItem<String>>((AvailableEffect value) {
+          return DropdownMenuItem<String>(
+            value: value.label,
+            child: Text(value.label),
+          );
+        }).toList(),
+      ),
+    );
   }
 
   Widget animationDurationSection() {
@@ -451,10 +335,12 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget colorSelection() {
-    return ColorSelection(onChanged: (color) {
-      setState(() {
-        _currentParticleColor = color;
-      });
-    },);
+    return ColorSelection(
+      onChanged: (color) {
+        setState(() {
+          _currentParticleColor = color;
+        });
+      },
+    );
   }
 }

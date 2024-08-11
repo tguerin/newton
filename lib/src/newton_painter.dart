@@ -48,7 +48,7 @@ class NewtonPainter extends CustomPainter {
       effect.surfaceSize = size;
       return effect.activeParticles;
     }).forEach(
-          (activeParticle) {
+      (activeParticle) {
         _updateTransformations(activeParticle);
         activeParticle.drawExtra(canvas);
       },
@@ -87,23 +87,23 @@ class NewtonPainter extends CustomPainter {
   /// This method adds transformations, rectangles, and colors for each particle
   /// to their respective maps for rendering.
   void _updateTransformations(AnimatedParticle activeParticle) {
-    final (image, rect, transform, color) =
-    activeParticle.particle.computeTransformation(shapesSpriteSheet);
-    _allImages.add(image);
+    final transformationData = activeParticle.particle.computeTransformation(shapesSpriteSheet);
+    if (transformationData == null) return;
+    _allImages.add(transformationData.image);
     _rectsPerImage.update(
-      image,
-          (rects) => rects..add(rect),
-      ifAbsent: () => [rect],
+      transformationData.image,
+      (rects) => rects..add(transformationData.rect),
+      ifAbsent: () => [transformationData.rect],
     );
     _transformsPerImage.update(
-      image,
-          (transforms) => transforms..add(transform),
-      ifAbsent: () => [transform],
+      transformationData.image,
+      (transforms) => transforms..add(transformationData.transform),
+      ifAbsent: () => [transformationData.transform],
     );
     _colorsPerImage.update(
-      image,
-          (colors) => colors..add(color),
-      ifAbsent: () => [color],
+      transformationData.image,
+      (colors) => colors..add(transformationData.color),
+      ifAbsent: () => [transformationData.color],
     );
   }
 }

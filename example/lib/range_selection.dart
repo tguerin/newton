@@ -2,13 +2,19 @@ import 'package:example/theme_extensions.dart';
 import 'package:flutter/material.dart';
 
 class RangeSelection extends StatefulWidget {
-
   const RangeSelection({
-    required this.min, required this.max, required this.title, required this.onChanged, required this.initialMin, required this.initialMax, super.key,
+    required this.min,
+    required this.max,
+    required this.title,
+    required this.onChanged,
+    required this.initialMin,
+    required this.initialMax,
+    super.key,
     this.roundValue = true,
     this.divisions = 100,
     this.precision = 2,
   });
+
   final String title;
   final double min;
   final double max;

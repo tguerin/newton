@@ -31,25 +31,34 @@ enum AvailableEffect {
       AnimationParameter.trail,
     ],
   ),
-  smoke('Smoke', supportedParameters: [
-    AnimationParameter.color,
-    AnimationParameter.angle,
-    AnimationParameter.distance,
-    AnimationParameter.fadeout,
-    AnimationParameter.scale,
-  ],),
-  fountain('Fountain', supportedParameters: [
-    AnimationParameter.color,
-    AnimationParameter.distance,
-    AnimationParameter.fadeout,
-    AnimationParameter.scale,
-  ],),
-  pulse('Pulse', supportedParameters: [
-    AnimationParameter.color,
-    AnimationParameter.distance,
-    AnimationParameter.fadeout,
-    AnimationParameter.scale,
-  ],);
+  smoke(
+    'Smoke',
+    supportedParameters: [
+      AnimationParameter.color,
+      AnimationParameter.angle,
+      AnimationParameter.distance,
+      AnimationParameter.fadeout,
+      AnimationParameter.scale,
+    ],
+  ),
+  fountain(
+    'Fountain',
+    supportedParameters: [
+      AnimationParameter.color,
+      AnimationParameter.distance,
+      AnimationParameter.fadeout,
+      AnimationParameter.scale,
+    ],
+  ),
+  pulse(
+    'Pulse',
+    supportedParameters: [
+      AnimationParameter.color,
+      AnimationParameter.distance,
+      AnimationParameter.fadeout,
+      AnimationParameter.scale,
+    ],
+  );
 
   const AvailableEffect(
     this.label, {
