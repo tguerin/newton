@@ -74,8 +74,7 @@ class StraightTrail extends Trail {
     AnimatedParticle animatedParticle,
   ) {
     final endTrailProgress = (currentProgress - trailProgress).clamp(0.0, 1.0);
-    final endTrailAdjustedProgress =
-        animatedParticle.distanceCurve.transform(endTrailProgress);
+    final endTrailAdjustedProgress = animatedParticle.distanceCurve.transform(endTrailProgress);
     final endTrailPosition = animatedParticle.pathTransformation.transform(
       animatedParticle.particle.initialPosition,
       endTrailAdjustedProgress,

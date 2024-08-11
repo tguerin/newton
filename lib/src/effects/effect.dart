@@ -31,11 +31,11 @@ import 'package:newton_particles/src/utils/random_extensions.dart';
 abstract class Effect<T extends AnimatedParticle> {
   /// Creates an `Effect` instance with the given particle and effect configurations.
   ///
-  /// The `particleConfiguration` and `effectConfiguration` parameters allow customization
+  /// The `effectConfiguration` and `particleConfiguration` parameters allow customization
   /// of particle behavior and emission characteristics.
   Effect({
-    required this.particleConfiguration,
     required this.effectConfiguration,
+    required this.particleConfiguration,
   });
 
   /// Immutable list of active particles managed by the effect.
@@ -98,6 +98,8 @@ abstract class Effect<T extends AnimatedParticle> {
 
   void Function(Effect, EffectState)? _stateChangeCallback;
 
+  bool _firstEmision = true;
+
   /// Abstract method to be implemented by subclasses to define particle emission behavior.
   ///
   /// This method is called upon particle emission and is responsible for instantiating particles
@@ -122,6 +124,10 @@ abstract class Effect<T extends AnimatedParticle> {
   @mustCallSuper
   void forward(Duration elapsedDuration) {
     totalElapsed += elapsedDuration;
+    if (totalElapsed < effectConfiguration.startDelay) {
+      _lastInstantiation = totalElapsed;
+      return;
+    }
     _emitParticles();
     _cleanParticles();
     _updateParticles();
@@ -130,9 +136,10 @@ abstract class Effect<T extends AnimatedParticle> {
 
   /// Emits particles based on the current configuration and elapsed time.
   void _emitParticles() {
-    if (totalElapsed - _lastInstantiation > effectConfiguration.emitDuration) {
+    if (_firstEmision || (totalElapsed - _lastInstantiation > effectConfiguration.emitDuration)) {
       _lastInstantiation = totalElapsed;
       if (_state == EffectState.running) {
+        _firstEmision = false;
         for (var i = 0; i < effectConfiguration.particlesPerEmit; i++) {
           if (_isEmissionAllowed()) {
             _totalEmittedCount++;
@@ -148,11 +155,9 @@ abstract class Effect<T extends AnimatedParticle> {
   /// Cleans up particles that have finished their animation.
   void _cleanParticles() {
     _activeParticles.removeWhere((activeParticle) {
-      final animationOver = activeParticle.animationDuration <
-          totalElapsed - activeParticle.elapsedTimeOnStart;
+      final animationOver = activeParticle.animationDuration < totalElapsed - activeParticle.elapsedTimeOnStart;
       if (animationOver) {
-        final postEffectBuilder =
-            activeParticle.particle.configuration.postEffectBuilder;
+        final postEffectBuilder = activeParticle.particle.configuration.postEffectBuilder;
         if (postEffectBuilder != null) {
           postEffectCallback?.call(
             postEffectBuilder(activeParticle.particle)
@@ -169,8 +174,7 @@ abstract class Effect<T extends AnimatedParticle> {
   void _updateParticles() {
     for (final element in _activeParticles) {
       element.onAnimationUpdate(
-        (totalElapsed - element.elapsedTimeOnStart).inMilliseconds /
-            element.animationDuration.inMilliseconds,
+        (totalElapsed - element.elapsedTimeOnStart).inMilliseconds / element.animationDuration.inMilliseconds,
       );
     }
   }
@@ -184,8 +188,7 @@ abstract class Effect<T extends AnimatedParticle> {
 
   /// Checks if the emission of particles is allowed based on the configuration.
   bool _isEmissionAllowed() {
-    return _totalEmittedCount < effectConfiguration.particleCount ||
-        effectConfiguration.particleCount <= 0;
+    return _totalEmittedCount < effectConfiguration.particleCount || effectConfiguration.particleCount <= 0;
   }
 
   /// Checks if the emission process is complete.
@@ -230,6 +233,7 @@ abstract class Effect<T extends AnimatedParticle> {
   /// particle emission. If `cancel` is true, all active particles are cleared.
   void stop({bool cancel = false}) {
     if (_state == EffectState.killed) return;
+    _firstEmision = true;
     _updateState(EffectState.stopped);
     if (cancel) {
       _activeParticles.clear();
@@ -285,8 +289,7 @@ abstract class Effect<T extends AnimatedParticle> {
       effectConfiguration.minBeginScale,
       effectConfiguration.maxBeginScale,
     );
-    final endScale = (effectConfiguration.minEndScale < 0 ||
-            effectConfiguration.maxEndScale < 0)
+    final endScale = (effectConfiguration.minEndScale < 0 || effectConfiguration.maxEndScale < 0)
         ? beginScale
         : random.nextDoubleRange(
             effectConfiguration.minEndScale,
@@ -305,11 +308,11 @@ abstract class Effect<T extends AnimatedParticle> {
   }
 
   /// Helper method to generate a random fade-in limit
-  /// within the range [EffectConfiguration.minFadeInLimit] - [EffectConfiguration.maxFadeInLimit].
-  double randomFadeInLimit() {
+  /// within the range [EffectConfiguration.minFadeInThreshold] - [EffectConfiguration.maxFadeInThreshold].
+  double randomFadeInThreshold() {
     return random.nextDoubleRange(
-      effectConfiguration.minFadeInLimit,
-      effectConfiguration.maxFadeInLimit,
+      effectConfiguration.minFadeInThreshold,
+      effectConfiguration.maxFadeInThreshold,
     );
   }
 }

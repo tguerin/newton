@@ -21,8 +21,8 @@ First you will extend the `Effect` class with `AnimatedParticle` as particles:
 class RainEffect extends Effect<AnimatedParticle> {
 
   RainEffect({
-    required super.particleConfiguration,
     required super.effectConfiguration,
+    required super.particleConfiguration,
   });
 
   @override
@@ -104,34 +104,34 @@ ExplodeEffect(
           color: const SingleParticleColor(color: Colors.white),
           postEffectBuilder: (particle) => ExplodeEffect(
             particleConfiguration: ParticleConfiguration(
+              color: const SingleParticleColor(color: Colors.blue),
               shape: CircleShape(),
               size: const Size(5, 5),
-              color: const SingleParticleColor(color: Colors.blue),
             ),
             effectConfiguration: EffectConfiguration(
+              distanceCurve: Curves.decelerate,
               maxAngle: 180,
+              maxDuration: const Duration(seconds: 2),
+              maxFadeOutThreshold: 0.8,
               minAngle: -180,
               minDuration: const Duration(seconds: 1),
-              maxDuration: const Duration(seconds: 2),
               minFadeOutThreshold: 0.6,
-              maxFadeOutThreshold: 0.8,
+              origin: particle.position,
               particleCount: 10,
               particlesPerEmit: 10,
-              distanceCurve: Curves.decelerate,
-              origin: particle.position,
               trail: const StraightTrail(trailProgress: 0.3, trailWidth: 3.0)
             )
           )
       ),
       effectConfiguration: EffectConfiguration(
-        emitDuration: 600,
-        minAngle: -120,
-        maxAngle: -60,
-        minDuration: const Duration(seconds: 1),
-        maxDuration: const Duration(seconds: 2),
-        minFadeOutThreshold: 0.6,
-        maxFadeOutThreshold: 0.8,
         distanceCurve: Curves.decelerate,
+        emitDuration: 600,
+        maxAngle: -60,
+        maxDuration: const Duration(seconds: 2),
+        maxFadeOutThreshold: 0.8,
+        minAngle: -120,
+        minDuration: const Duration(seconds: 1),
+        minFadeOutThreshold: 0.6,
         origin: Offset(size.width / 2, size.height / 2),
         trail: const StraightTrail(trailProgress: 0.3, trailWidth: 3.0),
       ),
@@ -149,39 +149,40 @@ Enjoy your firework!
 
 ## All Effect Properties
 
-- `foreground`: `bool` - Should the effect be played in foreground? Default: `false`
-- `emitDuration`: `Duration` - Duration between particle emissions. Default: `100ms`
-- `particlesPerEmit`: `int` - Number of particles emitted per emission. Default: `1`
-- `emitCurve`: `Curve` - Curve to control the emission timing. Default: `Curves.decelerate`
-- `origin`: `Offset` - Origin point for particle emission. Default: `Offset(0, 0)`
-- `minDistance`: `double` - Minimum distance traveled by particles. Default: `100`
-- `maxDistance`: `double` - Maximum distance traveled by particles. Default: `200`
 - `distanceCurve`: `Curve` - Curve to control particle travel distance. Default: `Curves.linear`
-- `minDuration`: `Duration` - Minimum particle animation duration. Default: `1s`
-- `maxDuration`: `Duration` - Maximum particle animation duration. Default: `1s`
-- `minBeginScale`: `double` - Minimum initial particle scale. Default: `1`
-- `maxBeginScale`: `double` - Maximum initial particle scale. Default: `1`
-- `minEndScale`: `double` - Minimum final particle scale. Default: `-1`
-- `maxEndScale`: `double` - Maximum final particle scale. Default: `-1`
-- `scaleCurve`: `Curve` - Curve to control particle scaling animation. Default: `Curves.linear`
-- `minFadeOutThreshold`: `double` - Minimum opacity threshold for particle fade-out. Default: `1`
-- `maxFadeOutThreshold`: `double` - Maximum opacity threshold for particle fade-out. Default: `1`
-- `fadeOutCurve`: `Curve` - Curve to control particle fade-out animation. Default: `Curves.linear`
-- `minFadeInLimit`: `double` - Minimum opacity limit for particle fade-in. Default: `0`
-- `maxFadeInLimit`: `double` - Maximum opacity limit for particle fade-in. Default: `0`
+- `emitCurve`: `Curve` - Curve to control the emission timing. Default: `Curves.decelerate`
+- `emitDuration`: `Duration` - Duration between particle emissions. Default: `100ms`
 - `fadeInCurve`: `Curve` - Curve to control particle fade-in animation. Default: `Curves.linear`
-- `minAngle`: `double` - Min angle in degrees for particle. Default: `0`
+- `fadeOutCurve`: `Curve` - Curve to control particle fade-out animation. Default: `Curves.linear`
+- `foreground`: `bool` - Should the effect be played in foreground? Default: `false`
 - `maxAngle`: `double` - Max angle in degrees for particle. Default: `0`
+- `maxBeginScale`: `double` - Maximum initial particle scale. Default: `1`
+- `maxDistance`: `double` - Maximum distance traveled by particles. Default: `200`
+- `maxDuration`: `Duration` - Maximum particle animation duration. Default: `1s`
+- `maxEndScale`: `double` - Maximum final particle scale. Default: `-1`
+- `maxFadeInThreshold`: `double` - Maximum opacity threshold for particle fade-in. Default: `0`
+- `maxFadeOutThreshold`: `double` - Maximum opacity threshold for particle fade-out. Default: `1`
+- `minAngle`: `double` - Min angle in degrees for particle. Default: `0`
+- `minBeginScale`: `double` - Minimum initial particle scale. Default: `1`
+- `minDistance`: `double` - Minimum distance traveled by particles. Default: `100`
+- `minDuration`: `Duration` - Minimum particle animation duration. Default: `1s`
+- `minEndScale`: `double` - Minimum final particle scale. Default: `-1`
+- `minFadeInThreshold`: `double` - Minimum opacity threshold for particle fade-in. Default: `0`
+- `minFadeOutThreshold`: `double` - Minimum opacity threshold for particle fade-out. Default: `1`
+- `origin`: `Offset` - Origin point for particle emission. Default: `Offset(0, 0)`
+- `particlesPerEmit`: `int` - Number of particles emitted per emission. Default: `1`
+- `scaleCurve`: `Curve` - Curve to control particle scaling animation. Default: `Curves.linear`
+- `startDelay`: `Duration` - Delay to wait before starting effect. Default: `Duration.zero`
 - `trail`: `Trail` - Define trail behavior, see [Trail](https://pub.dev/documentation/newton_particles/latest/newton_particles/Trail-class.html). Default: `NoTrail()`
 
 ## Particle Configuration
 
 `ParticleConfiguration` is use to describe the particle aspect. Main properties are:
 
-1. `shape`: can be `CircleShape`, `SquareShape` or `ImageShape`
-2. `size`: `width` and `height` of the particle
-3. `color`: the particle color see [ParticleColor](https://pub.dev/documentation/newton_particles/latest/newton_particles/ParticleColor-class.html), doesn't apply for the `ImageShape`
-4. `postEffectBuilder`: from last particle position you can trigger a chain reaction
+1. `color`: the particle color see [ParticleColor](https://pub.dev/documentation/newton_particles/latest/newton_particles/ParticleColor-class.html), doesn't apply for the `ImageShape`
+2. `postEffectBuilder`: from last particle position you can trigger a chain reaction
+3. `shape`: can be `CircleShape`, `SquareShape`, `ImageAssetShape` or `ImageShape`
+4. `size`: `width` and `height` of the particle
 
 ## Custom Particle
 
@@ -200,5 +201,5 @@ class MyCustomParticle extends AnimatedParticle {
 ```
 
 Just override the `onAnimationUpdate(double progress)` method to fine-tune your particle travel.
-From this place you can adjust `position`, `size`, `color`, `shape` over time and achieve whatever effect
+From this place you can adjust `color`, `position`, `shape`, `size` over time and achieve whatever effect
 you have in mind.

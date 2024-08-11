@@ -3,7 +3,7 @@ import 'package:newton_particles/newton_particles.dart';
 
 enum AvailableEffect {
   rain(
-    "Rain",
+    'Rain',
     supportedParameters: [
       AnimationParameter.color,
       AnimationParameter.fadeout,
@@ -11,17 +11,17 @@ enum AvailableEffect {
     ],
   ),
   explode(
-    "Explode",
+    'Explode',
     supportedParameters: [
       AnimationParameter.angle,
       AnimationParameter.color,
       AnimationParameter.distance,
       AnimationParameter.fadeout,
-      AnimationParameter.scale
+      AnimationParameter.scale,
     ],
   ),
   firework(
-    "Firework",
+    'Firework',
     supportedParameters: [
       AnimationParameter.angle,
       AnimationParameter.color,
@@ -31,30 +31,37 @@ enum AvailableEffect {
       AnimationParameter.trail,
     ],
   ),
-  smoke("Smoke",
-      supportedParameters: [
-        AnimationParameter.color,
-        AnimationParameter.angle,
-        AnimationParameter.distance,
-        AnimationParameter.fadeout,
-        AnimationParameter.scale,
-      ]),
-  fountain("Fountain",
-      supportedParameters: [
-        AnimationParameter.color,
-        AnimationParameter.distance,
-        AnimationParameter.fadeout,
-        AnimationParameter.scale,
-      ]),
-  pulse("Pulse",
-      supportedParameters: [
-        AnimationParameter.color,
-        AnimationParameter.distance,
-        AnimationParameter.fadeout,
-        AnimationParameter.scale,
-      ]);
+  smoke(
+    'Smoke',
+    supportedParameters: [
+      AnimationParameter.color,
+      AnimationParameter.angle,
+      AnimationParameter.distance,
+      AnimationParameter.fadeout,
+      AnimationParameter.scale,
+    ],
+  ),
+  fountain(
+    'Fountain',
+    supportedParameters: [
+      AnimationParameter.color,
+      AnimationParameter.distance,
+      AnimationParameter.fadeout,
+      AnimationParameter.scale,
+    ],
+  ),
+  pulse(
+    'Pulse',
+    supportedParameters: [
+      AnimationParameter.color,
+      AnimationParameter.distance,
+      AnimationParameter.fadeout,
+      AnimationParameter.scale,
+    ],
+  );
 
-  const AvailableEffect(this.label, {
+  const AvailableEffect(
+    this.label, {
     this.supportedParameters = const [],
   });
 
@@ -70,16 +77,11 @@ enum AvailableEffect {
   }
 }
 
-final defaultEffectConfiguration =  EffectConfiguration(
-  particlesPerEmit: 1,
+final defaultEffectConfiguration = EffectConfiguration(
   minDuration: const Duration(seconds: 4),
   maxDuration: const Duration(seconds: 7),
-  minDistance: 100,
-  maxDistance: 200,
   minFadeOutThreshold: 0.6,
   maxFadeOutThreshold: 0.8,
-  minBeginScale: 1,
-  maxBeginScale: 1,
   minEndScale: 1,
   maxEndScale: 1,
 );
@@ -92,20 +94,15 @@ Map<AvailableEffect, EffectConfiguration> defaultEffectConfigurationsPerAnimatio
     maxDuration: const Duration(seconds: 7),
     minFadeOutThreshold: 0.6,
     maxFadeOutThreshold: 0.8,
-    minBeginScale: 1,
-    maxBeginScale: 1,
     minEndScale: 1,
     maxEndScale: 1,
   ),
   AvailableEffect.firework: EffectConfiguration(
     minAngle: -120,
     maxAngle: -60,
-    minDuration: const Duration(seconds: 1),
     maxDuration: const Duration(seconds: 2),
     minFadeOutThreshold: 0.6,
     maxFadeOutThreshold: 0.8,
-    minBeginScale: 1,
-    maxBeginScale: 1,
     minEndScale: 1,
     maxEndScale: 1,
     trail: const StraightTrail(
@@ -118,11 +115,8 @@ Map<AvailableEffect, EffectConfiguration> defaultEffectConfigurationsPerAnimatio
     minDuration: const Duration(seconds: 4),
     maxDuration: const Duration(seconds: 4),
     minDistance: 200,
-    maxDistance: 200,
     minFadeOutThreshold: 0.6,
     maxFadeOutThreshold: 0.8,
-    minBeginScale: 1,
-    maxBeginScale: 1,
     minEndScale: 1,
     maxEndScale: 1,
   ),
@@ -132,23 +126,19 @@ Map<AvailableEffect, EffectConfiguration> defaultEffectConfigurationsPerAnimatio
     minDuration: const Duration(seconds: 4),
     maxDuration: const Duration(seconds: 4),
     minDistance: 200,
-    maxDistance: 200,
     minFadeOutThreshold: 0.8,
     maxFadeOutThreshold: 0.8,
-    minBeginScale: 1,
-    maxBeginScale: 1,
     minEndScale: 1,
     maxEndScale: 1,
   ),
   AvailableEffect.smoke: EffectConfiguration(
+    particlesPerEmit: 3,
     minAngle: -5,
     maxAngle: 5,
     minDuration: const Duration(seconds: 4),
     maxDuration: const Duration(seconds: 7),
     minFadeOutThreshold: 0.6,
     maxFadeOutThreshold: 0.8,
-    minBeginScale: 1,
-    maxBeginScale: 1,
     minEndScale: 1,
     maxEndScale: 1,
   ),
@@ -184,24 +174,25 @@ extension AvailableEffectExtension on AvailableEffect {
       case AvailableEffect.firework:
         return ExplodeEffect(
           particleConfiguration: ParticleConfiguration(
-              shape: CircleShape(),
-              size: const Size(5, 5),
-              color: color,
-              postEffectBuilder: (particle) =>
-                  ExplodeEffect(
-                      particleConfiguration: ParticleConfiguration(
-                        shape: CircleShape(),
-                        size: const Size(5, 5),
-                        color: const SingleParticleColor(color: Colors.blue),
-                      ),
-                      effectConfiguration: effectConfiguration.copyWith(
-                        maxAngle: 180,
-                        minAngle: -180,
-                        particleCount: 10,
-                        particlesPerEmit: 10,
-                        distanceCurve: Curves.decelerate,
-                        origin: particle.position,
-                      ))),
+            shape: CircleShape(),
+            size: const Size(5, 5),
+            color: color,
+            postEffectBuilder: (particle) => ExplodeEffect(
+              particleConfiguration: ParticleConfiguration(
+                shape: CircleShape(),
+                size: const Size(5, 5),
+                color: const SingleParticleColor(color: Colors.blue),
+              ),
+              effectConfiguration: effectConfiguration.copyWith(
+                maxAngle: 180,
+                minAngle: -180,
+                particleCount: 10,
+                particlesPerEmit: 10,
+                distanceCurve: Curves.decelerate,
+                origin: particle.position,
+              ),
+            ),
+          ),
           effectConfiguration: effectConfiguration.copyWith(
             emitDuration: const Duration(milliseconds: 600),
             distanceCurve: Curves.decelerate,
@@ -210,8 +201,7 @@ extension AvailableEffectExtension on AvailableEffect {
         );
       case AvailableEffect.smoke:
         return SmokeEffect(
-          particleConfiguration: ParticleConfiguration(
-              shape: CircleShape(), size: const Size(5, 5), color: color),
+          particleConfiguration: ParticleConfiguration(shape: CircleShape(), size: const Size(5, 5), color: color),
           effectConfiguration: effectConfiguration.copyWith(
             origin: Offset(
               size.width / 2,
@@ -233,7 +223,7 @@ extension AvailableEffectExtension on AvailableEffect {
               size.height / 2,
             ),
           ),
-          width: 60.0,
+          width: 60,
         );
       case AvailableEffect.pulse:
         return PulseEffect(

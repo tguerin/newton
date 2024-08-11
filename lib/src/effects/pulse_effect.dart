@@ -9,18 +9,17 @@ import 'package:newton_particles/newton_particles.dart';
 class PulseEffect extends Effect<AnimatedParticle> {
   /// Creates a `PulseEffect` with the specified configurations.
   ///
-  /// - [particleConfiguration]: Configuration for the individual particles.
   /// - [effectConfiguration]: Configuration for the effect behavior.
+  /// - [particleConfiguration]: Configuration for the individual particles.
   PulseEffect({
-    required super.particleConfiguration,
     required super.effectConfiguration,
+    required super.particleConfiguration,
   });
 
   @override
   AnimatedParticle instantiateParticle(Size surfaceSize) {
     final particlesPerEmit = effectConfiguration.particlesPerEmit;
-    final angle =
-        360 / particlesPerEmit * (activeParticles.length % particlesPerEmit);
+    final angle = 360 / particlesPerEmit * (activeParticles.length % particlesPerEmit);
     return AnimatedParticle(
       particle: Particle(
         configuration: particleConfiguration,
@@ -38,7 +37,7 @@ class PulseEffect extends Effect<AnimatedParticle> {
         angle: angle,
       ),
       distanceCurve: effectConfiguration.distanceCurve,
-      fadeInLimit: randomFadeInLimit(),
+      fadeInThreshold: randomFadeInThreshold(),
       fadeInCurve: effectConfiguration.fadeInCurve,
       fadeOutCurve: effectConfiguration.fadeOutCurve,
       scaleCurve: effectConfiguration.scaleCurve,

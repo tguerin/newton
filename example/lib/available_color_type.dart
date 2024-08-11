@@ -1,6 +1,6 @@
 enum ColorType {
-  single("Single color"),
-  linearInterpolation("Linear interpolation");
+  single('Single color'),
+  linearInterpolation('Linear interpolation');
 
   const ColorType(this.label);
 

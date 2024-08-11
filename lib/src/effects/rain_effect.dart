@@ -34,7 +34,7 @@ class RainEffect extends Effect<AnimatedParticle> {
       animationDuration: randomDuration(),
       scaleRange: randomScaleRange(),
       fadeOutThreshold: randomFadeOutThreshold(),
-      fadeInLimit: randomFadeInLimit(),
+      fadeInThreshold: randomFadeInThreshold(),
       distanceCurve: effectConfiguration.distanceCurve,
       fadeInCurve: effectConfiguration.fadeInCurve,
       fadeOutCurve: effectConfiguration.fadeOutCurve,

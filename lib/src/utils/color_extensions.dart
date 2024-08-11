@@ -56,8 +56,7 @@ extension ColorsInterpolation on List<Color> {
     final segment = 1.0 / (length - 1);
     final startColorIndex = (progress / segment).floor();
     final endColorIndex = (startColorIndex + 1).clamp(0, length - 1);
-    final interpolationFraction =
-        (progress - startColorIndex * segment) / segment;
+    final interpolationFraction = (progress - startColorIndex * segment) / segment;
 
     return Color.lerp(
       this[startColorIndex],

@@ -12,10 +12,9 @@ void main() {
 class NewtonExampleApp extends StatelessWidget {
   const NewtonExampleApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    const Map<int, Color> primaryColor = {
+    const primaryColor = <int, Color>{
       50: Color.fromRGBO(27, 27, 29, .1),
       100: Color.fromRGBO(27, 27, 29, .2),
       200: Color.fromRGBO(27, 27, 29, .3),
@@ -46,8 +45,7 @@ class NewtonConfigurationPage extends StatefulWidget {
   const NewtonConfigurationPage({super.key});
 
   @override
-  State<NewtonConfigurationPage> createState() =>
-      _NewtonConfigurationPageState();
+  State<NewtonConfigurationPage> createState() => _NewtonConfigurationPageState();
 }
 
 class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
@@ -55,10 +53,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   AvailableEffect _selectedAnimation = AvailableEffect.rain;
   EffectConfiguration _effectConfiguration =
-      defaultEffectConfigurationsPerAnimation[AvailableEffect.rain] ??
-          defaultEffectConfiguration;
-  ParticleColor _currentParticleColor =
-      const SingleParticleColor(color: Colors.white);
+      defaultEffectConfigurationsPerAnimation[AvailableEffect.rain] ?? defaultEffectConfiguration;
+  ParticleColor _currentParticleColor = const SingleParticleColor(color: Colors.white);
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +64,9 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         children: [
           Newton(
             activeEffects: [currentActiveEffect()],
-            onEffectStateChanged: (effect, state) => {
-              // You can react to effect state
-            },
+            onEffectStateChanged: (effect, state) => {},
           ),
-          configurationSection()
+          configurationSection(),
         ],
       ),
     );
@@ -105,28 +99,21 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
               const SizedBox(
                 height: 20,
               ),
-              if (_selectedAnimation.supportParameter(AnimationParameter.color))
-                colorSelection(),
+              if (_selectedAnimation.supportParameter(AnimationParameter.color)) colorSelection(),
               const SizedBox(
                 height: 20,
               ),
               particlesPerEmitSection(),
               emitDurationSection(),
               animationDurationSection(),
-              if (_selectedAnimation
-                  .supportParameter(AnimationParameter.distance))
-                particleDistanceSection(),
-              if (_selectedAnimation
-                  .supportParameter(AnimationParameter.fadeout))
-                particleFadeoutProgressSection(),
+              if (_selectedAnimation.supportParameter(AnimationParameter.distance)) particleDistanceSection(),
+              if (_selectedAnimation.supportParameter(AnimationParameter.fadeout)) particleFadeoutProgressSection(),
               particleBeginScaleSection(),
               particleEndScaleSection(),
-              if (_selectedAnimation.supportParameter(AnimationParameter.angle))
-                particleAngleSection(),
-              if (_selectedAnimation
-                  .supportParameter(AnimationParameter.trail)) ...[
+              if (_selectedAnimation.supportParameter(AnimationParameter.angle)) particleAngleSection(),
+              if (_selectedAnimation.supportParameter(AnimationParameter.trail)) ...[
                 trailWidthSection(),
-                trailProgressSection()
+                trailProgressSection(),
               ],
             ],
           ),
@@ -135,32 +122,30 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     );
   }
 
-  Widget animationSelectionSection(
-      {required AvailableEffect defaultAnimation}) {
+  Widget animationSelectionSection({required AvailableEffect defaultAnimation}) {
     return SizedBox(
-        width: 200,
-        child: DropdownButton<String>(
-          isExpanded: true,
-          value: defaultAnimation.label,
-          icon: const Icon(Icons.arrow_drop_down),
-          elevation: 16,
-          onChanged: (String? value) {
-            // This is called when the user selects an item.
-            setState(() {
-              _selectedAnimation = AvailableEffect.of(value!);
-              _effectConfiguration =
-                  defaultEffectConfigurationsPerAnimation[_selectedAnimation] ??
-                      defaultEffectConfiguration;
-            });
-          },
-          items: AvailableEffect.values
-              .map<DropdownMenuItem<String>>((AvailableEffect value) {
-            return DropdownMenuItem<String>(
-              value: value.label,
-              child: Text(value.label),
-            );
-          }).toList(),
-        ));
+      width: 200,
+      child: DropdownButton<String>(
+        isExpanded: true,
+        value: defaultAnimation.label,
+        icon: const Icon(Icons.arrow_drop_down),
+        elevation: 16,
+        onChanged: (String? value) {
+          // This is called when the user selects an item.
+          setState(() {
+            _selectedAnimation = AvailableEffect.of(value!);
+            _effectConfiguration =
+                defaultEffectConfigurationsPerAnimation[_selectedAnimation] ?? defaultEffectConfiguration;
+          });
+        },
+        items: AvailableEffect.values.map<DropdownMenuItem<String>>((AvailableEffect value) {
+          return DropdownMenuItem<String>(
+            value: value.label,
+            child: Text(value.label),
+          );
+        }).toList(),
+      ),
+    );
   }
 
   Widget animationDurationSection() {
@@ -169,7 +154,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       initialMax: _effectConfiguration.maxDuration.inMilliseconds.toDouble(),
       min: 100,
       max: 8000,
-      title: "Animation duration",
+      title: 'Animation duration',
       onChanged: (values) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
@@ -184,7 +169,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   Widget particlesPerEmitSection() {
     return SingleValueSelection(
       value: _effectConfiguration.particlesPerEmit.toDouble(),
-      title: "Particles per emit",
+      title: 'Particles per emit',
       onChanged: (value) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
@@ -193,14 +178,14 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         });
       },
       min: 1,
-      max: 100,
+      max: 1001,
     );
   }
 
   Widget emitDurationSection() {
     return SingleValueSelection(
       value: _effectConfiguration.emitDuration.inMilliseconds.toDouble(),
-      title: "Emit duration",
+      title: 'Emit duration',
       onChanged: (value) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
@@ -220,7 +205,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       initialMax: _effectConfiguration.maxDistance,
       min: 100,
       max: 2000,
-      title: "Particle distance",
+      title: 'Particle distance',
       onChanged: (values) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
@@ -238,7 +223,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       initialMax: _effectConfiguration.maxFadeOutThreshold,
       min: 0,
       max: 1,
-      title: "Particle fadeout threshold",
+      title: 'Particle fadeout threshold',
       onChanged: (values) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
@@ -257,8 +242,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       initialMax: _effectConfiguration.maxBeginScale,
       min: 0,
       max: 10,
-      divisions: 100,
-      title: "Particle begin scale",
+      title: 'Particle begin scale',
       onChanged: (values) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
@@ -277,8 +261,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       initialMax: _effectConfiguration.maxEndScale,
       min: 0,
       max: 10,
-      divisions: 100,
-      title: "Particle end scale",
+      title: 'Particle end scale',
       onChanged: (values) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
@@ -298,7 +281,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       min: -180,
       max: 180,
       divisions: 360,
-      title: "Particle angle",
+      title: 'Particle angle',
       onChanged: (values) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
@@ -315,12 +298,11 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   Widget trailProgressSection() {
     return SingleValueSelection(
       value: _effectConfiguration.trail.trailProgress,
-      title: "Trail Progress",
+      title: 'Trail Progress',
       onChanged: (value) {
         setState(() {
-          final trailWidth = _effectConfiguration.trail is NoTrail
-              ? 0.0
-              : (_effectConfiguration.trail as StraightTrail).trailWidth;
+          final trailWidth =
+              _effectConfiguration.trail is NoTrail ? 0.0 : (_effectConfiguration.trail as StraightTrail).trailWidth;
           _effectConfiguration = _effectConfiguration.copyWith(
             trail: StraightTrail(trailProgress: value, trailWidth: trailWidth),
           );
@@ -328,38 +310,37 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       },
       roundValue: false,
       precision: 3,
-      min: 0.0,
-      max: 1.0,
+      min: 0,
+      max: 1,
     );
   }
 
   Widget trailWidthSection() {
-    final trailWidth = _effectConfiguration.trail is NoTrail
-        ? 0.0
-        : (_effectConfiguration.trail as StraightTrail).trailWidth;
+    final trailWidth =
+        _effectConfiguration.trail is NoTrail ? 0.0 : (_effectConfiguration.trail as StraightTrail).trailWidth;
     return SingleValueSelection(
       value: trailWidth,
-      title: "Trail Width",
+      title: 'Trail Width',
       onChanged: (value) {
         setState(() {
           _effectConfiguration = _effectConfiguration.copyWith(
-            trail: StraightTrail(
-                trailProgress: _effectConfiguration.trail.trailProgress,
-                trailWidth: value),
+            trail: StraightTrail(trailProgress: _effectConfiguration.trail.trailProgress, trailWidth: value),
           );
         });
       },
       precision: 3,
-      min: 0.0,
+      min: 0,
       max: 10,
     );
   }
 
   Widget colorSelection() {
-    return ColorSelection(onChanged: (color) {
-      setState(() {
-        _currentParticleColor = color;
-      });
-    });
+    return ColorSelection(
+      onChanged: (color) {
+        setState(() {
+          _currentParticleColor = color;
+        });
+      },
+    );
   }
 }
