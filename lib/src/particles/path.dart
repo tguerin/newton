@@ -32,14 +32,14 @@ class StraightPathTransformation extends PathTransformation {
       : _angleCos = cos(radians(angle)),
         _angleSin = sin(radians(angle));
 
+  /// The angle of the straight path in degrees.
+  final double angle;
+
   /// The cosine of the angle, used for calculating horizontal movement.
   final double _angleCos;
 
   /// The sine of the angle, used for calculating vertical movement.
   final double _angleSin;
-
-  /// The angle of the straight path in degrees.
-  final double angle;
 
   /// The total distance the position moves along the straight line.
   final double distance;

@@ -69,38 +69,6 @@ class CircleShape extends Shape {
   }
 }
 
-/// Represents a square shape for rendering particles.
-///
-/// This class calculates the transformation needed to render particles as squares
-/// using the default sprite size.
-class SquareShape extends Shape {
-  @override
-  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
-    Particle particle,
-    ui.Image defaultShapes,
-  ) {
-    final rect = Rect.fromLTWH(
-      0,
-      0,
-      Shape.defaultSpriteSize.width,
-      Shape.defaultSpriteSize.height,
-    );
-    final transform = RSTransform.fromComponents(
-      rotation: 0,
-      scale: min(
-        particle.size.width / Shape.defaultSpriteSize.width,
-        particle.size.height / Shape.defaultSpriteSize.height,
-      ),
-      anchorX: Shape.defaultSpriteSize.width / 2,
-      anchorY: Shape.defaultSpriteSize.height / 2,
-      translateX: particle.position.dx,
-      translateY: particle.position.dy,
-    );
-    final color = particle.color;
-    return (image: defaultShapes, rect: rect, transform: transform, color: color);
-  }
-}
-
 /// Represents a shape based on an image for rendering particles.
 ///
 /// This class allows particles to be rendered using a custom image. The image
@@ -114,9 +82,9 @@ class ImageShape extends Shape {
 
   @override
   ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
-    Particle particle,
-    ui.Image defaultShapes,
-  ) {
+      Particle particle,
+      ui.Image defaultShapes,
+      ) {
     final rect = Rect.fromLTWH(
       0,
       0,
@@ -150,10 +118,10 @@ class ImageAssetShape extends Shape {
   /// - [placeholderImage]: An optional placeholder image used if the asset fails to load.
   /// - [deferLoading]: If set to true, the image loading will be deferred and must be initiated manually.
   ImageAssetShape(
-    this.imagePath, {
-    bool deferLoading = false,
-    ui.Image? placeholderImage,
-  }) : _imageShape = placeholderImage != null ? ImageShape(placeholderImage) : null {
+      this.imagePath, {
+        bool deferLoading = false,
+        ui.Image? placeholderImage,
+      }) : _imageShape = placeholderImage != null ? ImageShape(placeholderImage) : null {
     if (!deferLoading) {
       load();
     }
@@ -182,13 +150,45 @@ class ImageAssetShape extends Shape {
 
   @override
   ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
-    Particle particle,
-    ui.Image defaultShapes,
-  ) {
+      Particle particle,
+      ui.Image defaultShapes,
+      ) {
     final imageShape = _imageShape;
     if (imageShape == null) {
       return null;
     }
     return imageShape.computeTransformation(particle, defaultShapes);
+  }
+}
+
+/// Represents a square shape for rendering particles.
+///
+/// This class calculates the transformation needed to render particles as squares
+/// using the default sprite size.
+class SquareShape extends Shape {
+  @override
+  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
+    Particle particle,
+    ui.Image defaultShapes,
+  ) {
+    final rect = Rect.fromLTWH(
+      0,
+      0,
+      Shape.defaultSpriteSize.width,
+      Shape.defaultSpriteSize.height,
+    );
+    final transform = RSTransform.fromComponents(
+      rotation: 0,
+      scale: min(
+        particle.size.width / Shape.defaultSpriteSize.width,
+        particle.size.height / Shape.defaultSpriteSize.height,
+      ),
+      anchorX: Shape.defaultSpriteSize.width / 2,
+      anchorY: Shape.defaultSpriteSize.height / 2,
+      translateX: particle.position.dx,
+      translateY: particle.position.dy,
+    );
+    final color = particle.color;
+    return (image: defaultShapes, rect: rect, transform: transform, color: color);
   }
 }

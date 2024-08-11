@@ -10,12 +10,12 @@ import 'package:newton_particles/src/utils/random_extensions.dart';
 class FountainEffect extends Effect<AnimatedParticle> {
   /// Creates a `FountainEffect` with the specified configurations.
   ///
-  /// - [particleConfiguration]: Configuration for the individual particles.
   /// - [effectConfiguration]: Configuration for the effect behavior.
+  /// - [particleConfiguration]: Configuration for the individual particles.
   /// - [width]: The width of the fountain effect, controlling the horizontal spread of particles.
   FountainEffect({
-    required super.particleConfiguration,
     required super.effectConfiguration,
+    required super.particleConfiguration,
     required this.width,
   });
 
@@ -52,7 +52,7 @@ class FountainEffect extends Effect<AnimatedParticle> {
         path: path,
       ),
       fadeOutThreshold: randomFadeOutThreshold(),
-      fadeInLimit: randomFadeInLimit(),
+      fadeInThreshold: randomFadeInLimit(),
       scaleRange: randomScaleRange(),
       distanceCurve: effectConfiguration.distanceCurve,
       fadeInCurve: effectConfiguration.fadeInCurve,

@@ -35,11 +35,11 @@ class Particle {
   /// The current position of the particle.
   Offset position;
 
-  /// The current size of the particle.
-  Size size;
-
   /// The rotation in degrees of the particle
   double rotation;
+
+  /// The current size of the particle.
+  Size size;
 
   Color _color = Colors.black;
 
@@ -50,6 +50,15 @@ class Particle {
 
   /// Gets the initial size of the particle as defined in its configuration.
   Size get initialSize => configuration.size;
+
+  /// Computes the transformation for rendering the image using the particle state.
+  ///
+  /// Returns the computed transformation for rendering the image with the current particle state.
+  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
+      ui.Image defaultShapes,
+      ) {
+    return configuration.shape.computeTransformation(this, defaultShapes);
+  }
 
   /// Update the `color` of the particle.
   ///
@@ -65,14 +74,5 @@ class Particle {
   /// If opacity is outside the range [0,1] it will be clamped to the nearest value.
   void updateOpacity(double opacity) {
     _color = _color.withOpacity(opacity.clamp(0, 1));
-  }
-
-  /// Computes the transformation for rendering the image using the particle state.
-  ///
-  /// Returns the computed transformation for rendering the image with the current particle state.
-  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
-    ui.Image defaultShapes,
-  ) {
-    return configuration.shape.computeTransformation(this, defaultShapes);
   }
 }

@@ -31,11 +31,11 @@ import 'package:newton_particles/src/utils/random_extensions.dart';
 abstract class Effect<T extends AnimatedParticle> {
   /// Creates an `Effect` instance with the given particle and effect configurations.
   ///
-  /// The `particleConfiguration` and `effectConfiguration` parameters allow customization
+  /// The `effectConfiguration` and `particleConfiguration` parameters allow customization
   /// of particle behavior and emission characteristics.
   Effect({
-    required this.particleConfiguration,
     required this.effectConfiguration,
+    required this.particleConfiguration,
   });
 
   /// Immutable list of active particles managed by the effect.
@@ -308,11 +308,11 @@ abstract class Effect<T extends AnimatedParticle> {
   }
 
   /// Helper method to generate a random fade-in limit
-  /// within the range [EffectConfiguration.minFadeInLimit] - [EffectConfiguration.maxFadeInLimit].
+  /// within the range [EffectConfiguration.minFadeInThreshold] - [EffectConfiguration.maxFadeInThreshold].
   double randomFadeInLimit() {
     return random.nextDoubleRange(
-      effectConfiguration.minFadeInLimit,
-      effectConfiguration.maxFadeInLimit,
+      effectConfiguration.minFadeInThreshold,
+      effectConfiguration.maxFadeInThreshold,
     );
   }
 }

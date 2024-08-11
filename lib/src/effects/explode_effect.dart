@@ -9,11 +9,11 @@ import 'package:newton_particles/newton_particles.dart';
 class ExplodeEffect extends Effect<AnimatedParticle> {
   /// Creates a `ExplodeEffect` with the specified configurations.
   ///
-  /// - [particleConfiguration]: Configuration for the individual particles.
   /// - [effectConfiguration]: Configuration for the effect behavior.
+  /// - [particleConfiguration]: Configuration for the individual particles.
   ExplodeEffect({
-    required super.particleConfiguration,
     required super.effectConfiguration,
+    required super.particleConfiguration,
   });
 
   @override
@@ -35,7 +35,7 @@ class ExplodeEffect extends Effect<AnimatedParticle> {
         angle: randomAngle(),
       ),
       distanceCurve: effectConfiguration.distanceCurve,
-      fadeInLimit: randomFadeInLimit(),
+      fadeInThreshold: randomFadeInLimit(),
       fadeInCurve: effectConfiguration.fadeInCurve,
       fadeOutCurve: effectConfiguration.fadeOutCurve,
       scaleCurve: effectConfiguration.scaleCurve,

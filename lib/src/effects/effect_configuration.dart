@@ -7,7 +7,6 @@ import 'package:newton_particles/src/effects/trail.dart';
 /// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
 /// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
 class EffectConfiguration {
-
   /// Creates an instance of `EffectConfiguration` with the specified parameters.
   ///
   /// All parameters have default values that can be overridden during object creation.
@@ -23,14 +22,14 @@ class EffectConfiguration {
     this.maxDistance = 200,
     this.maxDuration = const Duration(seconds: 1),
     this.maxEndScale = -1,
-    this.maxFadeInLimit = 0,
+    this.maxFadeInThreshold = 0,
     this.maxFadeOutThreshold = 1,
     this.minAngle = 0,
     this.minBeginScale = 1,
     this.minDistance = 100,
     this.minDuration = const Duration(seconds: 1),
     this.minEndScale = -1,
-    this.minFadeInLimit = 0,
+    this.minFadeInThreshold = 0,
     this.minFadeOutThreshold = 1,
     this.origin = Offset.zero,
     this.particleCount = 0,
@@ -59,7 +58,7 @@ class EffectConfiguration {
           'End min scale can’t be greater than end max scale',
         ),
         assert(
-          minFadeInLimit <= maxFadeInLimit,
+          minFadeInThreshold <= maxFadeInThreshold,
           'Min fadeIn limit can’t be greater than end max fadeIn threshold',
         ),
         assert(
@@ -100,8 +99,8 @@ class EffectConfiguration {
   /// Maximum final particle scale. Default: `-1`.
   final double maxEndScale;
 
-  /// Maximum opacity limit for particle fade-in. Default: `0`.
-  final double maxFadeInLimit;
+  /// Maximum opacity threshold for particle fade-in. Default: `0`.
+  final double maxFadeInThreshold;
 
   /// Maximum opacity threshold for particle fade-out. Default: `1`.
   final double maxFadeOutThreshold;
@@ -118,8 +117,8 @@ class EffectConfiguration {
   /// Minimum particle animation duration. Default: `1s`.
   final Duration minDuration;
 
-  /// Minimum opacity limit for particle fade-in. Default: `0`.
-  final double minFadeInLimit;
+  /// Minimum opacity threshold for particle fade-in. Default: `0`.
+  final double minFadeInThreshold;
 
   /// Minimum opacity threshold for particle fade-out. Default: `1`.
   final double minFadeOutThreshold;
@@ -160,14 +159,14 @@ class EffectConfiguration {
     double? maxDistance,
     Duration? maxDuration,
     double? maxEndScale,
-    double? maxFadeInLimit,
+    double? maxFadeInThreshold,
     double? maxFadeOutThreshold,
     double? minAngle,
     double? minBeginScale,
     double? minDistance,
     Duration? minDuration,
     double? minEndScale,
-    double? minFadeInLimit,
+    double? minFadeInThreshold,
     double? minFadeOutThreshold,
     Offset? origin,
     int? particleCount,
@@ -188,14 +187,14 @@ class EffectConfiguration {
       maxDistance: maxDistance ?? this.maxDistance,
       maxDuration: maxDuration ?? this.maxDuration,
       maxEndScale: maxEndScale ?? this.maxEndScale,
-      maxFadeInLimit: maxFadeInLimit ?? this.maxFadeInLimit,
+      maxFadeInThreshold: maxFadeInThreshold ?? this.maxFadeInThreshold,
       maxFadeOutThreshold: maxFadeOutThreshold ?? this.maxFadeOutThreshold,
       minAngle: minAngle ?? this.minAngle,
       minBeginScale: minBeginScale ?? this.minBeginScale,
       minDistance: minDistance ?? this.minDistance,
       minDuration: minDuration ?? this.minDuration,
       minEndScale: minEndScale ?? this.minEndScale,
-      minFadeInLimit: minFadeInLimit ?? this.minFadeInLimit,
+      minFadeInThreshold: minFadeInThreshold ?? this.minFadeInThreshold,
       minFadeOutThreshold: minFadeOutThreshold ?? this.minFadeOutThreshold,
       origin: origin ?? this.origin,
       particleCount: particleCount ?? this.particleCount,

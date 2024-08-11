@@ -11,12 +11,12 @@ import 'package:newton_particles/src/utils/random_extensions.dart';
 class SmokeEffect extends Effect<AnimatedParticle> {
   /// Creates a `SmokeEffect` with the specified configurations.
   ///
-  /// - [particleConfiguration]: Configuration for the individual particles.
   /// - [effectConfiguration]: Configuration for the effect behavior.
+  /// - [particleConfiguration]: Configuration for the individual particles.
   /// - [smokeWidth]: The width of the smoke effect in logical pixels.
   SmokeEffect({
-    required super.particleConfiguration,
     required super.effectConfiguration,
+    required super.particleConfiguration,
     this.smokeWidth = 30,
   });
 
@@ -43,7 +43,7 @@ class SmokeEffect extends Effect<AnimatedParticle> {
         angle: angleDegrees,
       ),
       fadeOutThreshold: randomFadeOutThreshold(),
-      fadeInLimit: randomFadeInLimit(),
+      fadeInThreshold: randomFadeInLimit(),
       scaleRange: randomScaleRange(),
       distanceCurve: effectConfiguration.distanceCurve,
       fadeInCurve: effectConfiguration.fadeInCurve,

@@ -119,14 +119,14 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
                       _backgroundEffectManager.effects.isNotEmpty || _foregroundEffectManager.effects.isNotEmpty,
                   size: constraints.biggest,
                   painter: NewtonPainter(
-                    shapesSpriteSheet: snapshot.data!,
-                    effectsNotifier: _backgroundEffectManager,
                     blendMode: widget.blendMode,
+                    effectsNotifier: _backgroundEffectManager,
+                    shapesSpriteSheet: snapshot.data!,
                   ),
                   foregroundPainter: NewtonPainter(
-                    shapesSpriteSheet: snapshot.data!,
-                    effectsNotifier: _foregroundEffectManager,
                     blendMode: widget.blendMode,
+                    effectsNotifier: _foregroundEffectManager,
+                    shapesSpriteSheet: snapshot.data!,
                   ),
                   child: widget.child,
                 );
