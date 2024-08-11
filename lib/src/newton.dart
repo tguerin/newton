@@ -96,19 +96,13 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       _foregroundEffectManager.addAll(_pendingActiveEffects.where(_isForegroundEffect));
       _pendingActiveEffects.clear();
     }
-    if (_backgroundEffectManager.effects.isNotEmpty) {
-      for (final element in _backgroundEffectManager.effects) {
-        element.forward(elapsed - _lastElapsed);
-      }
-      _lastElapsed = elapsed;
+    for (final element in _backgroundEffectManager.effects) {
+      element.forward(elapsed - _lastElapsed);
     }
-
-    if (_foregroundEffectManager.effects.isNotEmpty) {
-      for (final element in _foregroundEffectManager.effects) {
-        element.forward(elapsed - _lastElapsed);
-      }
-      _lastElapsed = elapsed;
+    for (final element in _foregroundEffectManager.effects) {
+      element.forward(elapsed - _lastElapsed);
     }
+    _lastElapsed = elapsed;
   }
 
   @override

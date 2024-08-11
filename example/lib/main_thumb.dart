@@ -59,14 +59,14 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
     super.initState();
   }
 
-  double emojiSize = 50;
-  double btnSize = 50;
+  final _emojiSize = 50.0;
+  final _btnSize = 50.0;
 
-  Effect currentActiveEffect(int index) {
+  Effect currentActiveEffect(int index, Duration delay) {
     return SmokeEffect(
       particleConfiguration: ParticleConfiguration(
         shape: _imageAssets[index],
-        size: Size.square(emojiSize),
+        size: Size.square(_emojiSize),
       ),
       effectConfiguration: EffectConfiguration(
         particleCount: 100,
@@ -87,7 +87,8 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
         maxBeginScale: 0.9,
         minEndScale: 1,
         maxEndScale: 1.2,
-        origin: Offset(btnSize / 2, 0),
+        startDelay: delay,
+        origin: Offset(_btnSize / 2, 0),
       ),
     );
   }
@@ -104,18 +105,17 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
               HapticFeedback.mediumImpact();
               _imageAssets.shuffle();
               for (var i = 0; i < _imageAssets.length; i++) {
-                Future.delayed(Duration(milliseconds: i * 100), () {
-                  _newtonKey.currentState?.addEffect(currentActiveEffect(i));
-                });
+                _newtonKey.currentState?.addEffect(currentActiveEffect(i, Duration(milliseconds: i * 2000)));
               }
             },
             child: Container(
-              width: btnSize,
-              height: btnSize,
+              width: _btnSize,
+              height: _btnSize,
               decoration: BoxDecoration(
                 color: Colors.red.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(btnSize / 2),
+                borderRadius: BorderRadius.circular(_btnSize / 2),
               ),
+              child: const Center(child: Text('click')),
             ),
           ),
         ),

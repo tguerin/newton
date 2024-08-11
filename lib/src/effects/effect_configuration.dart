@@ -7,6 +7,7 @@ import 'package:newton_particles/src/effects/trail.dart';
 /// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
 /// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
 class EffectConfiguration {
+
   /// Creates an instance of `EffectConfiguration` with the specified parameters.
   ///
   /// All parameters have default values that can be overridden during object creation.
@@ -35,6 +36,7 @@ class EffectConfiguration {
     this.particleCount = 0,
     this.particlesPerEmit = 1,
     this.scaleCurve = Curves.linear,
+    this.startDelay = Duration.zero,
     this.trail = const NoTrail(),
   })  : assert(
           minAngle <= maxAngle,
@@ -137,6 +139,9 @@ class EffectConfiguration {
   /// Curve to control particle scaling animation. Default: [Curves.linear].
   final Curve scaleCurve;
 
+  /// Delay to wait before starting effect. Default: [Duration.zero].
+  final Duration startDelay;
+
   /// The trail effect associated with emitted particles. Default: [NoTrail].
   final Trail trail;
 
@@ -168,6 +173,7 @@ class EffectConfiguration {
     int? particleCount,
     int? particlesPerEmit,
     Curve? scaleCurve,
+    Duration? startDelay,
     Trail? trail,
   }) {
     return EffectConfiguration(
@@ -195,6 +201,7 @@ class EffectConfiguration {
       particleCount: particleCount ?? this.particleCount,
       particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,
       scaleCurve: scaleCurve ?? this.scaleCurve,
+      startDelay: startDelay ?? this.startDelay,
       trail: trail ?? this.trail,
     );
   }
