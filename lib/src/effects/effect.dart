@@ -183,7 +183,7 @@ abstract class Effect<T extends AnimatedParticle> {
   /// Terminates the effect when all emissions are complete and no particles remain active.
   void _killEffectWhenOver() {
     if (_isEmissionOver()) {
-      kill();
+      dispose();
     }
   }
 
@@ -245,10 +245,11 @@ abstract class Effect<T extends AnimatedParticle> {
   ///
   /// This method transitions the effect to the killed state, stops emission,
   /// and clears all active particles and callbacks.
-  void kill() {
+  void dispose() {
     stop(cancel: true);
     _updateState(EffectState.killed);
     postEffectCallback = null;
+    particleConfiguration.dispose();
   }
 
   /// Helper method to generate a random distance

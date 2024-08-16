@@ -35,4 +35,8 @@ class ParticleConfiguration {
 
   /// Effect to trigger once particle travel is over.
   final Effect<AnimatedParticle> Function(Particle, Size surfaceSize)? postEffectBuilder;
+
+  void dispose() {
+    shape.dispose();
+  }
 }

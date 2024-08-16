@@ -14,7 +14,7 @@ import 'package:newton_particles/newton_particles.dart';
 ///
 /// Each shape must override the [computeTransformation] method to calculate the necessary
 /// transformation based on the particle's properties and the shape's specifications.
-sealed class Shape {
+abstract sealed class Shape {
   /// Constructs a [Shape] instance.
   const Shape();
 
@@ -35,6 +35,8 @@ sealed class Shape {
     Particle particle,
     ui.Image defaultShapes,
   );
+
+  void dispose();
 }
 
 /// Represents a circular shape for rendering particles.
@@ -67,6 +69,9 @@ class CircleShape extends Shape {
     final color = particle.color;
     return (image: defaultShapes, rect: rect, transform: transform, color: color);
   }
+
+  @override
+  void dispose() {}
 }
 
 /// Represents a shape based on an image for rendering particles.
@@ -104,6 +109,11 @@ class ImageShape extends Shape {
     );
     final color = particle.color;
     return (image: image, rect: rect, transform: transform, color: color);
+  }
+
+  @override
+  void dispose() {
+    image.dispose();
   }
 }
 
@@ -159,6 +169,11 @@ class ImageAssetShape extends Shape {
     }
     return imageShape.computeTransformation(particle, defaultShapes);
   }
+
+  @override
+  void dispose() {
+    _imageShape?.dispose();
+  }
 }
 
 /// Represents a square shape for rendering particles.
@@ -191,4 +206,7 @@ class SquareShape extends Shape {
     final color = particle.color;
     return (image: defaultShapes, rect: rect, transform: transform, color: color);
   }
+
+  @override
+  void dispose() {}
 }
