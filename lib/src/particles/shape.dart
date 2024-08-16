@@ -14,7 +14,7 @@ import 'package:newton_particles/newton_particles.dart';
 ///
 /// Each shape must override the [computeTransformation] method to calculate the necessary
 /// transformation based on the particle's properties and the shape's specifications.
-abstract sealed class Shape {
+sealed class Shape {
   /// Constructs a [Shape] instance.
   const Shape();
 
