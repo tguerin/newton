@@ -38,6 +38,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   newton_particles:
     path: ../
+  vector_math: ^2.1.4
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to

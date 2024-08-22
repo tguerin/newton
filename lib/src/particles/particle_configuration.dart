@@ -34,5 +34,5 @@ class ParticleConfiguration {
   final ParticleColor color;
 
   /// Effect to trigger once particle travel is over.
-  final Effect<AnimatedParticle> Function(Particle, Size surfaceSize)? postEffectBuilder;
+  final Effect<AnimatedParticle, EffectConfiguration> Function(Particle, Effect<AnimatedParticle, EffectConfiguration>)? postEffectBuilder;
 }

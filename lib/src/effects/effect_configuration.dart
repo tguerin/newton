@@ -1,17 +1,16 @@
-import 'package:flutter/animation.dart';
-import 'package:newton_particles/src/effects/trail.dart';
+import 'package:flutter/widgets.dart';
+import 'package:newton_particles/newton_particles.dart';
 
 /// Configuration class for defining particle emission properties in Newton effects.
 ///
 /// The `EffectConfiguration` class provides customizable properties to control particle emission
 /// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
 /// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
-class EffectConfiguration {
+abstract class EffectConfiguration {
   /// Creates an instance of `EffectConfiguration` with the specified parameters.
   ///
   /// All parameters have default values that can be overridden during object creation.
   const EffectConfiguration({
-    this.distanceCurve = Curves.linear,
     this.emitCurve = Curves.decelerate,
     this.emitDuration = const Duration(milliseconds: 100),
     this.fadeInCurve = Curves.linear,
@@ -19,18 +18,18 @@ class EffectConfiguration {
     this.foreground = false,
     this.maxAngle = 0,
     this.maxBeginScale = 1,
-    this.maxDistance = 200,
     this.maxDuration = const Duration(seconds: 1),
     this.maxEndScale = -1,
     this.maxFadeInThreshold = 0,
     this.maxFadeOutThreshold = 1,
+    this.maxOriginOffset = Offset.zero,
     this.minAngle = 0,
     this.minBeginScale = 1,
-    this.minDistance = 100,
     this.minDuration = const Duration(seconds: 1),
     this.minEndScale = -1,
     this.minFadeInThreshold = 0,
     this.minFadeOutThreshold = 1,
+    this.minOriginOffset = Offset.zero,
     this.origin = const Offset(0.5, 0.5),
     this.particleCount = 0,
     this.particlesPerEmit = 1,
@@ -44,10 +43,6 @@ class EffectConfiguration {
         assert(
           minBeginScale <= maxBeginScale,
           'Begin min scale can’t be greater than begin max scale',
-        ),
-        assert(
-          minDistance <= maxDistance,
-          'Min distance can’t be greater than max distance',
         ),
         assert(
           minDuration <= maxDuration,
@@ -65,9 +60,6 @@ class EffectConfiguration {
           minFadeOutThreshold <= maxFadeOutThreshold,
           'Min fadeOut threshold can’t be greater than end max fadeOut threshold',
         );
-
-  /// Curve to control particle travel distance. Default: [Curves.linear].
-  final Curve distanceCurve;
 
   /// Curve to control the emission timing. Default: [Curves.decelerate].
   final Curve emitCurve;
@@ -90,9 +82,6 @@ class EffectConfiguration {
   /// Maximum initial particle scale. Default: `1`.
   final double maxBeginScale;
 
-  /// Maximum distance traveled by particles. Default: `200`.
-  final double maxDistance;
-
   /// Maximum particle animation duration. Default: `1s`.
   final Duration maxDuration;
 
@@ -105,14 +94,14 @@ class EffectConfiguration {
   /// Maximum opacity threshold for particle fade-out. Default: `1`.
   final double maxFadeOutThreshold;
 
+  /// Offset for the maximum origin point of particle emission. Default: [Offset.zero].
+  final Offset maxOriginOffset;
+
   /// Minimum angle in degrees for particle trajectory. Default: `0`.
   final double minAngle;
 
   /// Minimum initial particle scale. Default: `1`.
   final double minBeginScale;
-
-  /// Minimum distance traveled by particles. Default: `100`.
-  final double minDistance;
 
   /// Minimum particle animation duration. Default: `1s`.
   final Duration minDuration;
@@ -126,7 +115,10 @@ class EffectConfiguration {
   /// Minimum final particle scale. Default: `-1`.
   final double minEndScale;
 
-  /// Origin point for particle emission, origin is relative from top left of the container. Default: `Offset(0.5, 0.5)`.
+  /// Offset for the minimum origin point of particle emission. Default: [Offset.zero].
+  final Offset minOriginOffset;
+
+  /// Origin point for particle emission, relative from the top-left of the container. Default: `Offset(0.5, 0.5)`.
   final Offset origin;
 
   /// Total number of particles to emit. Default: `0` means infinite count.
@@ -138,70 +130,69 @@ class EffectConfiguration {
   /// Curve to control particle scaling animation. Default: [Curves.linear].
   final Curve scaleCurve;
 
-  /// Delay to wait before starting effect. Default: [Duration.zero].
+  /// Delay before starting the effect. Default: [Duration.zero].
   final Duration startDelay;
 
   /// The trail effect associated with emitted particles. Default: [NoTrail].
   final Trail trail;
 
-  /// Returns a copy of this configuration with the given fields replaced with the new values.
-  ///
-  /// This method allows for creating modified copies of the configuration by overriding specific parameters.
-  EffectConfiguration copyWith({
-    Curve? distanceCurve,
-    Curve? emitCurve,
-    Duration? emitDuration,
-    Curve? fadeInCurve,
-    Curve? fadeOutCurve,
-    bool? foreground,
-    double? maxAngle,
-    double? maxBeginScale,
-    double? maxDistance,
-    Duration? maxDuration,
-    double? maxEndScale,
-    double? maxFadeInThreshold,
-    double? maxFadeOutThreshold,
-    double? minAngle,
-    double? minBeginScale,
-    double? minDistance,
-    Duration? minDuration,
-    double? minEndScale,
-    double? minFadeInThreshold,
-    double? minFadeOutThreshold,
-    Offset? origin,
-    int? particleCount,
-    int? particlesPerEmit,
-    Curve? scaleCurve,
-    Duration? startDelay,
-    Trail? trail,
-  }) {
-    return EffectConfiguration(
-      distanceCurve: distanceCurve ?? this.distanceCurve,
-      emitCurve: emitCurve ?? this.emitCurve,
-      emitDuration: emitDuration ?? this.emitDuration,
-      fadeInCurve: fadeInCurve ?? this.fadeInCurve,
-      fadeOutCurve: fadeOutCurve ?? this.fadeOutCurve,
-      foreground: foreground ?? this.foreground,
-      maxAngle: maxAngle ?? this.maxAngle,
-      maxBeginScale: maxBeginScale ?? this.maxBeginScale,
-      maxDistance: maxDistance ?? this.maxDistance,
-      maxDuration: maxDuration ?? this.maxDuration,
-      maxEndScale: maxEndScale ?? this.maxEndScale,
-      maxFadeInThreshold: maxFadeInThreshold ?? this.maxFadeInThreshold,
-      maxFadeOutThreshold: maxFadeOutThreshold ?? this.maxFadeOutThreshold,
-      minAngle: minAngle ?? this.minAngle,
-      minBeginScale: minBeginScale ?? this.minBeginScale,
-      minDistance: minDistance ?? this.minDistance,
-      minDuration: minDuration ?? this.minDuration,
-      minEndScale: minEndScale ?? this.minEndScale,
-      minFadeInThreshold: minFadeInThreshold ?? this.minFadeInThreshold,
-      minFadeOutThreshold: minFadeOutThreshold ?? this.minFadeOutThreshold,
-      origin: origin ?? this.origin,
-      particleCount: particleCount ?? this.particleCount,
-      particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,
-      scaleCurve: scaleCurve ?? this.scaleCurve,
-      startDelay: startDelay ?? this.startDelay,
-      trail: trail ?? this.trail,
+  /// Helper method to generate a random duration within the range [minAngle] - [maxAngle].
+  double randomAngle() {
+    return random.nextDoubleRange(
+      minAngle,
+      maxAngle,
+    );
+  }
+
+  /// Helper method to generate a random duration within the range [minDuration] - [maxDuration].
+  Duration randomDuration() {
+    return Duration(
+      milliseconds: random.nextIntRange(
+        minDuration.inMilliseconds,
+        maxDuration.inMilliseconds,
+      ),
+    );
+  }
+
+  /// Helper method to generate a random origin offset within the range [minOriginOffset] - [maxOriginOffset].
+  Offset randomOriginOffset() {
+    return Offset(
+      random.nextDoubleRange(minOriginOffset.dx, maxOriginOffset.dx),
+      random.nextDoubleRange(minOriginOffset.dy, maxOriginOffset.dy),
+    );
+  }
+
+  /// Helper method to generate a random scale tween
+  /// within the range [minBeginScale] - [maxBeginScale] and [minEndScale] - [maxEndScale].
+  Tween<double> randomScaleRange() {
+    final beginScale = random.nextDoubleRange(
+      minBeginScale,
+      maxBeginScale,
+    );
+    final endScale = (minEndScale < 0 || maxEndScale < 0)
+        ? beginScale
+        : random.nextDoubleRange(
+            minEndScale,
+            maxEndScale,
+          );
+    return Tween(begin: beginScale, end: endScale);
+  }
+
+  /// Helper method to generate a random fade-out threshold
+  /// within the range [minFadeOutThreshold] - [maxFadeOutThreshold].
+  double randomFadeOutThreshold() {
+    return random.nextDoubleRange(
+      minFadeOutThreshold,
+      maxFadeOutThreshold,
+    );
+  }
+
+  /// Helper method to generate a random fade-in limit
+  /// within the range [EffectConfiguration.minFadeInThreshold] - [EffectConfiguration.maxFadeInThreshold].
+  double randomFadeInThreshold() {
+    return random.nextDoubleRange(
+      minFadeInThreshold,
+      maxFadeInThreshold,
     );
   }
 }

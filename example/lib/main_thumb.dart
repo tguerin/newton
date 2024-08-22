@@ -57,13 +57,13 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
   final _emojiSize = 50.0;
   final _btnSize = 50.0;
 
-  Effect currentActiveEffect(int index, Duration delay) {
-    return SmokeEffect(
+  DeterministicEffect currentActiveEffect(int index, Duration delay) {
+    return DeterministicEffect(
       particleConfiguration: ParticleConfiguration(
         shape: _imageAssets[index],
         size: Size.square(_emojiSize),
       ),
-      effectConfiguration: EffectConfiguration(
+      effectConfiguration: DeterministicEffectConfiguration(
         particleCount: 100,
         particlesPerEmit: 100,
         distanceCurve: Curves.slowMiddle,
@@ -71,8 +71,8 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
         fadeInCurve: Curves.easeIn,
         fadeOutCurve: Curves.easeOut,
         emitDuration: const Duration(milliseconds: 250),
-        minAngle: -45,
-        maxAngle: 45,
+        minAngle: -135,
+        maxAngle: -45,
         minDistance: 90,
         maxDistance: 220,
         maxDuration: const Duration(seconds: 3),
@@ -85,7 +85,6 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
         startDelay: delay,
         origin: const Offset(0.5, 0),
       ),
-      smokeWidth: 0,
     );
   }
 

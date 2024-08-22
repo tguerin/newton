@@ -1,0 +1,88 @@
+import 'package:flutter/widgets.dart';
+import 'package:forge2d/forge2d.dart';
+import 'package:newton_particles/newton_particles.dart';
+
+class RelativisticEffectConfiguration extends EffectConfiguration {
+  final Vector2 gravity;
+
+  RelativisticEffectConfiguration({
+    required this.gravity,
+    super.emitCurve,
+    super.emitDuration,
+    super.fadeInCurve,
+    super.fadeOutCurve,
+    super.foreground,
+    super.maxAngle,
+    super.maxBeginScale,
+    super.maxDuration,
+    super.maxEndScale,
+    super.maxFadeInThreshold,
+    super.maxFadeOutThreshold,
+    super.minAngle,
+    super.minBeginScale,
+    super.minDuration,
+    super.minEndScale,
+    super.minFadeInThreshold,
+    super.minFadeOutThreshold,
+    super.origin,
+    super.particleCount,
+    super.particlesPerEmit,
+    super.scaleCurve,
+    super.startDelay,
+    super.trail,
+  });
+
+  RelativisticEffectConfiguration copyWith({
+    Curve? emitCurve,
+    Duration? emitDuration,
+    Curve? fadeInCurve,
+    Curve? fadeOutCurve,
+    bool? foreground,
+    Vector2? gravity,
+    double? maxAngle,
+    double? maxBeginScale,
+    Duration? maxDuration,
+    double? maxEndScale,
+    double? maxFadeInThreshold,
+    double? maxFadeOutThreshold,
+    double? minAngle,
+    double? minBeginScale,
+    Duration? minDuration,
+    double? minEndScale,
+    double? minFadeInThreshold,
+    double? minFadeOutThreshold,
+    Offset? origin,
+    int? particleCount,
+    int? particlesPerEmit,
+    Curve? scaleCurve,
+    Duration? startDelay,
+    Trail? trail,
+  }) {
+    return RelativisticEffectConfiguration(
+      gravity: gravity ?? this.gravity,
+      emitCurve: emitCurve ?? this.emitCurve,
+      emitDuration: emitDuration ?? this.emitDuration,
+      fadeInCurve: fadeInCurve ?? this.fadeInCurve,
+      fadeOutCurve: fadeOutCurve ?? this.fadeOutCurve,
+      foreground: foreground ?? this.foreground,
+      maxAngle: maxAngle ?? this.maxAngle,
+      maxBeginScale: maxBeginScale ?? this.maxBeginScale,
+      maxDuration: maxDuration ?? this.maxDuration,
+      maxEndScale: maxEndScale ?? this.maxEndScale,
+      maxFadeInThreshold: maxFadeInThreshold ?? this.maxFadeInThreshold,
+      maxFadeOutThreshold: maxFadeOutThreshold ?? this.maxFadeOutThreshold,
+      minAngle: minAngle ?? this.minAngle,
+      minBeginScale: minBeginScale ?? this.minBeginScale,
+      minDuration: minDuration ?? this.minDuration,
+      minEndScale: minEndScale ?? this.minEndScale,
+      minFadeInThreshold: minFadeInThreshold ?? this.minFadeInThreshold,
+      minFadeOutThreshold: minFadeOutThreshold ?? this.minFadeOutThreshold,
+      origin: origin ?? this.origin,
+      particleCount: particleCount ?? this.particleCount,
+      particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,
+      scaleCurve: scaleCurve ?? this.scaleCurve,
+      startDelay: startDelay ?? this.startDelay,
+      trail: trail ?? this.trail,
+    );
+  }
+}

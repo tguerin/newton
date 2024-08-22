@@ -51,9 +51,9 @@ class NewtonConfigurationPage extends StatefulWidget {
 class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   final _scrollController = ScrollController();
 
-  AvailableEffect _selectedAnimation = AvailableEffect.rain;
-  EffectConfiguration _effectConfiguration =
-      defaultEffectConfigurationsPerAnimation[AvailableEffect.rain] ?? defaultEffectConfiguration;
+  AvailableEffect _selectedAnimation = AvailableEffect.explode;
+  DeterministicEffectConfiguration _effectConfiguration =
+      defaultEffectConfigurationsPerAnimation[AvailableEffect.explode]!;
   ParticleColor _currentParticleColor = const SingleParticleColor(color: Colors.white);
 
   @override
@@ -72,7 +72,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     );
   }
 
-  Effect currentActiveEffect() {
+  Effect<AnimatedParticle, EffectConfiguration> currentActiveEffect() {
     final size = MediaQuery.sizeOf(context);
     return _selectedAnimation.instantiate(
       size: size,
@@ -135,7 +135,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           setState(() {
             _selectedAnimation = AvailableEffect.of(value!);
             _effectConfiguration =
-                defaultEffectConfigurationsPerAnimation[_selectedAnimation] ?? defaultEffectConfiguration;
+                defaultEffectConfigurationsPerAnimation[_selectedAnimation]!;
           });
         },
         items: AvailableEffect.values.map<DropdownMenuItem<String>>((AvailableEffect value) {
