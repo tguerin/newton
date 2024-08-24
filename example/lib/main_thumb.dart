@@ -92,7 +92,6 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
       body: Center(
         child: Newton(
           key: _newtonKey,
-          blendMode: BlendMode.srcIn,
           child: SizedBox(
             width: _btnSize,
             height: _btnSize,

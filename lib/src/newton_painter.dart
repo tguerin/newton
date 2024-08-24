@@ -12,7 +12,6 @@ import 'package:newton_particles/newton_particles.dart';
 class NewtonPainter extends CustomPainter {
   /// Creates an instance of [NewtonPainter].
   ///
-  /// - [blendMode]: Specifies how the particles should be blended on the canvas.
   /// - [effects]: A list of particle effects to be rendered.
   /// - [elapsedTimeNotifier]: A [ValueListenable] that notifies when the elapsed time changes,
   ///   which is used to update the animations.
@@ -20,16 +19,10 @@ class NewtonPainter extends CustomPainter {
   ///
   /// The painter listens for changes in the [elapsedTimeNotifier] to update the canvas.
   NewtonPainter({
-    required this.blendMode,
     required this.effects,
     required this.elapsedTimeNotifier,
     required this.shapesSpriteSheet,
   }) : super(repaint: elapsedTimeNotifier);
-
-  /// The blend mode to apply when rendering particles.
-  ///
-  /// This determines how the particles' colors blend with the background.
-  final BlendMode blendMode;
 
   /// The list of particle effects to be rendered by this painter.
   ///
@@ -48,10 +41,10 @@ class NewtonPainter extends CustomPainter {
   final ui.Image shapesSpriteSheet;
 
   // Internal state for managing transformations and rendering.
-  final Set<ui.Image> _allImages = {};
-  final Map<ui.Image, List<RSTransform>> _transformsPerImage = {};
-  final Map<ui.Image, List<Rect>> _rectsPerImage = {};
-  final Map<ui.Image, List<Color>> _colorsPerImage = {};
+  final Set<_BlendedImage> _allBlendedImages = {};
+  final Map<_BlendedImage, List<RSTransform>> _transformsPerImage = {};
+  final Map<_BlendedImage, List<Rect>> _rectsPerImage = {};
+  final Map<_BlendedImage, List<Color>> _colorsPerImage = {};
 
   /// Paints the particle effects onto the provided canvas.
   ///
@@ -73,13 +66,13 @@ class NewtonPainter extends CustomPainter {
     });
 
     // Draw all particles using drawAtlas for efficiency.
-    for (final image in _allImages) {
+    for (final blendedImage in _allBlendedImages) {
       canvas.drawAtlas(
-        image,
-        _transformsPerImage[image] ?? [],
-        _rectsPerImage[image] ?? [],
-        _colorsPerImage[image] ?? [],
-        blendMode,
+        blendedImage.image,
+        _transformsPerImage[blendedImage] ?? [],
+        _rectsPerImage[blendedImage] ?? [],
+        _colorsPerImage[blendedImage],
+        blendedImage.blendMode,
         null,
         Paint(),
       );
@@ -103,7 +96,7 @@ class NewtonPainter extends CustomPainter {
     _transformsPerImage.clear();
     _rectsPerImage.clear();
     _colorsPerImage.clear();
-    _allImages.clear();
+    _allBlendedImages.clear();
   }
 
   /// Updates the transformation maps with the given particle's properties.
@@ -114,22 +107,41 @@ class NewtonPainter extends CustomPainter {
     final transformationData = activeParticle.particle.computeTransformation(shapesSpriteSheet);
     if (transformationData == null) return; // Skip if no transformation data.
 
+    final blendedImage = _BlendedImage(
+      image: transformationData.image,
+      blendMode: transformationData.blendMode ?? ui.BlendMode.dstIn,
+    );
     // Add the image and its transformations to the respective maps.
-    _allImages.add(transformationData.image);
+    _allBlendedImages.add(blendedImage);
     _rectsPerImage.update(
-      transformationData.image,
+      blendedImage,
       (rects) => rects..add(transformationData.rect),
       ifAbsent: () => [transformationData.rect],
     );
     _transformsPerImage.update(
-      transformationData.image,
+      blendedImage,
       (transforms) => transforms..add(transformationData.transform),
       ifAbsent: () => [transformationData.transform],
     );
     _colorsPerImage.update(
-      transformationData.image,
+      blendedImage,
       (colors) => colors..add(transformationData.color),
       ifAbsent: () => [transformationData.color],
     );
   }
+}
+
+@immutable
+class _BlendedImage {
+  const _BlendedImage({required this.image, required this.blendMode});
+
+  final ui.Image image;
+  final ui.BlendMode? blendMode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is _BlendedImage && runtimeType == other.runtimeType && image == other.image;
+
+  @override
+  int get hashCode => image.hashCode;
 }

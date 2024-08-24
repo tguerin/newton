@@ -20,7 +20,7 @@ class ParticleConfiguration {
   const ParticleConfiguration({
     required this.shape,
     required this.size,
-    this.color = const SingleParticleColor(color: Colors.black),
+    this.color = const SingleParticleColor(color: Colors.white),
     this.postEffectBuilder,
   });
 

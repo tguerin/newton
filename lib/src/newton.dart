@@ -34,14 +34,8 @@ class Newton extends StatefulWidget {
     this.effectConfigurations = const [],
     this.child,
     this.onEffectStateChanged,
-    this.blendMode = BlendMode.dstIn,
     super.key,
   });
-
-  /// The blend mode to be used when drawing the particle effects on the canvas.
-  /// defaults to `BlendMode.dstIn`.
-  /// if you use Particle with ImageShader, set it to `BlendMode.srcIn` is better, such as emoji.
-  final BlendMode blendMode;
 
   /// The list of effect configurations to be rendered.
   final List<EffectConfiguration> effectConfigurations;
@@ -133,13 +127,11 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
                     willChange: _backgroundEffects.isNotEmpty || _foregroundEffects.isNotEmpty,
                     size: constraints.biggest,
                     painter: NewtonPainter(
-                      blendMode: widget.blendMode,
                       elapsedTimeNotifier: _backgroundElapsedTimeNotifier,
                       effects: _backgroundEffects,
                       shapesSpriteSheet: snapshot.data!,
                     ),
                     foregroundPainter: NewtonPainter(
-                      blendMode: widget.blendMode,
                       elapsedTimeNotifier: _foregroundElapsedTimeNotifier,
                       effects: _foregroundEffects,
                       shapesSpriteSheet: snapshot.data!,
