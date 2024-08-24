@@ -5,12 +5,12 @@ import 'package:forge2d/forge2d.dart' as f2d;
 import 'package:newton_particles/newton_particles.dart';
 
 class NewtonWorld {
+
+  NewtonWorld(f2d.Vector2 gravity) : world = f2d.World(gravity);
   static const pixelsPerMeter = 100.0;
   final f2d.World world;
   final Map<RelativisticParticle, f2d.Body> particlesBody = {};
   final Map<RelativisticParticle, f2d.Fixture> particlesFixture = {};
-
-  NewtonWorld(f2d.Vector2 gravity) : world = f2d.World(gravity);
 
   static f2d.Vector2 screenToWorld(Offset screenPosition) {
     return f2d.Vector2(
@@ -49,11 +49,11 @@ class NewtonWorld {
   f2d.Body createBody(f2d.BodyDef bodyDef) => world.createBody(bodyDef);
 
   void addParticle(RelativisticParticle relativistParticle) {
-    final speed = 5.0;
-    final angleInDegrees = -90; // relativistParticle.angle; // Angle in degrees
+    const speed = 5.0;
+    const angleInDegrees = -90; // relativistParticle.angle; // Angle in degrees
 
     // Convert angle to radians
-    final angleInRadians = angleInDegrees * (pi / 180);
+    const angleInRadians = angleInDegrees * (pi / 180);
 
     // Compute the velocity components
     final vx = speed * cos(angleInRadians); // Horizontal velocity component
@@ -77,8 +77,8 @@ class NewtonWorld {
       ..friction = 0.3 // Friction when sliding along surfaces
       ..restitution = 0.5
       ..filter.groupIndex = -1; // Bounciness
-    body.linearVelocity = f2d.Vector2(vx, vy);
-    body.createFixture(fixtureDef);
+    body..linearVelocity = f2d.Vector2(vx, vy)
+    ..createFixture(fixtureDef);
 
   }
 }

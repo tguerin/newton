@@ -38,6 +38,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
   /// - [startDelay]: The delay before starting the effect. Inherited from [EffectConfiguration].
   /// - [trail]: The trail effect associated with the particles. Inherited from [EffectConfiguration].
   DeterministicEffectConfiguration({
+    required super.particleConfiguration,
     this.customPathBuilder,
     this.distanceCurve = Curves.linear,
     this.maxDistance = 200,
@@ -90,7 +91,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
   /// but with some modified properties.
   DeterministicEffectConfiguration copyWith({
     DeterministicPathTransformation Function(
-            Effect<DeterministicAnimatedParticle, DeterministicEffectConfiguration>, DeterministicAnimatedParticle)?
+            Effect<DeterministicAnimatedParticle, DeterministicEffectConfiguration>, DeterministicAnimatedParticle,)?
         customPathBuilder,
     Curve? distanceCurve,
     Curve? emitCurve,
@@ -113,6 +114,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     double? minFadeInThreshold,
     double? minFadeOutThreshold,
     Offset? origin,
+    ParticleConfiguration? particleConfiguration,
     int? particleCount,
     int? particlesPerEmit,
     Curve? scaleCurve,
@@ -120,6 +122,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     Trail? trail,
   }) {
     return DeterministicEffectConfiguration(
+      particleConfiguration: particleConfiguration ?? this.particleConfiguration,
       customPathBuilder: customPathBuilder ?? this.customPathBuilder,
       distanceCurve: distanceCurve ?? this.distanceCurve,
       emitCurve: emitCurve ?? this.emitCurve,

@@ -31,7 +31,7 @@ class Newton extends StatefulWidget {
   /// - [child]: An optional widget to be displayed behind or in front of the particle effects.
   /// - [onEffectStateChanged]: A callback invoked when an effect's state changes.
   const Newton({
-    this.activeEffects = const [],
+    this.effectConfigurations = const [],
     this.child,
     this.onEffectStateChanged,
     this.blendMode = BlendMode.dstIn,
@@ -43,8 +43,8 @@ class Newton extends StatefulWidget {
   /// if you use Particle with ImageShader, set it to `BlendMode.srcIn` is better, such as emoji.
   final BlendMode blendMode;
 
-  /// The list of active particle effects to be rendered.
-  final List<Effect> activeEffects;
+  /// The list of effect configurations to be rendered.
+  final List<EffectConfiguration> effectConfigurations;
 
   /// An optional child widget to be displayed with the particle effects.
   final Widget? child;
@@ -144,31 +144,32 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     );
   }
 
-  bool _isBackgroundEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) => !effect.effectConfiguration.foreground;
+  bool _isBackgroundEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) =>
+      !effect.effectConfiguration.foreground;
 
-  bool _isForegroundEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) => effect.effectConfiguration.foreground;
+  bool _isForegroundEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) =>
+      effect.effectConfiguration.foreground;
 
   /// Adds a new particle effect to the list of active effects.
   ///
   /// The `addEffect` method allows you to dynamically add a new particle effect to the list
   /// of active effects. Simply provide an `Effect` instance representing the desired effect,
   /// and the `Newton` widget will render it on the canvas.
-  void addEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) {
-    if (effect.effectConfiguration.foreground) {
+  Effect<AnimatedParticle, EffectConfiguration> addEffect(EffectConfiguration effectConfiguration) {
+    final effect = effectConfiguration.effect()
+      ..addedAtRuntime = true
+      ..postEffectCallback = _onPostEffect
+      ..stateChangeCallback = _onEffectStateChanged;
+    if (effectConfiguration.foreground) {
       _foregroundEffects.add(
-        effect
-          ..addedAtRuntime = true
-          ..postEffectCallback = _onPostEffect
-          ..stateChangeCallback = _onEffectStateChanged,
+        effect,
       );
     } else {
       _backgroundEffects.add(
-        effect
-          ..addedAtRuntime = true
-          ..postEffectCallback = _onPostEffect
-          ..stateChangeCallback = _onEffectStateChanged,
+        effect,
       );
     }
+    return effect;
   }
 
   /// Remove a effect from the list of active effects.
@@ -181,6 +182,19 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     } else {
       _backgroundEffects.removeWhere((e) => e.rootEffect == effect);
     }
+  }
+
+  /// Remove a effect from the list of active effects given an effect configuration.
+  ///
+  /// The `removeEffect` method allows you to dynamically remove a particle effect from the list
+  /// of active effects given an effect configuration. All effects with same configuration will be removed.
+  void removeEffectConfiguration<T extends EffectConfiguration>(T effectConfiguration) {
+    final effects = switch (effectConfiguration.foreground) {
+      true => _foregroundEffects,
+      false => _backgroundEffects,
+    };
+    return effects.removeWhere((e) =>
+        e.effectConfiguration == effectConfiguration || e.rootEffect?.effectConfiguration == effectConfiguration,);
   }
 
   @override
@@ -209,7 +223,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   @override
   void didUpdateWidget(Newton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.activeEffects != oldWidget.activeEffects) {
+    if (widget.effectConfigurations != oldWidget.effectConfigurations) {
       _pendingActiveEffects.removeWhere(_isEffectRemoved);
       _backgroundEffects.removeWhere(_isEffectRemoved);
       _foregroundEffects.removeWhere(_isEffectRemoved);
@@ -219,23 +233,18 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
 
   bool _isEffectRemoved<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) {
     // Keep only pending effects that are still active even if it's a post effect
-    return !widget.activeEffects.contains(effect.rootEffect) && !effect.addedAtRuntime;
+    return !widget.effectConfigurations.contains(effect.effectConfiguration) && !effect.addedAtRuntime;
   }
 
   void _setupEffectsFromWidget() {
-    for (final element in widget.activeEffects) {
-      if (element.effectConfiguration.foreground) {
-        _foregroundEffects.add(
-          element
-            ..postEffectCallback = _onPostEffect
-            ..stateChangeCallback = _onEffectStateChanged,
-        );
+    for (final configuration in widget.effectConfigurations) {
+      final effect = configuration.effect()
+        ..postEffectCallback = _onPostEffect
+        ..stateChangeCallback = _onEffectStateChanged;
+      if (configuration.foreground) {
+        _foregroundEffects.add(effect);
       } else {
-        _backgroundEffects.add(
-          element
-            ..postEffectCallback = _onPostEffect
-            ..stateChangeCallback = _onEffectStateChanged,
-        );
+        _backgroundEffects.add(effect);
       }
     }
   }

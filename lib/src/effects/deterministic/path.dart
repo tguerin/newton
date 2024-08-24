@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:newton_particles/newton_particles.dart';
-import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 /// A sealed class representing a transformation applied to a path.

@@ -4,14 +4,7 @@ import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 import 'package:newton_particles/src/effects/relativistic/path.dart';
 
 class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectConfiguration> {
-  RelativistEffect({
-    required RelativisticEffectConfiguration effectConfiguration,
-    required ParticleConfiguration particleConfiguration,
-  })  : world = NewtonWorld(effectConfiguration.gravity),
-        super(
-          effectConfiguration: effectConfiguration,
-          particleConfiguration: particleConfiguration,
-        );
+  RelativistEffect(super.effectConfiguration) : world = NewtonWorld(effectConfiguration.gravity);
 
   final NewtonWorld world;
 
@@ -39,7 +32,7 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
       fadeOutCurve: Curves.easeIn,
       fadeOutThreshold: effectConfiguration.randomFadeOutThreshold(),
       particle: Particle(
-        configuration: particleConfiguration,
+        configuration: effectConfiguration.particleConfiguration,
         position: origin,
       ),
       pathTransformation: RelativisticPathTransformation(world: world),

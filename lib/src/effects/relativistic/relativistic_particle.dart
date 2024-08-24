@@ -2,7 +2,6 @@ import 'package:newton_particles/src/effects/animated_particle.dart';
 import 'package:newton_particles/src/effects/relativistic/path.dart';
 
 class RelativisticParticle extends AnimatedParticle {
-  final RelativisticPathTransformation pathTransformation;
 
   RelativisticParticle({
     required this.pathTransformation,
@@ -17,6 +16,7 @@ class RelativisticParticle extends AnimatedParticle {
     required super.scaleRange,
     required super.trail,
   });
+  final RelativisticPathTransformation pathTransformation;
 
   @override
   void onAnimationUpdate(Duration totalElapsed) {

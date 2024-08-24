@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:newton_particles/newton_particles.dart';
 
@@ -8,11 +7,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   /// Constructor for creating an `Effect` with the specified configurations.
   ///
   /// - [effectConfiguration]: Configuration for the effect itself.
-  /// - [particleConfiguration]: Configuration for individual particles within the effect.
-  Effect({
-    required this.effectConfiguration,
-    required this.particleConfiguration,
-  });
+  Effect(this.effectConfiguration);
 
   /// A flag indicating whether the effect was added at runtime.
   bool addedAtRuntime = false;
@@ -23,14 +18,8 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   /// The configuration settings for the effect.
   final Configuration effectConfiguration;
 
-  /// The configuration settings for individual particles.
-  final ParticleConfiguration particleConfiguration;
-
   /// The root effect from which this effect may be derived.
   Effect<AnimatedParticle, EffectConfiguration>? rootEffect;
-
-  /// A random number generator instance used for particle behavior randomness.
-  final Random random = Random();
 
   /// The current state of the effect (e.g., running, stopped, killed).
   EffectState get state => _state;
@@ -136,7 +125,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
         final postEffectBuilder = activeParticle.particle.configuration.postEffectBuilder;
         if (postEffectBuilder != null) {
           postEffectCallback?.call(
-            postEffectBuilder(activeParticle.particle, this)
+            postEffectBuilder(activeParticle.particle, this).effect()
               ..rootEffect = rootEffect
               ..addedAtRuntime = addedAtRuntime,
           );

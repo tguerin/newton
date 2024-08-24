@@ -63,7 +63,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         fit: StackFit.expand,
         children: [
           Newton(
-            activeEffects: [currentActiveEffect()],
+            effectConfigurations: [currentActiveEffectConfiguration()],
             onEffectStateChanged: (effect, state) => {},
           ),
           configurationSection(),
@@ -72,10 +72,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     );
   }
 
-  Effect<AnimatedParticle, EffectConfiguration> currentActiveEffect() {
-    final size = MediaQuery.sizeOf(context);
+  EffectConfiguration<ParticleConfiguration> currentActiveEffectConfiguration() {
     return _selectedAnimation.instantiate(
-      size: size,
       effectConfiguration: _effectConfiguration,
       color: _currentParticleColor,
     );

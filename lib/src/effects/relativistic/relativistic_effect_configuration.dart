@@ -3,10 +3,10 @@ import 'package:forge2d/forge2d.dart';
 import 'package:newton_particles/newton_particles.dart';
 
 class RelativisticEffectConfiguration extends EffectConfiguration {
-  final Vector2 gravity;
 
   RelativisticEffectConfiguration({
     required this.gravity,
+    required super.particleConfiguration,
     super.emitCurve,
     super.emitDuration,
     super.fadeInCurve,
@@ -31,6 +31,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
     super.startDelay,
     super.trail,
   });
+  final Vector2 gravity;
 
   RelativisticEffectConfiguration copyWith({
     Curve? emitCurve,
@@ -52,6 +53,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
     double? minFadeInThreshold,
     double? minFadeOutThreshold,
     Offset? origin,
+    ParticleConfiguration? particleConfiguration,
     int? particleCount,
     int? particlesPerEmit,
     Curve? scaleCurve,
@@ -79,6 +81,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
       minFadeOutThreshold: minFadeOutThreshold ?? this.minFadeOutThreshold,
       origin: origin ?? this.origin,
       particleCount: particleCount ?? this.particleCount,
+      particleConfiguration: particleConfiguration ?? this.particleConfiguration,
       particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,
       scaleCurve: scaleCurve ?? this.scaleCurve,
       startDelay: startDelay ?? this.startDelay,

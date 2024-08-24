@@ -7,24 +7,6 @@ import 'package:newton_particles/newton_particles.dart';
 /// along a specific path using a custom or predefined [DeterministicPathTransformation].
 /// It allows particles to follow precise trajectories with controlled distance animation.
 class DeterministicAnimatedParticle extends AnimatedParticle {
-  /// The curve used to control the distance animation progress.
-  ///
-  /// This curve determines how the particle progresses along its path over time.
-  final Curve distanceCurve;
-
-  /// The [DeterministicPathTransformation] that the particle will follow upon emission.
-  ///
-  /// This property is set when the particle is created and defines how the particle's
-  /// position is updated during the animation. The default is [StraightPathTransformation],
-  /// but it can be customized via [onPathTransformationRequested].
-  late DeterministicPathTransformation _pathTransformation;
-
-  /// A callback that provides a custom path transformation for the particle.
-  ///
-  /// This function is called when the particle is created, allowing you to define a
-  /// custom path for the particle to follow. The function takes the particle as a parameter
-  /// and returns the corresponding [DeterministicPathTransformation].
-  final DeterministicPathTransformation Function(DeterministicAnimatedParticle) onPathTransformationRequested;
 
   /// Creates an instance of [DeterministicAnimatedParticle] with the specified properties.
   ///
@@ -54,6 +36,24 @@ class DeterministicAnimatedParticle extends AnimatedParticle {
     required super.scaleRange,
     required super.trail,
   });
+  /// The curve used to control the distance animation progress.
+  ///
+  /// This curve determines how the particle progresses along its path over time.
+  final Curve distanceCurve;
+
+  /// The [DeterministicPathTransformation] that the particle will follow upon emission.
+  ///
+  /// This property is set when the particle is created and defines how the particle's
+  /// position is updated during the animation. The default is [StraightPathTransformation],
+  /// but it can be customized via [onPathTransformationRequested].
+  late DeterministicPathTransformation _pathTransformation;
+
+  /// A callback that provides a custom path transformation for the particle.
+  ///
+  /// This function is called when the particle is created, allowing you to define a
+  /// custom path for the particle to follow. The function takes the particle as a parameter
+  /// and returns the corresponding [DeterministicPathTransformation].
+  final DeterministicPathTransformation Function(DeterministicAnimatedParticle) onPathTransformationRequested;
 
   /// Called when the particle is created, initializing the path transformation.
   ///

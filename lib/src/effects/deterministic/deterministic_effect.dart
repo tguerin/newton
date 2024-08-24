@@ -11,11 +11,7 @@ class DeterministicEffect extends Effect<DeterministicAnimatedParticle, Determin
   /// Creates an instance of [DeterministicEffect] with the specified configurations.
   ///
   /// - [effectConfiguration]: The configuration settings for the effect, defining how particles should behave.
-  /// - [particleConfiguration]: The configuration settings for individual particles within the effect, such as size and color.
-  DeterministicEffect({
-    required super.effectConfiguration,
-    required super.particleConfiguration,
-  });
+  DeterministicEffect(super.effectConfiguration);
 
   /// Instantiates and returns a new [DeterministicAnimatedParticle] based on the current effect configuration.
   ///
@@ -47,7 +43,7 @@ class DeterministicEffect extends Effect<DeterministicAnimatedParticle, Determin
         );
       },
       particle: Particle(
-        configuration: particleConfiguration,
+        configuration: effectConfiguration.particleConfiguration,
         position: Offset(
           effectConfiguration.origin.dx * surfaceSize.width,
           effectConfiguration.origin.dy * surfaceSize.height,

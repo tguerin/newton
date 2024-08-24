@@ -6,11 +6,12 @@ import 'package:newton_particles/newton_particles.dart';
 /// The `EffectConfiguration` class provides customizable properties to control particle emission
 /// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
 /// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
-abstract class EffectConfiguration {
+abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Creates an instance of `EffectConfiguration` with the specified parameters.
   ///
   /// All parameters have default values that can be overridden during object creation.
   const EffectConfiguration({
+    required this.particleConfiguration,
     this.emitCurve = Curves.decelerate,
     this.emitDuration = const Duration(milliseconds: 100),
     this.fadeInCurve = Curves.linear,
@@ -121,6 +122,9 @@ abstract class EffectConfiguration {
   /// Origin point for particle emission, relative from the top-left of the container. Default: `Offset(0.5, 0.5)`.
   final Offset origin;
 
+  /// Define the look and feel of emitted particle
+  final T particleConfiguration;
+
   /// Total number of particles to emit. Default: `0` means infinite count.
   final int particleCount;
 
@@ -195,4 +199,13 @@ abstract class EffectConfiguration {
       maxFadeInThreshold,
     );
   }
+}
+
+extension EffectForConfiguration on EffectConfiguration<ParticleConfiguration> {
+  Effect<AnimatedParticle,EffectConfiguration> effect() =>
+      switch (this) {
+        final DeterministicEffectConfiguration effectConfiguration => DeterministicEffect(effectConfiguration),
+        final RelativisticEffectConfiguration effectConfiguration => RelativistEffect(effectConfiguration),
+        _ => throw Exception('unexpected configuration type'),
+      } as Effect<AnimatedParticle, EffectConfiguration>;
 }

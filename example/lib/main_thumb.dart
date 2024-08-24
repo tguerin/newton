@@ -57,34 +57,32 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
   final _emojiSize = 50.0;
   final _btnSize = 50.0;
 
-  DeterministicEffect currentActiveEffect(int index, Duration delay) {
-    return DeterministicEffect(
+  DeterministicEffectConfiguration currentActiveEffectConfiguration(int index, Duration delay) {
+    return DeterministicEffectConfiguration(
+      particleCount: 100,
+      particlesPerEmit: 100,
+      distanceCurve: Curves.slowMiddle,
+      emitCurve: Curves.fastOutSlowIn,
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      emitDuration: const Duration(milliseconds: 250),
+      minAngle: -135,
+      maxAngle: -45,
+      minDistance: 90,
+      maxDistance: 220,
+      maxDuration: const Duration(seconds: 3),
+      minFadeOutThreshold: 0.6,
+      maxFadeOutThreshold: 0.8,
+      minBeginScale: 0.7,
+      maxBeginScale: 0.9,
+      minEndScale: 1,
+      maxEndScale: 1.2,
       particleConfiguration: ParticleConfiguration(
         shape: _imageAssets[index],
         size: Size.square(_emojiSize),
       ),
-      effectConfiguration: DeterministicEffectConfiguration(
-        particleCount: 100,
-        particlesPerEmit: 100,
-        distanceCurve: Curves.slowMiddle,
-        emitCurve: Curves.fastOutSlowIn,
-        fadeInCurve: Curves.easeIn,
-        fadeOutCurve: Curves.easeOut,
-        emitDuration: const Duration(milliseconds: 250),
-        minAngle: -135,
-        maxAngle: -45,
-        minDistance: 90,
-        maxDistance: 220,
-        maxDuration: const Duration(seconds: 3),
-        minFadeOutThreshold: 0.6,
-        maxFadeOutThreshold: 0.8,
-        minBeginScale: 0.7,
-        maxBeginScale: 0.9,
-        minEndScale: 1,
-        maxEndScale: 1.2,
-        startDelay: delay,
-        origin: const Offset(0.5, 0),
-      ),
+      startDelay: delay,
+      origin: const Offset(0.5, 0),
     );
   }
 
@@ -103,7 +101,7 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
                 HapticFeedback.mediumImpact();
                 _imageAssets.shuffle();
                 for (var i = 0; i < _imageAssets.length; i++) {
-                  _newtonKey.currentState?.addEffect(currentActiveEffect(i, Duration(milliseconds: i * 2000)));
+                  _newtonKey.currentState?.addEffect(currentActiveEffectConfiguration(i, Duration(milliseconds: i * 2000)));
                 }
               },
               child: Container(
