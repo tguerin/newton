@@ -54,6 +54,16 @@ class Newton extends StatefulWidget {
 
   @override
   State<Newton> createState() => NewtonState();
+
+  static NewtonState of(BuildContext context) {
+    final scope = context.dependOnInheritedWidgetOfExactType<_NewtonScope>()!;
+    return scope._newtonState;
+  }
+
+  static NewtonState? maybeOf(BuildContext context) {
+    final scope = context.dependOnInheritedWidgetOfExactType<_NewtonScope>();
+    return scope?._newtonState;
+  }
 }
 
 /// The `NewtonState` class represents the state for the `Newton` widget.
@@ -110,37 +120,40 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _shapeSpriteSheet,
-      builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
-        if (snapshot.hasData) {
-          return RepaintBoundary(
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return CustomPaint(
-                  willChange: _backgroundEffects.isNotEmpty || _foregroundEffects.isNotEmpty,
-                  size: constraints.biggest,
-                  painter: NewtonPainter(
-                    blendMode: widget.blendMode,
-                    elapsedTimeNotifier: _backgroundElapsedTimeNotifier,
-                    effects: _backgroundEffects,
-                    shapesSpriteSheet: snapshot.data!,
-                  ),
-                  foregroundPainter: NewtonPainter(
-                    blendMode: widget.blendMode,
-                    elapsedTimeNotifier: _foregroundElapsedTimeNotifier,
-                    effects: _foregroundEffects,
-                    shapesSpriteSheet: snapshot.data!,
-                  ),
-                  child: widget.child,
-                );
-              },
-            ),
-          );
-        } else {
-          return widget.child ?? Container();
-        }
-      },
+    return _NewtonScope(
+      newtonState: this,
+      child: FutureBuilder(
+        future: _shapeSpriteSheet,
+        builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+          if (snapshot.hasData) {
+            return RepaintBoundary(
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return CustomPaint(
+                    willChange: _backgroundEffects.isNotEmpty || _foregroundEffects.isNotEmpty,
+                    size: constraints.biggest,
+                    painter: NewtonPainter(
+                      blendMode: widget.blendMode,
+                      elapsedTimeNotifier: _backgroundElapsedTimeNotifier,
+                      effects: _backgroundEffects,
+                      shapesSpriteSheet: snapshot.data!,
+                    ),
+                    foregroundPainter: NewtonPainter(
+                      blendMode: widget.blendMode,
+                      elapsedTimeNotifier: _foregroundElapsedTimeNotifier,
+                      effects: _foregroundEffects,
+                      shapesSpriteSheet: snapshot.data!,
+                    ),
+                    child: widget.child,
+                  );
+                },
+              ),
+            );
+          } else {
+            return widget.child ?? Container();
+          }
+        },
+      ),
     );
   }
 
@@ -193,8 +206,9 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       true => _foregroundEffects,
       false => _backgroundEffects,
     };
-    return effects.removeWhere((e) =>
-        e.effectConfiguration == effectConfiguration || e.rootEffect?.effectConfiguration == effectConfiguration,);
+    return effects.removeWhere(
+      (e) => e.effectConfiguration == effectConfiguration || e.rootEffect?.effectConfiguration == effectConfiguration,
+    );
   }
 
   @override
@@ -280,4 +294,16 @@ class _ElapsedTimeNotifier with ChangeNotifier implements ValueListenable<Durati
   String toString() {
     return '_ElapsedTimeNotifier{_duration: $_duration}';
   }
+}
+
+class _NewtonScope extends InheritedWidget {
+  const _NewtonScope({
+    required super.child,
+    required NewtonState newtonState,
+  }) : _newtonState = newtonState;
+
+  final NewtonState _newtonState;
+
+  @override
+  bool updateShouldNotify(_NewtonScope old) => _newtonState != old._newtonState;
 }
