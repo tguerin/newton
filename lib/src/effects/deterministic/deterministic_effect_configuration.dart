@@ -37,7 +37,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
   /// - [scaleCurve]: A curve to control particle scaling animation progress. Inherited from [EffectConfiguration].
   /// - [startDelay]: The delay before starting the effect. Inherited from [EffectConfiguration].
   /// - [trail]: The trail effect associated with the particles. Inherited from [EffectConfiguration].
-  DeterministicEffectConfiguration({
+  const DeterministicEffectConfiguration({
     required super.particleConfiguration,
     this.customPathBuilder,
     this.distanceCurve = Curves.linear,
@@ -106,6 +106,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     double? maxEndScale,
     double? maxFadeInThreshold,
     double? maxFadeOutThreshold,
+    Offset? maxOriginOffset,
     double? minAngle,
     double? minBeginScale,
     Duration? minDuration,
@@ -113,6 +114,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     double? minEndScale,
     double? minFadeInThreshold,
     double? minFadeOutThreshold,
+    Offset? minOriginOffset,
     Offset? origin,
     ParticleConfiguration? particleConfiguration,
     int? particleCount,
@@ -137,6 +139,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
       maxEndScale: maxEndScale ?? this.maxEndScale,
       maxFadeInThreshold: maxFadeInThreshold ?? this.maxFadeInThreshold,
       maxFadeOutThreshold: maxFadeOutThreshold ?? this.maxFadeOutThreshold,
+      maxOriginOffset: maxOriginOffset ?? this.maxOriginOffset,
       minAngle: minAngle ?? this.minAngle,
       minBeginScale: minBeginScale ?? this.minBeginScale,
       minDuration: minDuration ?? this.minDuration,
@@ -144,6 +147,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
       minEndScale: minEndScale ?? this.minEndScale,
       minFadeInThreshold: minFadeInThreshold ?? this.minFadeInThreshold,
       minFadeOutThreshold: minFadeOutThreshold ?? this.minFadeOutThreshold,
+      minOriginOffset: minOriginOffset ?? this.minOriginOffset,
       origin: origin ?? this.origin,
       particleCount: particleCount ?? this.particleCount,
       particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,

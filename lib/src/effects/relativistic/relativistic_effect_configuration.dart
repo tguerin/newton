@@ -4,7 +4,7 @@ import 'package:newton_particles/newton_particles.dart';
 
 class RelativisticEffectConfiguration extends EffectConfiguration {
 
-  RelativisticEffectConfiguration({
+  const RelativisticEffectConfiguration({
     required this.gravity,
     required super.particleConfiguration,
     super.emitCurve,

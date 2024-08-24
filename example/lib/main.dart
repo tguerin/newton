@@ -73,10 +73,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   EffectConfiguration<ParticleConfiguration> currentActiveEffectConfiguration() {
-    return _selectedAnimation.instantiate(
-      effectConfiguration: _effectConfiguration,
-      color: _currentParticleColor,
-    );
+    return _effectConfiguration.copyWith(particleConfiguration: _effectConfiguration.particleConfiguration.copyWith(color: _currentParticleColor));
   }
 
   Widget configurationSection() {

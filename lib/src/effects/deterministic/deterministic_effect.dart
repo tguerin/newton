@@ -25,7 +25,6 @@ class DeterministicEffect extends Effect<DeterministicAnimatedParticle, Determin
   DeterministicAnimatedParticle instantiateParticle(Size surfaceSize) {
     final pathBuilder = effectConfiguration.customPathBuilder;
     final randomOriginOffset = effectConfiguration.randomOriginOffset();
-
     final deterministicAnimatedParticle = DeterministicAnimatedParticle(
       animationDuration: effectConfiguration.randomDuration(),
       distanceCurve: effectConfiguration.distanceCurve,

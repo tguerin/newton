@@ -7,11 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:newton_particles/newton_particles.dart';
 
 typedef TransformationData = ({
-ui.Image image,
-ui.Rect rect,
-ui.RSTransform transform,
-ui.Color color,
-ui.BlendMode? blendMode,
+  ui.Image image,
+  ui.Rect rect,
+  ui.RSTransform transform,
+  ui.Color color,
+  ui.BlendMode? blendMode,
 });
 
 /// A base class representing various shapes for rendering particles.
@@ -39,8 +39,10 @@ sealed class Shape {
   /// - [defaultShapes]: The [ui.Image] representing default shape textures.
   ///
   /// Returns a tuple `(Image, Rect, RSTransform, Color)` with the computed parameters.
-  TransformationData? computeTransformation(Particle particle,
-      ui.Image defaultShapes,);
+  TransformationData? computeTransformation(
+    Particle particle,
+    ui.Image defaultShapes,
+  );
 }
 
 /// Represents a circular shape for rendering particles.
@@ -48,9 +50,13 @@ sealed class Shape {
 /// This class calculates the transformation needed to render particles as circles
 /// using the default sprite size.
 class CircleShape extends Shape {
+  const CircleShape();
+
   @override
-  TransformationData? computeTransformation(Particle particle,
-      ui.Image defaultShapes,) {
+  TransformationData? computeTransformation(
+    Particle particle,
+    ui.Image defaultShapes,
+  ) {
     final rect = Rect.fromLTWH(
       Shape.defaultSpriteSize.width,
       0,
@@ -88,8 +94,10 @@ class ImageShape extends Shape {
   final ui.BlendMode blendMode;
 
   @override
-  TransformationData? computeTransformation(Particle particle,
-      ui.Image defaultShapes,) {
+  TransformationData? computeTransformation(
+    Particle particle,
+    ui.Image defaultShapes,
+  ) {
     final rect = Rect.fromLTWH(
       0,
       0,
@@ -122,7 +130,8 @@ class ImageAssetShape extends Shape {
   /// - [imagePath]: The path to the image asset.
   /// - [placeholderImage]: An optional placeholder image used if the asset fails to load.
   /// - [deferLoading]: If set to true, the image loading will be deferred and must be initiated manually.
-  ImageAssetShape(this.imagePath, {
+  ImageAssetShape(
+    this.imagePath, {
     this.blendMode = ui.BlendMode.modulate,
     bool deferLoading = false,
     ui.Image? placeholderImage,
@@ -157,8 +166,10 @@ class ImageAssetShape extends Shape {
   }
 
   @override
-  TransformationData? computeTransformation(Particle particle,
-      ui.Image defaultShapes,) {
+  TransformationData? computeTransformation(
+    Particle particle,
+    ui.Image defaultShapes,
+  ) {
     final imageShape = _imageShape;
     if (imageShape == null) {
       return null;
@@ -172,9 +183,12 @@ class ImageAssetShape extends Shape {
 /// This class calculates the transformation needed to render particles as squares
 /// using the default sprite size.
 class SquareShape extends Shape {
+  const SquareShape();
   @override
-  TransformationData? computeTransformation(Particle particle,
-      ui.Image defaultShapes,) {
+  TransformationData? computeTransformation(
+    Particle particle,
+    ui.Image defaultShapes,
+  ) {
     final rect = Rect.fromLTWH(
       0,
       0,

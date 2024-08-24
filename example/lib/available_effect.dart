@@ -62,8 +62,7 @@ enum AvailableEffect {
     ],
   );
 
-  const AvailableEffect(
-    this.label, {
+  const AvailableEffect(this.label, {
     this.supportedParameters = const [],
   });
 
@@ -97,10 +96,9 @@ Map<AvailableEffect, DeterministicEffectConfiguration> defaultEffectConfiguratio
         angle: effect.effectConfiguration.randomAngle(),
       );
     },
-    particleConfiguration: ParticleConfiguration(
+    particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
-      size: const Size(5, 5),
-      color: const SingleParticleColor(color: Colors.white),
+      size: Size(5, 5),
     ),
   ),
   AvailableEffect.explode: DeterministicEffectConfiguration(
@@ -112,10 +110,9 @@ Map<AvailableEffect, DeterministicEffectConfiguration> defaultEffectConfiguratio
     minDuration: const Duration(seconds: 4),
     minEndScale: 1,
     minFadeOutThreshold: 0.6,
-    particleConfiguration: ParticleConfiguration(
+    particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
-      size: const Size(5, 5),
-      color: const SingleParticleColor(color: Colors.white),
+      size: Size(5, 5),
     ),
   ),
   AvailableEffect.pulse: DeterministicEffectConfiguration(
@@ -132,10 +129,9 @@ Map<AvailableEffect, DeterministicEffectConfiguration> defaultEffectConfiguratio
     minEndScale: 1,
     minDuration: const Duration(seconds: 4),
     minFadeOutThreshold: 0.8,
-    particleConfiguration: ParticleConfiguration(
+    particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
-      size: const Size(5, 5),
-      color: const SingleParticleColor(color: Colors.white),
+      size: Size(5, 5),
     ),
     particlesPerEmit: 15,
   ),
@@ -150,10 +146,9 @@ Map<AvailableEffect, DeterministicEffectConfiguration> defaultEffectConfiguratio
     maxOriginOffset: const Offset(0.01, 0),
     minEndScale: 1,
     maxEndScale: 1,
-    particleConfiguration: ParticleConfiguration(
+    particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
-      size: const Size(5, 5),
-      color: const SingleParticleColor(color: Colors.white),
+      size: Size(5, 5),
     ),
     particlesPerEmit: 3,
   ),
@@ -183,10 +178,9 @@ Map<AvailableEffect, DeterministicEffectConfiguration> defaultEffectConfiguratio
     maxFadeOutThreshold: 0.8,
     minEndScale: 1,
     maxEndScale: 1,
-    particleConfiguration: ParticleConfiguration(
+    particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
-      size: const Size(5, 5),
-      color: const SingleParticleColor(color: Colors.white),
+      size: Size(5, 5),
     ),
     particlesPerEmit: 10,
   ),
@@ -200,63 +194,33 @@ Map<AvailableEffect, DeterministicEffectConfiguration> defaultEffectConfiguratio
     minEndScale: 1,
     maxEndScale: 1,
     particleConfiguration: ParticleConfiguration(
-      shape: CircleShape(),
+      shape: const CircleShape(),
       size: const Size(5, 5),
-      color: const SingleParticleColor(color: Colors.white),
-    ),
+      postEffectBuilder: (particle, effect) {
+        final offset = Offset(
+          particle.position.dx / effect.surfaceSize.width,
+          particle.position.dy / effect.surfaceSize.height,
+        );
+        return DeterministicEffectConfiguration(
+          maxAngle: 180,
+          minAngle: -180,
+          particleCount: 10,
+          particleConfiguration: const ParticleConfiguration(
+            shape: CircleShape(),
+            size: Size(5, 5),
+            color: SingleParticleColor(color: Colors.blue),
+          ),
+          particlesPerEmit: 10,
+          distanceCurve: Curves.decelerate,
+          origin: offset,
+        );
+      },),
     trail: const StraightTrail(
       trailWidth: 3,
       trailProgress: 0.3,
     ),
   ),
 };
-
-extension AvailableEffectExtension on AvailableEffect {
-  EffectConfiguration instantiate({
-    required ParticleColor color,
-    required DeterministicEffectConfiguration effectConfiguration,
-  }) {
-    switch (this) {
-      case AvailableEffect.firework:
-        return effectConfiguration.copyWith(
-            particleConfiguration: ParticleConfiguration(
-                shape: CircleShape(),
-                size: const Size(5, 5),
-                color: color,
-                postEffectBuilder: (particle, effect) {
-                  final offset = Offset(
-                    particle.position.dx / effect.surfaceSize.width,
-                    particle.position.dy / effect.surfaceSize.height,
-                  );
-                  return DeterministicEffectConfiguration(
-                    maxAngle: 180,
-                    minAngle: -180,
-                    particleCount: 10,
-                    particleConfiguration: ParticleConfiguration(
-                      shape: CircleShape(),
-                      size: const Size(5, 5),
-                      color: const SingleParticleColor(color: Colors.blue),
-                    ),
-                    particlesPerEmit: 10,
-                    distanceCurve: Curves.decelerate,
-                    origin: offset,
-                  );
-                },),);
-      case AvailableEffect.rain:
-      case AvailableEffect.explode:
-      case AvailableEffect.pulse:
-      case AvailableEffect.smoke:
-      case AvailableEffect.fountain:
-        return effectConfiguration.copyWith(
-          particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
-            size: const Size(5, 5),
-            color: color,
-          ),
-        );
-    }
-  }
-}
 
 enum AnimationParameter {
   angle,

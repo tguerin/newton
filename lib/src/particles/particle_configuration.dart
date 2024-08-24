@@ -35,4 +35,26 @@ class ParticleConfiguration {
 
   /// Effect to trigger once particle travel is over.
   final EffectConfiguration Function(Particle, Effect<AnimatedParticle, EffectConfiguration>)? postEffectBuilder;
+
+  /// Creates a copy of this `ParticleConfiguration` but with the given fields replaced with new values.
+  ///
+  /// - [shape] replaces the current shape of the particle.
+  /// - [size] replaces the current size of the particle.
+  /// - [color] replaces the current color of the particle.
+  /// - [postEffectBuilder] replaces the current post-effect builder of the particle.
+  ///
+  /// Returns a new `ParticleConfiguration` instance with the updated properties.
+  ParticleConfiguration copyWith({
+    Shape? shape,
+    Size? size,
+    ParticleColor? color,
+    EffectConfiguration Function(Particle, Effect<AnimatedParticle, EffectConfiguration>)? postEffectBuilder,
+  }) {
+    return ParticleConfiguration(
+      shape: shape ?? this.shape,
+      size: size ?? this.size,
+      color: color ?? this.color,
+      postEffectBuilder: postEffectBuilder ?? this.postEffectBuilder,
+    );
+  }
 }
