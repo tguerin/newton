@@ -140,8 +140,12 @@ class _BlendedImage {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is _BlendedImage && runtimeType == other.runtimeType && image == other.image;
+      identical(this, other) ||
+      other is _BlendedImage &&
+          runtimeType == other.runtimeType &&
+          image == other.image &&
+          blendMode == other.blendMode;
 
   @override
-  int get hashCode => image.hashCode;
+  int get hashCode => image.hashCode ^ blendMode.hashCode;
 }
