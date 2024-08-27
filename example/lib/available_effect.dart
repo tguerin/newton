@@ -62,7 +62,8 @@ enum AvailableEffect {
     ],
   );
 
-  const AvailableEffect(this.label, {
+  const AvailableEffect(
+    this.label, {
     this.supportedParameters = const [],
   });
 
@@ -78,8 +79,9 @@ enum AvailableEffect {
   }
 }
 
-Map<AvailableEffect, DeterministicEffectConfiguration> defaultEffectConfigurationsPerAnimation = {
-  AvailableEffect.rain: DeterministicEffectConfiguration(
+Map<AvailableEffect, EffectConfiguration> defaultEffectConfigurationsPerAnimation = {
+  AvailableEffect.rain: RelativisticEffectConfiguration(
+    gravity: const Gravity(0, 9.807),
     origin: Offset.zero,
     maxOriginOffset: const Offset(1, 0),
     maxAngle: 90,
@@ -90,12 +92,6 @@ Map<AvailableEffect, DeterministicEffectConfiguration> defaultEffectConfiguratio
     minDuration: const Duration(seconds: 4),
     minEndScale: 1,
     minFadeOutThreshold: 0.6,
-    customPathBuilder: (effect, animatedParticle) {
-      return StraightPathTransformation(
-        distance: effect.surfaceSize.height,
-        angle: effect.effectConfiguration.randomAngle(),
-      );
-    },
     particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
       size: Size(5, 5),
@@ -214,7 +210,8 @@ Map<AvailableEffect, DeterministicEffectConfiguration> defaultEffectConfiguratio
           distanceCurve: Curves.decelerate,
           origin: offset,
         );
-      },),
+      },
+    ),
     trail: const StraightTrail(
       trailWidth: 3,
       trailProgress: 0.3,

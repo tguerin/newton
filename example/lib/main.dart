@@ -52,7 +52,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   final _scrollController = ScrollController();
 
   AvailableEffect _selectedAnimation = AvailableEffect.explode;
-  DeterministicEffectConfiguration _effectConfiguration =
+  EffectConfiguration _effectConfiguration =
       defaultEffectConfigurationsPerAnimation[AvailableEffect.explode]!;
   ParticleColor _currentParticleColor = const SingleParticleColor(color: Colors.white);
 
@@ -196,8 +196,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget particleDistanceSection() {
     return RangeSelection(
-      initialMin: _effectConfiguration.minDistance,
-      initialMax: _effectConfiguration.maxDistance,
+      initialMin: (_effectConfiguration as DeterministicEffectConfiguration).minDistance,
+      initialMax: (_effectConfiguration as DeterministicEffectConfiguration).maxDistance,
       min: 100,
       max: 2000,
       title: 'Particle distance',

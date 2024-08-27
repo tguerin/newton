@@ -89,6 +89,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
   ///
   /// This method is useful when you want to create a new configuration based on an existing one,
   /// but with some modified properties.
+  @override
   DeterministicEffectConfiguration copyWith({
     DeterministicPathTransformation Function(
             Effect<DeterministicAnimatedParticle, DeterministicEffectConfiguration>, DeterministicAnimatedParticle,)?

@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
+import 'package:newton_particles/src/effects/deterministic/deterministic_effect.dart';
+import 'package:newton_particles/src/effects/relativistic/relativistic_effect.dart';
 
 /// Configuration class for defining particle emission properties in Newton effects.
 ///
@@ -199,11 +201,42 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
       maxFadeInThreshold,
     );
   }
+
+  EffectConfiguration copyWith({
+    Curve? distanceCurve,
+    Curve? emitCurve,
+    Duration? emitDuration,
+    Curve? fadeInCurve,
+    Curve? fadeOutCurve,
+    bool? foreground,
+    double? maxAngle,
+    double? maxBeginScale,
+    Duration? maxDuration,
+    double? maxDistance,
+    double? maxEndScale,
+    double? maxFadeInThreshold,
+    double? maxFadeOutThreshold,
+    Offset? maxOriginOffset,
+    double? minAngle,
+    double? minBeginScale,
+    Duration? minDuration,
+    double? minDistance,
+    double? minEndScale,
+    double? minFadeInThreshold,
+    double? minFadeOutThreshold,
+    Offset? minOriginOffset,
+    Offset? origin,
+    ParticleConfiguration? particleConfiguration,
+    int? particleCount,
+    int? particlesPerEmit,
+    Curve? scaleCurve,
+    Duration? startDelay,
+    Trail? trail,
+  });
 }
 
 extension EffectForConfiguration on EffectConfiguration<ParticleConfiguration> {
-  Effect<AnimatedParticle,EffectConfiguration> effect() =>
-      switch (this) {
+  Effect<AnimatedParticle, EffectConfiguration> effect() => switch (this) {
         final DeterministicEffectConfiguration effectConfiguration => DeterministicEffect(effectConfiguration),
         final RelativisticEffectConfiguration effectConfiguration => RelativistEffect(effectConfiguration),
         _ => throw Exception('unexpected configuration type'),

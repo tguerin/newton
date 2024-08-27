@@ -4,43 +4,57 @@ import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 import 'package:newton_particles/src/effects/relativistic/path.dart';
 
 class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectConfiguration> {
-  RelativistEffect(super.effectConfiguration) : world = NewtonWorld(effectConfiguration.gravity);
+  RelativistEffect(super.effectConfiguration) : _world = NewtonWorld(effectConfiguration.gravity);
 
-  final NewtonWorld world;
+  final NewtonWorld _world;
 
   @override
   void onTimeForwarded(Duration elapsedDuration) {
-    world.forward(elapsedDuration);
+    _world.forward(elapsedDuration);
   }
 
   @override
   void onParticleDestroyed(RelativisticParticle particle) {
-    world.removeParticle(particle);
+    _world.removeParticle(particle);
   }
 
   @override
   RelativisticParticle instantiateParticle(Size surfaceSize) {
-    final origin = Offset(
-      effectConfiguration.origin.dx * surfaceSize.width,
-      effectConfiguration.origin.dy * surfaceSize.height,
-    );
+    final randomOriginOffset = effectConfiguration.randomOriginOffset();
     final relativistParticle = RelativisticParticle(
+      angle: effectConfiguration.randomAngle(),
+      restitution: effectConfiguration.randomRestitution(),
+      friction: effectConfiguration.randomFriction(),
+      velocity: effectConfiguration.randomVelocity(),
+      density: effectConfiguration.randomDensity(),
       animationDuration: effectConfiguration.randomDuration(),
       elapsedTimeOnStart: totalElapsed,
-      fadeInCurve: Curves.easeIn,
+      fadeInCurve: effectConfiguration.fadeInCurve,
       fadeInThreshold: effectConfiguration.randomFadeInThreshold(),
-      fadeOutCurve: Curves.easeIn,
+      fadeOutCurve: effectConfiguration.fadeOutCurve,
       fadeOutThreshold: effectConfiguration.randomFadeOutThreshold(),
       particle: Particle(
         configuration: effectConfiguration.particleConfiguration,
-        position: origin,
+        position: Offset(
+              effectConfiguration.origin.dx * surfaceSize.width,
+              effectConfiguration.origin.dy * surfaceSize.height,
+            ) +
+            Offset(
+              randomOriginOffset.dx * surfaceSize.width,
+              randomOriginOffset.dy * surfaceSize.height,
+            ),
       ),
-      pathTransformation: RelativisticPathTransformation(world: world),
-      scaleCurve: Curves.easeIn,
+      pathTransformation: RelativisticPathTransformation(world: _world),
       scaleRange: effectConfiguration.randomScaleRange(),
-      trail: const NoTrail(),
+      scaleCurve: effectConfiguration.scaleCurve,
+      trail: effectConfiguration.trail,
     );
-    world.addParticle(relativistParticle);
+    _world.addParticle(relativistParticle);
     return relativistParticle;
+  }
+
+  @override
+  void onSurfaceSizeChanged() {
+    _world.updateSurfaceSize(surfaceSize);
   }
 }

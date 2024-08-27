@@ -9,6 +9,8 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   /// - [effectConfiguration]: Configuration for the effect itself.
   Effect(this.effectConfiguration);
 
+  static const _noSize = Size(-1, -1);
+
   /// A flag indicating whether the effect was added at runtime.
   bool addedAtRuntime = false;
 
@@ -37,6 +39,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
       particle.onSurfaceSizeChanged(_surfaceSize, value);
     }
     _surfaceSize = value;
+    onSurfaceSizeChanged();
   }
 
   /// The total duration the effect has been running.
@@ -56,12 +59,14 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   bool _firstEmission = true;
   Duration _lastInstantiation = Duration.zero;
   EffectState _state = EffectState.running;
-  Size _surfaceSize = Size.zero;
+  Size _surfaceSize = _noSize;
   int _totalEmittedCount = 0;
   Duration _totalElapsed = Duration.zero;
 
   /// Advances the effect by the given duration, updating the state and particles.
   void forward(Duration elapsedDuration) {
+    // No size available, we can’t render particles
+    if(_surfaceSize == _noSize) return;
     _totalElapsed += elapsedDuration;
     if (_totalElapsed < effectConfiguration.startDelay) {
       _lastInstantiation = _totalElapsed;
@@ -107,6 +112,11 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   /// Can be overridden in subclasses to handle additional cleanup or logic.
   @protected
   void onParticleDestroyed(Particle particle) {
+    // Default implementation does nothing. Override in subclasses if needed.
+  }
+
+  @protected
+  void onSurfaceSizeChanged() {
     // Default implementation does nothing. Override in subclasses if needed.
   }
 
