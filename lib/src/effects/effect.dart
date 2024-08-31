@@ -66,7 +66,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   /// Advances the effect by the given duration, updating the state and particles.
   void forward(Duration elapsedDuration) {
     // No size available, we can’t render particles
-    if(_surfaceSize == _noSize) return;
+    if (_surfaceSize == _noSize) return;
     _totalElapsed += elapsedDuration;
     if (_totalElapsed < effectConfiguration.startDelay) {
       _lastInstantiation = _totalElapsed;
@@ -123,6 +123,11 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   /// Invoked when the effect's time is forwarded, allowing subclasses to react to time changes.
   @protected
   void onTimeForwarded(Duration elapsedDuration) {
+    // Default implementation does nothing. Override in subclasses if needed.
+  }
+
+  @protected
+  void onParticlesUpdated() {
     // Default implementation does nothing. Override in subclasses if needed.
   }
 
@@ -194,5 +199,6 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     for (final element in _activeParticles) {
       element.onAnimationUpdate(totalElapsed - element.elapsedTimeOnStart);
     }
+    onParticlesUpdated();
   }
 }

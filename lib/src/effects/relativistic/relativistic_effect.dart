@@ -1,10 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
+import 'package:newton_particles/src/effects/relativistic/forge/forge_newton_world.dart';
 import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 import 'package:newton_particles/src/effects/relativistic/path.dart';
 
-class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectConfiguration> {
-  RelativistEffect(super.effectConfiguration) : _world = NewtonWorld(effectConfiguration.gravity);
+class RelativistEffect
+    extends Effect<RelativisticParticle, RelativisticEffectConfiguration> {
+  RelativistEffect(super.effectConfiguration)
+      : _world = ForgeNewtonWorld(effectConfiguration.gravity);
 
   final NewtonWorld _world;
 
@@ -56,5 +59,10 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
   @override
   void onSurfaceSizeChanged() {
     _world.updateSurfaceSize(surfaceSize);
+  }
+
+  @override
+  void onParticlesUpdated() {
+    _world.updateParticles(activeParticles);
   }
 }
