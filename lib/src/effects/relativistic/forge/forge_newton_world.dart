@@ -13,10 +13,10 @@ class ForgeNewtonWorld implements NewtonWorld {
   /// Creates a new `ForgeNewtonWorld` with the specified gravity.
   ///
   /// - [gravity]: The gravity vector applied to the world, typically defined as `Gravity(dx, dy)`.
-  ForgeNewtonWorld(Gravity gravity) {
+  ForgeNewtonWorld(Gravity gravity, HardEdges hardEdges) {
     final world = f2d.World(f2d.Vector2(gravity.dx, gravity.dy));
     _world = world;
-    _boundaries = _Boundaries(world);
+    _boundaries = _Boundaries(world, hardEdges);
   }
 
   static const _pixelsPerMeter = 100.0;
@@ -126,9 +126,10 @@ class ForgeNewtonWorld implements NewtonWorld {
 }
 
 class _Boundaries {
-  _Boundaries(this._world);
+  _Boundaries(this._world, this._hardEdges);
 
   List<f2d.Body> _boundaries = [];
+  HardEdges _hardEdges;
   final f2d.World _world;
 
   void updateBoundaries(f2d.Vector2 newScreenSize) {
@@ -142,17 +143,23 @@ class _Boundaries {
 
   List<f2d.Body> _createBoundaries(f2d.Vector2 screenSize) {
     final boundaries = <f2d.Body>[];
-
-    final topEdge = f2d.EdgeShape()..set(f2d.Vector2(0, 0), f2d.Vector2(screenSize.x, 0));
-    final bottomEdge = f2d.EdgeShape()..set(f2d.Vector2(0, screenSize.y), f2d.Vector2(screenSize.x, screenSize.y));
-    final leftEdge = f2d.EdgeShape()..set(f2d.Vector2(0, 0), f2d.Vector2(0, screenSize.y));
-    final rightEdge = f2d.EdgeShape()..set(f2d.Vector2(screenSize.x, 0), f2d.Vector2(screenSize.x, screenSize.y));
-
-    return boundaries
-      ..add(_createEdgeBoundary(topEdge))
-      ..add(_createEdgeBoundary(bottomEdge))
-      ..add(_createEdgeBoundary(leftEdge))
-      ..add(_createEdgeBoundary(rightEdge));
+    if (_hardEdges.left) {
+      final leftEdge = f2d.EdgeShape()..set(f2d.Vector2(0, 0), f2d.Vector2(0, screenSize.y));
+      boundaries.add(_createEdgeBoundary(leftEdge));
+    }
+    if (_hardEdges.top) {
+      final topEdge = f2d.EdgeShape()..set(f2d.Vector2(0, 0), f2d.Vector2(screenSize.x, 0));
+      boundaries.add(_createEdgeBoundary(topEdge));
+    }
+    if (_hardEdges.right) {
+      final rightEdge = f2d.EdgeShape()..set(f2d.Vector2(screenSize.x, 0), f2d.Vector2(screenSize.x, screenSize.y));
+      boundaries.add(_createEdgeBoundary(rightEdge));
+    }
+    if (_hardEdges.bottom) {
+      final bottomEdge = f2d.EdgeShape()..set(f2d.Vector2(0, screenSize.y), f2d.Vector2(screenSize.x, screenSize.y));
+      boundaries.add(_createEdgeBoundary(bottomEdge));
+    }
+    return boundaries;
   }
 
   f2d.Body _createEdgeBoundary(f2d.EdgeShape edge) {

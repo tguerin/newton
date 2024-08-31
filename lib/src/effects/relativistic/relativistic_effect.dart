@@ -5,7 +5,11 @@ import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 import 'package:newton_particles/src/effects/relativistic/path.dart';
 
 class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectConfiguration> {
-  RelativistEffect(super.effectConfiguration) : _world = ForgeNewtonWorld(effectConfiguration.gravity);
+  RelativistEffect(super.effectConfiguration)
+      : _world = ForgeNewtonWorld(
+          effectConfiguration.gravity,
+          effectConfiguration.hardEdges,
+        );
 
   final NewtonWorld _world;
 
