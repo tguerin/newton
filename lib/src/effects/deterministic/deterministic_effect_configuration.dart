@@ -64,6 +64,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     super.minOriginOffset,
     super.origin,
     super.particleCount,
+    super.particleLayer,
     super.particlesPerEmit,
     super.scaleCurve,
     super.startDelay,
@@ -92,8 +93,9 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
   @override
   DeterministicEffectConfiguration copyWith({
     DeterministicPathTransformation Function(
-            Effect<DeterministicAnimatedParticle, DeterministicEffectConfiguration>, DeterministicAnimatedParticle,)?
-        customPathBuilder,
+      Effect<DeterministicAnimatedParticle, DeterministicEffectConfiguration>,
+      DeterministicAnimatedParticle,
+    )? customPathBuilder,
     Curve? distanceCurve,
     Curve? emitCurve,
     Duration? emitDuration,
@@ -119,6 +121,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     Offset? origin,
     ParticleConfiguration? particleConfiguration,
     int? particleCount,
+    ParticleLayer? particleLayer,
     int? particlesPerEmit,
     Curve? scaleCurve,
     Duration? startDelay,
@@ -151,6 +154,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
       minOriginOffset: minOriginOffset ?? this.minOriginOffset,
       origin: origin ?? this.origin,
       particleCount: particleCount ?? this.particleCount,
+      particleLayer: particleLayer ?? this.particleLayer,
       particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,
       scaleCurve: scaleCurve ?? this.scaleCurve,
       startDelay: startDelay ?? this.startDelay,

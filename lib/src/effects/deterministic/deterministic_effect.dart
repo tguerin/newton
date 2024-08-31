@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:newton_particles/newton_particles.dart';
 
 /// The `DeterministicEffect` class represents a particle effect where the behavior of
@@ -33,20 +34,21 @@ class DeterministicEffect extends Effect<DeterministicAnimatedParticle, Determin
       fadeInThreshold: effectConfiguration.randomFadeInThreshold(),
       fadeOutCurve: effectConfiguration.fadeOutCurve,
       fadeOutThreshold: effectConfiguration.randomFadeOutThreshold(),
+      foreground: effectConfiguration.randomParticleForeground(),
       onPathTransformationRequested: (animatedParticle) {
         return pathBuilder != null
             ? pathBuilder(this, animatedParticle)
             : StraightPathTransformation(
-          distance: effectConfiguration.randomDistance(),
-          angle: effectConfiguration.randomAngle(),
-        );
+                distance: effectConfiguration.randomDistance(),
+                angle: effectConfiguration.randomAngle(),
+              );
       },
       particle: Particle(
         configuration: effectConfiguration.particleConfiguration,
         position: Offset(
-          effectConfiguration.origin.dx * surfaceSize.width,
-          effectConfiguration.origin.dy * surfaceSize.height,
-        ) +
+              effectConfiguration.origin.dx * surfaceSize.width,
+              effectConfiguration.origin.dy * surfaceSize.height,
+            ) +
             Offset(
               randomOriginOffset.dx * surfaceSize.width,
               randomOriginOffset.dy * surfaceSize.height,

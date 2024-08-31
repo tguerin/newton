@@ -73,10 +73,8 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   final _pendingActiveEffects = List<Effect>.empty(growable: true);
   late Future<ui.Image> _shapeSpriteSheet;
 
-  final _backgroundEffects = <Effect>[];
-  final _backgroundElapsedTimeNotifier = _ElapsedTimeNotifier();
-  final _foregroundEffects = <Effect>[];
-  final _foregroundElapsedTimeNotifier = _ElapsedTimeNotifier();
+  final _effects = <Effect>[];
+  final _effectsElapsedTimeNotifier = _ElapsedTimeNotifier();
 
   @override
   void initState() {
@@ -93,21 +91,16 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   }
 
   void _cleanDeadEffects() {
-    _backgroundEffects.removeWhere((effect) => effect.state == EffectState.killed);
-    _foregroundEffects.removeWhere((effect) => effect.state == EffectState.killed);
+    _effects.removeWhere((effect) => effect.state == EffectState.killed);
   }
 
   void _updateActiveEffects(Duration elapsed) {
     if (_pendingActiveEffects.isNotEmpty) {
-      _backgroundEffects.addAll(_pendingActiveEffects.where(_isBackgroundEffect));
-      _foregroundEffects.addAll(_pendingActiveEffects.where(_isForegroundEffect));
+      _effects.addAll(_pendingActiveEffects);
       _pendingActiveEffects.clear();
     }
-    if (_backgroundEffects.isNotEmpty) {
-      _backgroundElapsedTimeNotifier.value = elapsed - _lastElapsed;
-    }
-    if (_foregroundEffects.isNotEmpty) {
-      _foregroundElapsedTimeNotifier.value = elapsed - _lastElapsed;
+    if (_effects.isNotEmpty) {
+      _effectsElapsedTimeNotifier.value = elapsed - _lastElapsed;
     }
     _lastElapsed = elapsed;
   }
@@ -124,16 +117,16 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
               child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return CustomPaint(
-                    willChange: _backgroundEffects.isNotEmpty || _foregroundEffects.isNotEmpty,
+                    willChange: _effects.isNotEmpty,
                     size: constraints.biggest,
                     painter: NewtonPainter(
-                      elapsedTimeNotifier: _backgroundElapsedTimeNotifier,
-                      effects: _backgroundEffects,
+                      elapsedTimeNotifier: _effectsElapsedTimeNotifier,
+                      effects: _effects,
                       shapesSpriteSheet: snapshot.data!,
                     ),
                     foregroundPainter: NewtonPainter(
-                      elapsedTimeNotifier: _foregroundElapsedTimeNotifier,
-                      effects: _foregroundEffects,
+                      elapsedTimeNotifier: _effectsElapsedTimeNotifier,
+                      effects: _effects,
                       shapesSpriteSheet: snapshot.data!,
                     ),
                     child: widget.child,
@@ -149,12 +142,6 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     );
   }
 
-  bool _isBackgroundEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) =>
-      !effect.effectConfiguration.foreground;
-
-  bool _isForegroundEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) =>
-      effect.effectConfiguration.foreground;
-
   /// Adds a new particle effect to the list of active effects.
   ///
   /// The `addEffect` method allows you to dynamically add a new particle effect to the list
@@ -165,15 +152,9 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       ..addedAtRuntime = true
       ..postEffectCallback = _onPostEffect
       ..stateChangeCallback = _onEffectStateChanged;
-    if (effectConfiguration.foreground) {
-      _foregroundEffects.add(
-        effect,
-      );
-    } else {
-      _backgroundEffects.add(
-        effect,
-      );
-    }
+    _effects.add(
+      effect,
+    );
     return effect;
   }
 
@@ -182,11 +163,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   /// The `removeEffect` method allows you to dynamically remove a particle effect from the list
   /// of active effects.
   void removeEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) {
-    if (effect.effectConfiguration.foreground) {
-      _foregroundEffects.removeWhere((e) => e.rootEffect == effect);
-    } else {
-      _backgroundEffects.removeWhere((e) => e.rootEffect == effect);
-    }
+    _effects.removeWhere((e) => e.rootEffect == effect);
   }
 
   /// Remove a effect from the list of active effects given an effect configuration.
@@ -194,11 +171,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   /// The `removeEffect` method allows you to dynamically remove a particle effect from the list
   /// of active effects given an effect configuration. All effects with same configuration will be removed.
   void removeEffectConfiguration<T extends EffectConfiguration>(T effectConfiguration) {
-    final effects = switch (effectConfiguration.foreground) {
-      true => _foregroundEffects,
-      false => _backgroundEffects,
-    };
-    return effects.removeWhere(
+    return _effects.removeWhere(
       (e) => e.effectConfiguration == effectConfiguration || e.rootEffect?.effectConfiguration == effectConfiguration,
     );
   }
@@ -216,11 +189,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   /// This method removes all currently active particle effects, effectively
   /// resetting the animation state of the `Newton` widget.
   void clearEffects() {
-    _backgroundEffects.removeWhere((effect) {
-      effect.postEffectCallback = null;
-      return true;
-    });
-    _foregroundEffects.removeWhere((effect) {
+    _effects.removeWhere((effect) {
       effect.postEffectCallback = null;
       return true;
     });
@@ -231,8 +200,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     super.didUpdateWidget(oldWidget);
     if (widget.effectConfigurations != oldWidget.effectConfigurations) {
       _pendingActiveEffects.removeWhere(_isEffectRemoved);
-      _backgroundEffects.removeWhere(_isEffectRemoved);
-      _foregroundEffects.removeWhere(_isEffectRemoved);
+      _effects.removeWhere(_isEffectRemoved);
       _setupEffectsFromWidget();
     }
   }
@@ -247,11 +215,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       final effect = configuration.effect()
         ..postEffectCallback = _onPostEffect
         ..stateChangeCallback = _onEffectStateChanged;
-      if (configuration.foreground) {
-        _foregroundEffects.add(effect);
-      } else {
-        _backgroundEffects.add(effect);
-      }
+      _effects.add(effect);
     }
   }
 

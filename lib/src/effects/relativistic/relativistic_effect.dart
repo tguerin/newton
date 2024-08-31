@@ -4,10 +4,8 @@ import 'package:newton_particles/src/effects/relativistic/forge/forge_newton_wor
 import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 import 'package:newton_particles/src/effects/relativistic/path.dart';
 
-class RelativistEffect
-    extends Effect<RelativisticParticle, RelativisticEffectConfiguration> {
-  RelativistEffect(super.effectConfiguration)
-      : _world = ForgeNewtonWorld(effectConfiguration.gravity);
+class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectConfiguration> {
+  RelativistEffect(super.effectConfiguration) : _world = ForgeNewtonWorld(effectConfiguration.gravity);
 
   final NewtonWorld _world;
 
@@ -36,6 +34,7 @@ class RelativistEffect
       fadeInThreshold: effectConfiguration.randomFadeInThreshold(),
       fadeOutCurve: effectConfiguration.fadeOutCurve,
       fadeOutThreshold: effectConfiguration.randomFadeOutThreshold(),
+      foreground: effectConfiguration.randomParticleForeground(),
       particle: Particle(
         configuration: effectConfiguration.particleConfiguration,
         position: Offset(

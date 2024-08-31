@@ -5,6 +5,7 @@ export 'src/effects/deterministic/path.dart';
 export 'src/effects/effect.dart';
 export 'src/effects/effect_configuration.dart';
 export 'src/effects/effect_state.dart';
+export 'src/effects/particle_layer.dart';
 export 'src/effects/relativistic/density.dart';
 export 'src/effects/relativistic/friction.dart';
 export 'src/effects/relativistic/relativistic_effect_configuration.dart';

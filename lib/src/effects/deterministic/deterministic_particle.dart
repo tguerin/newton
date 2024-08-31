@@ -7,7 +7,6 @@ import 'package:newton_particles/newton_particles.dart';
 /// along a specific path using a custom or predefined [DeterministicPathTransformation].
 /// It allows particles to follow precise trajectories with controlled distance animation.
 class DeterministicAnimatedParticle extends AnimatedParticle {
-
   /// Creates an instance of [DeterministicAnimatedParticle] with the specified properties.
   ///
   /// - [distanceCurve]: The curve used to control the distance animation progress.
@@ -31,11 +30,13 @@ class DeterministicAnimatedParticle extends AnimatedParticle {
     required super.fadeInThreshold,
     required super.fadeOutCurve,
     required super.fadeOutThreshold,
+    required super.foreground,
     required super.particle,
     required super.scaleCurve,
     required super.scaleRange,
     required super.trail,
   });
+
   /// The curve used to control the distance animation progress.
   ///
   /// This curve determines how the particle progresses along its path over time.

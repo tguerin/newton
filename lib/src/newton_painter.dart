@@ -19,26 +19,33 @@ class NewtonPainter extends CustomPainter {
   ///
   /// The painter listens for changes in the [elapsedTimeNotifier] to update the canvas.
   NewtonPainter({
-    required this.effects,
-    required this.elapsedTimeNotifier,
-    required this.shapesSpriteSheet,
-  }) : super(repaint: elapsedTimeNotifier);
+    required List<Effect<AnimatedParticle, EffectConfiguration<ParticleConfiguration>>> effects,
+    required ValueListenable<Duration> elapsedTimeNotifier,
+    required ui.Image shapesSpriteSheet,
+    bool foreground = false,
+  })  : _foreground = foreground,
+        _shapesSpriteSheet = shapesSpriteSheet,
+        _elapsedTimeNotifier = elapsedTimeNotifier,
+        _effects = effects,
+        super(repaint: elapsedTimeNotifier);
 
   /// The list of particle effects to be rendered by this painter.
   ///
   /// Each effect contains a collection of particles with specific behaviors
   /// and transformations.
-  final List<Effect> effects;
+  final List<Effect> _effects;
 
   /// Notifies listeners about changes in the elapsed time.
   ///
   /// This is used to update the animation state of the particles.
-  final ValueListenable<Duration> elapsedTimeNotifier;
+  final ValueListenable<Duration> _elapsedTimeNotifier;
+
+  final bool _foreground;
 
   /// The sprite sheet containing shapes used in rendering particles.
   ///
   /// This image provides the graphical assets for particle shapes.
-  final ui.Image shapesSpriteSheet;
+  final ui.Image _shapesSpriteSheet;
 
   // Internal state for managing transformations and rendering.
   final Set<_BlendedImage> _allBlendedImages = {};
@@ -52,17 +59,18 @@ class NewtonPainter extends CustomPainter {
   /// transformations for each active particle, and then draws them on the canvas.
   @override
   void paint(Canvas canvas, Size size) {
-    _clearTransformations(); // Clear previous transformations.
+    _clearTransformations();
 
-    // Iterate over each effect and update their active particles.
-    effects.expand((effect) {
+    _effects.expand((effect) {
       effect
         ..surfaceSize = size
-        ..forward(elapsedTimeNotifier.value); // Update the effect state.
+        ..forward(_elapsedTimeNotifier.value);
       return effect.activeParticles;
     }).forEach((activeParticle) {
-      _updateTransformations(activeParticle); // Compute transformations.
-      activeParticle.drawExtra(canvas); // Draw additional effects.
+      if (activeParticle.foreground == _foreground) {
+        _updateTransformations(activeParticle);
+        activeParticle.drawExtra(canvas);
+      }
     });
 
     // Draw all particles using drawAtlas for efficiency.
@@ -81,11 +89,11 @@ class NewtonPainter extends CustomPainter {
 
   /// Determines whether the painter should repaint.
   ///
-  /// The painter will repaint if the effects managed by the [effects]
+  /// The painter will repaint if the effects managed by the [_effects]
   /// have changed.
   @override
   bool shouldRepaint(covariant NewtonPainter oldDelegate) {
-    return !listEquals(oldDelegate.effects, effects);
+    return !listEquals(oldDelegate._effects, _effects);
   }
 
   /// Clears stored transformations for the current painting cycle.
@@ -104,14 +112,13 @@ class NewtonPainter extends CustomPainter {
   /// This method adds transformations, rectangles, and colors for each particle
   /// to their respective maps for rendering.
   void _updateTransformations(AnimatedParticle activeParticle) {
-    final transformationData = activeParticle.particle.computeTransformation(shapesSpriteSheet);
-    if (transformationData == null) return; // Skip if no transformation data.
+    final transformationData = activeParticle.particle.computeTransformation(_shapesSpriteSheet);
+    if (transformationData == null) return;
 
     final blendedImage = _BlendedImage(
       image: transformationData.image,
       blendMode: transformationData.blendMode ?? ui.BlendMode.dstIn,
     );
-    // Add the image and its transformations to the respective maps.
     _allBlendedImages.add(blendedImage);
     _rectsPerImage.update(
       blendedImage,

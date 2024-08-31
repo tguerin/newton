@@ -15,6 +15,7 @@ class RelativisticParticle extends AnimatedParticle {
     required super.fadeInThreshold,
     required super.fadeOutCurve,
     required super.fadeOutThreshold,
+    required super.foreground,
     required super.particle,
     required super.scaleCurve,
     required super.scaleRange,

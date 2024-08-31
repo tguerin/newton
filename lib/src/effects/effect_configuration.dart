@@ -35,6 +35,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     this.minOriginOffset = Offset.zero,
     this.origin = const Offset(0.5, 0.5),
     this.particleCount = 0,
+    this.particleLayer = ParticleLayer.background,
     this.particlesPerEmit = 1,
     this.scaleCurve = Curves.linear,
     this.startDelay = Duration.zero,
@@ -130,6 +131,9 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Total number of particles to emit. Default: `0` means infinite count.
   final int particleCount;
 
+  /// On which layer the particle should be rendered. Default: background
+  final ParticleLayer particleLayer;
+
   /// Number of particles emitted per emission. Default: `1`.
   final int particlesPerEmit;
 
@@ -184,6 +188,14 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     return Tween(begin: beginScale, end: endScale);
   }
 
+  bool randomParticleForeground() {
+    return switch (particleLayer) {
+      ParticleLayer.background => false,
+      ParticleLayer.foreground => true,
+      ParticleLayer.random => random.nextBool(),
+    };
+  }
+
   /// Helper method to generate a random fade-out threshold
   /// within the range [minFadeOutThreshold] - [maxFadeOutThreshold].
   double randomFadeOutThreshold() {
@@ -228,6 +240,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     Offset? origin,
     ParticleConfiguration? particleConfiguration,
     int? particleCount,
+    ParticleLayer? particleLayer,
     int? particlesPerEmit,
     Curve? scaleCurve,
     Duration? startDelay,

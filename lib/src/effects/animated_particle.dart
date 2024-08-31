@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/animation.dart';
 import 'package:newton_particles/newton_particles.dart';
 
@@ -28,6 +29,7 @@ class AnimatedParticle {
     required this.fadeInThreshold,
     required this.fadeOutCurve,
     required this.fadeOutThreshold,
+    required this.foreground,
     required this.particle,
     required this.scaleCurve,
     required this.scaleRange,
@@ -61,6 +63,11 @@ class AnimatedParticle {
   ///
   /// This value is between 0.0 and 1.0, where 0.0 represents the start of the animation and 1.0 represents the end.
   final double fadeOutThreshold;
+
+  /// Should this particle be displayed in the foreground layer?
+  ///
+  /// True to display the particle in the foreground, false otherwise.
+  final bool foreground;
 
   /// The [Particle] associated with this animated particle.
   ///
