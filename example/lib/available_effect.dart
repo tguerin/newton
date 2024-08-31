@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:newton_particles/newton_particles.dart';
 
 enum AvailableEffect {
+  scratch(
+    'From scratch',
+  ),
   rain(
     'Rain',
     supportedParameters: [
@@ -80,6 +83,12 @@ enum AvailableEffect {
 }
 
 Map<AvailableEffect, EffectConfiguration> defaultEffectConfigurationsPerAnimation = {
+  AvailableEffect.scratch: DeterministicEffectConfiguration(
+    particleConfiguration: const ParticleConfiguration(
+      shape: CircleShape(),
+      size: Size(5, 5),
+    ),
+  ),
   AvailableEffect.rain: RelativisticEffectConfiguration(
     gravity: const Gravity(0, 9.807),
     origin: Offset.zero,

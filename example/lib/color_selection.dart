@@ -5,18 +5,27 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:newton_particles/newton_particles.dart';
 
 class ColorSelection extends StatefulWidget {
-  const ColorSelection({required this.onChanged, super.key});
+  const ColorSelection({required this.onChanged, required this.existingColors, super.key});
 
   final ValueChanged<ParticleColor> onChanged;
+  final List<Color> existingColors;
 
   @override
   State<ColorSelection> createState() => _ColorSelectionState();
 }
 
 class _ColorSelectionState extends State<ColorSelection> {
-  final _currentColors = [Colors.white].toList(growable: true);
+  late final List<Color> _currentColors;
 
-  var _colorType = ColorType.single;
+  late ColorType _colorType;
+
+  @override
+  void initState() {
+    super.initState();
+    final colors = widget.existingColors.toList(growable: true);
+    _currentColors = colors.isEmpty ? [Colors.white] : colors;
+    _colorType = widget.existingColors.length > 1 ? ColorType.linearInterpolation : ColorType.single;
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -212,6 +212,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
 
   void _setupEffectsFromWidget() {
     for (final configuration in widget.effectConfigurations) {
+      if (_effects.any((effect) => effect.effectConfiguration == configuration)) continue;
       final effect = configuration.effect()
         ..postEffectCallback = _onPostEffect
         ..stateChangeCallback = _onEffectStateChanged;

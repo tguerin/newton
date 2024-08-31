@@ -5,6 +5,7 @@ import 'package:newton_particles/newton_particles.dart';
 ///
 /// The `ParticleConfiguration` class holds information about the shape, size, and color of a particle.
 /// It is used to define the appearance of each particle in the animation.
+@immutable
 class ParticleConfiguration {
   /// Creates a `ParticleConfiguration` with the specified shape, size, and color.
   ///
@@ -57,4 +58,17 @@ class ParticleConfiguration {
       postEffectBuilder: postEffectBuilder ?? this.postEffectBuilder,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ParticleConfiguration &&
+          runtimeType == other.runtimeType &&
+          shape == other.shape &&
+          size == other.size &&
+          color == other.color &&
+          postEffectBuilder == other.postEffectBuilder;
+
+  @override
+  int get hashCode => shape.hashCode ^ size.hashCode ^ color.hashCode ^ postEffectBuilder.hashCode;
 }

@@ -23,6 +23,7 @@ class HardEdges {
   final bool bottom;
 }
 
+@immutable
 class RelativisticEffectConfiguration extends EffectConfiguration {
   const RelativisticEffectConfiguration({
     required this.gravity,
@@ -173,4 +174,35 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
   Velocity randomVelocity() {
     return Velocity.custom(random.nextDoubleRange(minVelocity.value, maxVelocity.value));
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      super == other &&
+          other is RelativisticEffectConfiguration &&
+          runtimeType == other.runtimeType &&
+          gravity == other.gravity &&
+          hardEdges == other.hardEdges &&
+          maxDensity == other.maxDensity &&
+          maxFriction == other.maxFriction &&
+          maxRestitution == other.maxRestitution &&
+          maxVelocity == other.maxVelocity &&
+          minDensity == other.minDensity &&
+          minFriction == other.minFriction &&
+          minRestitution == other.minRestitution &&
+          minVelocity == other.minVelocity;
+
+  @override
+  int get hashCode =>
+      super.hashCode ^
+      gravity.hashCode ^
+      hardEdges.hashCode ^
+      maxDensity.hashCode ^
+      maxFriction.hashCode ^
+      maxRestitution.hashCode ^
+      maxVelocity.hashCode ^
+      minDensity.hashCode ^
+      minFriction.hashCode ^
+      minRestitution.hashCode ^
+      minVelocity.hashCode;
 }

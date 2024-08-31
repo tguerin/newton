@@ -62,6 +62,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   Size _surfaceSize = _noSize;
   int _totalEmittedCount = 0;
   Duration _totalElapsed = Duration.zero;
+  bool _killPending = false;
 
   /// Advances the effect by the given duration, updating the state and particles.
   void forward(Duration elapsedDuration) {
@@ -76,7 +77,12 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     _emitParticles();
     _cleanParticles();
     _updateParticles();
-    _killEffectWhenOver();
+    if (_killPending) {
+      _killPending = false;
+      _state = EffectState.killed;
+    } else {
+      _killEffectWhenOver();
+    }
   }
 
   /// Initializes and returns a new particle for the effect.
@@ -103,8 +109,8 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   /// Immediately stops the effect and clears all particles, marking it as killed.
   void kill() {
     stop(cancel: true);
-    _updateState(EffectState.killed);
     postEffectCallback = null;
+    _killPending = true;
   }
 
   /// Invoked when a particle's animation is over.

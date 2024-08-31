@@ -10,7 +10,6 @@ class RangeSelection extends StatefulWidget {
     required this.initialMin,
     required this.initialMax,
     super.key,
-    this.roundValue = true,
     this.divisions = 100,
     this.precision = 2,
   });
@@ -20,7 +19,6 @@ class RangeSelection extends StatefulWidget {
   final double max;
   final double initialMin;
   final double initialMax;
-  final bool roundValue;
   final int divisions;
   final int precision;
   final ValueChanged<RangeValues> onChanged;
@@ -42,8 +40,8 @@ class _RangeSelectionState extends State<RangeSelection> {
 
   @override
   Widget build(BuildContext context) {
-    final formattedMin = widget.roundValue ? _min.round() : _min.toStringAsPrecision(widget.precision);
-    final formattedMax = widget.roundValue ? _max.round() : _max.toStringAsPrecision(widget.precision);
+    final formattedMin = _min.toStringAsFixed(_min.truncateToDouble() == _min ? 0 : widget.precision);
+    final formattedMax = _max.toStringAsFixed(_max.truncateToDouble() == _max ? 0 : widget.precision);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -58,7 +56,7 @@ class _RangeSelectionState extends State<RangeSelection> {
             min: widget.min,
             max: widget.max,
             divisions: widget.divisions,
-            labels: RangeLabels('$formattedMin.', '$formattedMax'),
+            labels: RangeLabels(formattedMin, formattedMax),
             onChanged: (values) {
               setState(() {
                 _min = values.start;

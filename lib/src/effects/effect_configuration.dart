@@ -3,11 +3,14 @@ import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/deterministic/deterministic_effect.dart';
 import 'package:newton_particles/src/effects/relativistic/relativistic_effect.dart';
 
+extension type Tag(String value) {}
+
 /// Configuration class for defining particle emission properties in Newton effects.
 ///
 /// The `EffectConfiguration` class provides customizable properties to control particle emission
 /// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
 /// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
+@immutable
 abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Creates an instance of `EffectConfiguration` with the specified parameters.
   ///
@@ -39,6 +42,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     this.particlesPerEmit = 1,
     this.scaleCurve = Curves.linear,
     this.startDelay = Duration.zero,
+    this.tag,
     this.trail = const NoTrail(),
   })  : assert(
           minAngle <= maxAngle,
@@ -143,6 +147,9 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Delay before starting the effect. Default: [Duration.zero].
   final Duration startDelay;
 
+  /// Tag to identify the effect configuration
+  final Tag? tag;
+
   /// The trail effect associated with emitted particles. Default: [NoTrail].
   final Trail trail;
 
@@ -246,6 +253,71 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     Duration? startDelay,
     Trail? trail,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EffectConfiguration &&
+          runtimeType == other.runtimeType &&
+          emitCurve == other.emitCurve &&
+          emitDuration == other.emitDuration &&
+          fadeInCurve == other.fadeInCurve &&
+          fadeOutCurve == other.fadeOutCurve &&
+          foreground == other.foreground &&
+          maxAngle == other.maxAngle &&
+          maxBeginScale == other.maxBeginScale &&
+          maxDuration == other.maxDuration &&
+          maxEndScale == other.maxEndScale &&
+          maxFadeInThreshold == other.maxFadeInThreshold &&
+          maxFadeOutThreshold == other.maxFadeOutThreshold &&
+          maxOriginOffset == other.maxOriginOffset &&
+          minAngle == other.minAngle &&
+          minBeginScale == other.minBeginScale &&
+          minDuration == other.minDuration &&
+          minFadeInThreshold == other.minFadeInThreshold &&
+          minFadeOutThreshold == other.minFadeOutThreshold &&
+          minEndScale == other.minEndScale &&
+          minOriginOffset == other.minOriginOffset &&
+          origin == other.origin &&
+          particleConfiguration == other.particleConfiguration &&
+          particleCount == other.particleCount &&
+          particleLayer == other.particleLayer &&
+          particlesPerEmit == other.particlesPerEmit &&
+          scaleCurve == other.scaleCurve &&
+          startDelay == other.startDelay &&
+          tag == other.tag &&
+          trail == other.trail;
+
+  @override
+  int get hashCode =>
+      emitCurve.hashCode ^
+      emitDuration.hashCode ^
+      fadeInCurve.hashCode ^
+      fadeOutCurve.hashCode ^
+      foreground.hashCode ^
+      maxAngle.hashCode ^
+      maxBeginScale.hashCode ^
+      maxDuration.hashCode ^
+      maxEndScale.hashCode ^
+      maxFadeInThreshold.hashCode ^
+      maxFadeOutThreshold.hashCode ^
+      maxOriginOffset.hashCode ^
+      minAngle.hashCode ^
+      minBeginScale.hashCode ^
+      minDuration.hashCode ^
+      minFadeInThreshold.hashCode ^
+      minFadeOutThreshold.hashCode ^
+      minEndScale.hashCode ^
+      minOriginOffset.hashCode ^
+      origin.hashCode ^
+      particleConfiguration.hashCode ^
+      particleCount.hashCode ^
+      particleLayer.hashCode ^
+      particlesPerEmit.hashCode ^
+      scaleCurve.hashCode ^
+      startDelay.hashCode ^
+      tag.hashCode ^
+      trail.hashCode;
 }
 
 extension EffectForConfiguration on EffectConfiguration<ParticleConfiguration> {

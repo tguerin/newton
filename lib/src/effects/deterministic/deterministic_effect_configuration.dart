@@ -5,6 +5,7 @@ import 'package:newton_particles/newton_particles.dart';
 ///
 /// This class extends [EffectConfiguration] and introduces additional properties to control the travel distance of particles
 /// and to specify a custom path builder for particle motion. It allows for precise control over particle behavior in a deterministic effect.
+@immutable
 class DeterministicEffectConfiguration extends EffectConfiguration {
   /// Creates an instance of [DeterministicEffectConfiguration] with the specified parameters.
   ///
@@ -172,4 +173,23 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
       maxDistance,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      super == other &&
+          other is DeterministicEffectConfiguration &&
+          runtimeType == other.runtimeType &&
+          distanceCurve == other.distanceCurve &&
+          maxDistance == other.maxDistance &&
+          minDistance == other.minDistance &&
+          customPathBuilder == other.customPathBuilder;
+
+  @override
+  int get hashCode =>
+      super.hashCode ^
+      distanceCurve.hashCode ^
+      maxDistance.hashCode ^
+      minDistance.hashCode ^
+      customPathBuilder.hashCode;
 }
