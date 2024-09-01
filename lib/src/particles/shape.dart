@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newton_particles/newton_particles.dart';
 
+/// Data record to hold necessary information about how to transform the image
 typedef TransformationData = ({
   ui.Image image,
   ui.Rect rect,
@@ -50,6 +51,7 @@ sealed class Shape {
 /// This class calculates the transformation needed to render particles as circles
 /// using the default sprite size.
 class CircleShape extends Shape {
+  /// Well it’s a circle
   const CircleShape();
 
   @override
@@ -183,6 +185,7 @@ class ImageAssetShape extends Shape {
 /// This class calculates the transformation needed to render particles as squares
 /// using the default sprite size.
 class SquareShape extends Shape {
+  /// It has 4 edges and looks like a rectangle but all edges have same size
   const SquareShape();
   @override
   TransformationData? computeTransformation(

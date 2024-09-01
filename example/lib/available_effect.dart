@@ -130,7 +130,7 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
     minVelocity: const Velocity(10),
     maxVelocity: const Velocity(12),
     origin: const Offset(0.5, 1),
-    hardEdges: HardEdges.none,
+    hardEdges: SolidEdges.none,
     particleConfiguration: ParticleConfiguration(
       shape: const CircleShape(),
       size: const Size(5, 5),
@@ -144,7 +144,7 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
           maxAngle: 180,
           minAngle: -180,
           particleCount: 10,
-          hardEdges: HardEdges.none,
+          hardEdges: SolidEdges.none,
           minVelocity: const Velocity(5),
           maxVelocity: const Velocity(5),
           particleConfiguration: const ParticleConfiguration(

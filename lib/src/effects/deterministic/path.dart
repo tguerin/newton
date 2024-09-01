@@ -4,18 +4,20 @@ import 'dart:ui';
 import 'package:newton_particles/newton_particles.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-/// A sealed class representing a transformation applied to a path.
+/// A sealed class representing a deterministic transformation applied to a particle's path.
 ///
-/// This class provides an interface for transforming an initial position
-/// along a path based on the progress of the transformation. It is intended
-/// to be extended by subclasses that define specific transformation behaviors.
+/// This class serves as an interface for defining how a particle's position should be
+/// transformed as it progresses along its path. The transformation is based on the progress
+/// of the particle's movement, which is represented by a value between 0 and 1.
+/// Subclasses of `DeterministicPathTransformation` are expected to provide specific
+/// implementations of this transformation behavior.
 sealed class DeterministicPathTransformation {
-  /// Transforms the initial position based on the progress of the transformation.
+  /// Transforms the initial position of a [particle] based on the [progress] of the transformation.
   ///
-  /// The [initialPosition] is the starting position of the transformation.
-  /// The [progress] is a value between 0 and 1 representing the progress of the transformation.
+  /// - [particle]: The particle whose position is to be transformed.
+  /// - [progress]: A value between 0 and 1 that indicates the progress of the transformation.
   ///
-  /// Returns the new position after applying the transformation.
+  /// Returns the new position of the particle after applying the transformation.
   Offset positionFor(Particle particle, double progress);
 }
 

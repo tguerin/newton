@@ -17,7 +17,7 @@ class ForgeNewtonWorld implements NewtonWorld {
   /// Creates a new `ForgeNewtonWorld` with the specified gravity.
   ///
   /// - [gravity]: The gravity vector applied to the world, typically defined as `Gravity(dx, dy)`.
-  ForgeNewtonWorld(Gravity gravity, HardEdges hardEdges) {
+  ForgeNewtonWorld(Gravity gravity, SolidEdges hardEdges) {
     final world = f2d.World(f2d.Vector2(gravity.dx, gravity.dy));
     _world = world;
     _boundaries = _Boundaries(world, hardEdges);
@@ -25,10 +25,10 @@ class ForgeNewtonWorld implements NewtonWorld {
 
   static const _pixelsPerMeter = 100.0;
 
-  late final f2d.World _world;
   late final _Boundaries _boundaries;
   final Map<RelativisticParticle, f2d.Body> _particlesBody = {};
   final Map<RelativisticParticle, f2d.Fixture> _particlesFixture = {};
+  late final f2d.World _world;
 
   @override
   Offset? getParticleScreenPosition(RelativisticParticle particle) {
@@ -136,7 +136,7 @@ class _Boundaries {
   _Boundaries(this._world, this._hardEdges);
 
   List<f2d.Body> _boundaries = [];
-  final HardEdges _hardEdges;
+  final SolidEdges _hardEdges;
   final f2d.World _world;
 
   void updateBoundaries(f2d.Vector2 newScreenSize) {
@@ -144,7 +144,7 @@ class _Boundaries {
       _world.destroyBody(boundary);
     }
     _boundaries.clear();
-    if (_hardEdges == HardEdges.none) return;
+    if (_hardEdges == SolidEdges.none) return;
     _boundaries = _createBoundaries(newScreenSize);
   }
 

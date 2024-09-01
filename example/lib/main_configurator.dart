@@ -603,8 +603,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     return RangeSelection(
       initialMin: relativisticEffectConfiguration.minDensity,
       initialMax: relativisticEffectConfiguration.maxDensity,
-      min: Density.hydrogen,
-      max: Density.jupiterCore,
+      min: 0.05,
+      max: 100,
       title: 'Density',
       onChanged: (values) {
         setState(() {

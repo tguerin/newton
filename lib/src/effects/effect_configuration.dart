@@ -3,13 +3,37 @@ import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/deterministic/deterministic_effect.dart';
 import 'package:newton_particles/src/effects/relativistic/relativistic_effect.dart';
 
-extension type Tag(String value) {}
+/// Extension type `Tag` represents a simple wrapper around a string value that can be used
+/// to tag or identify specific configurations, effects, or particles within the Newton system.
+///
+/// Example usage:
+///
+/// ```dart
+/// final myTag = Tag('uniqueTag');
+/// print(myTag.value); // Output: uniqueTag
+/// ```
+extension type const Tag(String value) {}
 
 /// Configuration class for defining particle emission properties in Newton effects.
 ///
-/// The `EffectConfiguration` class provides customizable properties to control particle emission
-/// in Newton effects. It allows you to fine-tune various parameters, such as emission duration,
-/// particle count per emission, emission curve, origin, distance, duration, scale, and fade animation.
+/// The `EffectConfiguration` class provides a flexible framework for customizing particle
+/// emission in Newton effects. It allows you to configure various parameters, such as emission
+/// duration, particle count per emission, emission curve, origin, and more, to fine-tune the
+/// behavior and appearance of particles in a Newton effect.
+///
+/// This class is abstract and is meant to be extended by specific configurations, such as
+/// `DeterministicEffectConfiguration` or `RelativisticEffectConfiguration`.
+///
+/// Example usage:
+///
+/// ```dart
+/// final config = SomeEffectConfiguration(
+///   particleConfiguration: ParticleConfiguration(...),
+///   emitCurve: Curves.easeIn,
+///   maxDuration: Duration(seconds: 2),
+///   particleCount: 100,
+/// );
+/// ```
 @immutable
 abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Creates an instance of `EffectConfiguration` with the specified parameters.
@@ -44,32 +68,24 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     this.startDelay = Duration.zero,
     this.tag,
     this.trail = const NoTrail(),
-  })  : assert(
-          minAngle <= maxAngle,
-          'Min angle can’t be greater than max angle',
-        ),
-        assert(
-          minBeginScale <= maxBeginScale,
-          'Begin min scale can’t be greater than begin max scale',
-        ),
-        assert(
-          minDuration <= maxDuration,
-          'Min duration can’t be greater than max duration',
-        ),
-        assert(
-          minEndScale <= maxEndScale,
-          'End min scale can’t be greater than end max scale',
-        ),
+  })  : assert(minAngle <= maxAngle, 'Min angle can’t be greater than max angle'),
+        assert(minBeginScale <= maxBeginScale, 'Begin min scale can’t be greater than begin max scale'),
+        assert(minDuration <= maxDuration, 'Min duration can’t be greater than max duration'),
+        assert(minEndScale <= maxEndScale, 'End min scale can’t be greater than end max scale'),
         assert(
           minFadeInThreshold <= maxFadeInThreshold,
-          'Min fadeIn limit can’t be greater than end max fadeIn threshold',
+          'Min fadeIn threshold can’t be greater than max fadeIn threshold',
         ),
         assert(
           minFadeOutThreshold <= maxFadeOutThreshold,
-          'Min fadeOut threshold can’t be greater than end max fadeOut threshold',
+          'Min fadeOut threshold can’t be greater than max fadeOut threshold',
+        ),
+        assert(
+          minOriginOffset <= maxOriginOffset,
+          'Min origin offset can’t be greater than max origin offset',
         );
 
-  /// Curve to control the emission timing. Default: [Curves.decelerate].
+  /// Curve to control the emission timing of particles. Default: [Curves.decelerate].
   final Curve emitCurve;
 
   /// Duration between particle emissions. Default: `100ms`.
@@ -81,7 +97,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Curve to control particle fade-out animation. Default: [Curves.linear].
   final Curve fadeOutCurve;
 
-  /// Indicates whether the effect should be played in the foreground. Default: `false`.
+  /// Indicates whether the effect should be rendered in the foreground. Default: `false`.
   final bool foreground;
 
   /// Maximum angle in degrees for particle trajectory. Default: `0`.
@@ -93,7 +109,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Maximum particle animation duration. Default: `1s`.
   final Duration maxDuration;
 
-  /// Maximum final particle scale. Default: `-1`.
+  /// Maximum final particle scale. Default: `-1` (no scaling).
   final double maxEndScale;
 
   /// Maximum opacity threshold for particle fade-in. Default: `0`.
@@ -120,7 +136,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Minimum opacity threshold for particle fade-out. Default: `1`.
   final double minFadeOutThreshold;
 
-  /// Minimum final particle scale. Default: `-1`.
+  /// Minimum final particle scale. Default: `-1` (no scaling).
   final double minEndScale;
 
   /// Offset for the minimum origin point of particle emission. Default: [Offset.zero].
@@ -129,49 +145,55 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Origin point for particle emission, relative from the top-left of the container. Default: `Offset(0.5, 0.5)`.
   final Offset origin;
 
-  /// Define the look and feel of emitted particle
+  /// Defines the configuration of the emitted particles.
   final T particleConfiguration;
 
-  /// Total number of particles to emit. Default: `0` means infinite count.
+  /// Total number of particles to emit. Default: `0` (infinite count).
   final int particleCount;
 
-  /// On which layer the particle should be rendered. Default: background
+  /// The layer on which the particles should be rendered. Default: [ParticleLayer.background].
   final ParticleLayer particleLayer;
 
-  /// Number of particles emitted per emission. Default: `1`.
+  /// Number of particles emitted per emission event. Default: `1`.
   final int particlesPerEmit;
 
   /// Curve to control particle scaling animation. Default: [Curves.linear].
   final Curve scaleCurve;
 
-  /// Delay before starting the effect. Default: [Duration.zero].
+  /// Delay before starting the particle effect. Default: [Duration.zero].
   final Duration startDelay;
 
-  /// Tag to identify the effect configuration
+  /// Tag to identify the effect configuration, allowing for easy reference or management. Optional.
   final Tag? tag;
 
   /// The trail effect associated with emitted particles. Default: [NoTrail].
   final Trail trail;
 
-  /// Helper method to generate a random duration within the range [minAngle] - [maxAngle].
+  /// Helper method to generate a random angle within the range [minAngle] to [maxAngle].
   double randomAngle() {
-    return random.nextDoubleRange(
-      minAngle,
-      maxAngle,
-    );
+    return random.nextDoubleRange(minAngle, maxAngle);
   }
 
-  /// Helper method to generate a random duration within the range [minDuration] - [maxDuration].
+  /// Helper method to generate a random duration within the range [minDuration] to [maxDuration].
   Duration randomDuration() {
     return Duration(
-      milliseconds: random.nextIntRange(
-        minDuration.inMilliseconds,
-        maxDuration.inMilliseconds,
-      ),
+      milliseconds: random.nextIntRange(minDuration.inMilliseconds, maxDuration.inMilliseconds),
     );
   }
 
-  /// Helper method to generate a random origin offset within the range [minOriginOffset] - [maxOriginOffset].
+  /// Helper method to generate a random fade-in threshold
+  /// within the range [minFadeInThreshold] to [maxFadeInThreshold].
+  double randomFadeInThreshold() {
+    return random.nextDoubleRange(minFadeInThreshold, maxFadeInThreshold);
+  }
+
+  /// Helper method to generate a random fade-out threshold
+  /// within the range [minFadeOutThreshold] to [maxFadeOutThreshold].
+  double randomFadeOutThreshold() {
+    return random.nextDoubleRange(minFadeOutThreshold, maxFadeOutThreshold);
+  }
+
+  /// Helper method to generate a random origin offset within the range [minOriginOffset] to [maxOriginOffset].
   Offset randomOriginOffset() {
     return Offset(
       random.nextDoubleRange(minOriginOffset.dx, maxOriginOffset.dx),
@@ -179,22 +201,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     );
   }
 
-  /// Helper method to generate a random scale tween
-  /// within the range [minBeginScale] - [maxBeginScale] and [minEndScale] - [maxEndScale].
-  Tween<double> randomScaleRange() {
-    final beginScale = random.nextDoubleRange(
-      minBeginScale,
-      maxBeginScale,
-    );
-    final endScale = (minEndScale < 0 || maxEndScale < 0)
-        ? beginScale
-        : random.nextDoubleRange(
-            minEndScale,
-            maxEndScale,
-          );
-    return Tween(begin: beginScale, end: endScale);
-  }
-
+  /// Helper method to determine if the particle should be rendered in the foreground based on [particleLayer].
   bool randomParticleForeground() {
     return switch (particleLayer) {
       ParticleLayer.background => false,
@@ -203,24 +210,16 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     };
   }
 
-  /// Helper method to generate a random fade-out threshold
-  /// within the range [minFadeOutThreshold] - [maxFadeOutThreshold].
-  double randomFadeOutThreshold() {
-    return random.nextDoubleRange(
-      minFadeOutThreshold,
-      maxFadeOutThreshold,
-    );
+  /// Helper method to generate a random scale tween
+  /// within the range [minBeginScale] to [maxBeginScale] and [minEndScale] to [maxEndScale].
+  Tween<double> randomScaleRange() {
+    final beginScale = random.nextDoubleRange(minBeginScale, maxBeginScale);
+    final endScale =
+        (minEndScale < 0 || maxEndScale < 0) ? beginScale : random.nextDoubleRange(minEndScale, maxEndScale);
+    return Tween(begin: beginScale, end: endScale);
   }
 
-  /// Helper method to generate a random fade-in limit
-  /// within the range [EffectConfiguration.minFadeInThreshold] - [EffectConfiguration.maxFadeInThreshold].
-  double randomFadeInThreshold() {
-    return random.nextDoubleRange(
-      minFadeInThreshold,
-      maxFadeInThreshold,
-    );
-  }
-
+  /// Creates a copy of this `EffectConfiguration` with the specified overrides.
   EffectConfiguration copyWith({
     Curve? distanceCurve,
     Curve? emitCurve,
@@ -320,10 +319,13 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
       trail.hashCode;
 }
 
+/// Extension on `EffectConfiguration` that provides a method to create an `Effect`
+/// based on the specific type of `EffectConfiguration`.
 extension EffectForConfiguration on EffectConfiguration<ParticleConfiguration> {
+  /// Creates an `Effect` based on the specific type of `EffectConfiguration`.
   Effect<AnimatedParticle, EffectConfiguration> effect() => switch (this) {
         final DeterministicEffectConfiguration effectConfiguration => DeterministicEffect(effectConfiguration),
         final RelativisticEffectConfiguration effectConfiguration => RelativistEffect(effectConfiguration),
-        _ => throw Exception('unexpected configuration type'),
+        _ => throw Exception('Unexpected configuration type'),
       } as Effect<AnimatedParticle, EffectConfiguration>;
 }

@@ -121,6 +121,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     // Default implementation does nothing. Override in subclasses if needed.
   }
 
+  /// Invoked when surface of NewtonPainter changed
   @protected
   void onSurfaceSizeChanged() {
     // Default implementation does nothing. Override in subclasses if needed.
@@ -132,6 +133,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     // Default implementation does nothing. Override in subclasses if needed.
   }
 
+  /// Invoked when all particles have been updated to be rendered for the current frame
   @protected
   void onParticlesUpdated() {
     // Default implementation does nothing. Override in subclasses if needed.
