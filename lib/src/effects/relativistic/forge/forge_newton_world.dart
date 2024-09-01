@@ -98,7 +98,8 @@ class ForgeNewtonWorld implements NewtonWorld {
       final fixtureDef = f2d.FixtureDef(circleShape)
         ..density = relativistParticle.density.value
         ..friction = relativistParticle.friction.value
-        ..restitution = relativistParticle.restitution.value;
+        ..restitution = relativistParticle.restitution.value
+        ..filter.groupIndex = -1;
       _particlesFixture[relativistParticle] = body.createFixture(fixtureDef);
     }
   }
@@ -129,7 +130,7 @@ class _Boundaries {
   _Boundaries(this._world, this._hardEdges);
 
   List<f2d.Body> _boundaries = [];
-  HardEdges _hardEdges;
+  final HardEdges _hardEdges;
   final f2d.World _world;
 
   void updateBoundaries(f2d.Vector2 newScreenSize) {
@@ -137,7 +138,7 @@ class _Boundaries {
       _world.destroyBody(boundary);
     }
     _boundaries.clear();
-
+    if (_hardEdges == HardEdges.none) return;
     _boundaries = _createBoundaries(newScreenSize);
   }
 

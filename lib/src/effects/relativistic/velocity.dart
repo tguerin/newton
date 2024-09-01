@@ -1,4 +1,4 @@
-extension type Velocity(double value) {
+extension type const Velocity(double value) implements double {
   // Custom value
   factory Velocity.custom(double value) => Velocity._(value);
 
@@ -19,8 +19,8 @@ extension type Velocity(double value) {
   static const running = Velocity._(5);
   static const cycling = Velocity._(7);
   static const rainDrop = Velocity._(8);
-  static const cheetah = Velocity._(30);
   static const car = Velocity._(27.78);
+  static const cheetah = Velocity._(30);
   static const highway = Velocity._(33.33);
   static const sound = Velocity._(343);
   static const concorde = Velocity._(588);

@@ -25,6 +25,7 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
 
   @override
   RelativisticParticle instantiateParticle(Size surfaceSize) {
+    final effectConfiguration = this.effectConfiguration.configurationOverrider?.call(this) ?? this.effectConfiguration;
     final randomOriginOffset = effectConfiguration.randomOriginOffset();
     final relativistParticle = RelativisticParticle(
       angle: effectConfiguration.randomAngle(),

@@ -1,4 +1,4 @@
-extension type Density(double value) {
+extension type const Density(double value) implements double {
   // Private constructor to restrict instantiation
   const Density._(this.value);
 

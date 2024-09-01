@@ -1,15 +1,15 @@
-extension type Friction(double value) {
+extension type const Friction(double value) implements double {
   // Private constructor to restrict instantiation
   const Friction._(this.value);
 
   // Custom value
   factory Friction.custom(double value) => Friction._(value);
 
-  static const  fineAdjustment = 0.0001;
-  static const  minorAdjustment = 0.001;
-  static const  moderateAdjustment = 0.1;
-  static const  majorAdjustment = 0.1;
-  static const  coarseAdjustment = 0.5;
+  static const fineAdjustment = 0.0001;
+  static const minorAdjustment = 0.001;
+  static const moderateAdjustment = 0.1;
+  static const majorAdjustment = 0.1;
+  static const coarseAdjustment = 0.5;
   // Predefined friction values
   static const ice = Friction._(0.01);
   static const bananaPeel = Friction._(0.03);

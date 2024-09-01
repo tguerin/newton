@@ -5,7 +5,7 @@ import 'package:example/color_selection.dart';
 import 'package:example/range_selection.dart';
 import 'package:example/single_value_selection.dart';
 import 'package:example/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Velocity;
 import 'package:gap/gap.dart';
 import 'package:newton_particles/newton_particles.dart';
 
@@ -48,7 +48,12 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   bool _particleOptionsOpened = false;
   bool _particleOptionsHovered = false;
 
+  bool _physicsOptionsOpened = false;
+  bool _physicsOptionsHovered = false;
+
   String _currentEffectName = '';
+
+  final _randomnessScrollController = ScrollController();
 
   _ConfiguredEffect? _currentConfiguredEffect;
 
@@ -87,7 +92,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
                             width: 200,
                             child: DropdownButton<String>(
                               isExpanded: true,
-                              value: AvailableEffect.scratch.label,
+                              value: _selectedAnimation.label,
                               icon: const Icon(Icons.arrow_drop_down),
                               elevation: 16,
                               onChanged: (String? value) {
@@ -129,8 +134,11 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
                                       _configuredEffects.add(
                                         _currentConfiguredEffect = _ConfiguredEffect(
                                           effectName: _currentEffectName,
-                                          effectConfiguration:
-                                              defaultEffectConfigurationsPerAnimation[_selectedAnimation]!,
+                                          effectConfiguration: _usePhysics
+                                              ? defaultRelativisticEffectConfigurationsPerAnimation[_selectedAnimation]!
+                                              : defaultDeterministicEffectConfigurationsPerAnimation(
+                                                  MediaQuery.sizeOf(context),
+                                                )[_selectedAnimation]!,
                                         ),
                                       );
                                       _selectedAnimation = AvailableEffect.scratch;
@@ -154,6 +162,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           setState(() {
             _emissionOptionsOpened = false;
             _particleOptionsOpened = false;
+            _physicsOptionsOpened = false;
             _randomnessOptionsOpened = false;
           });
         },
@@ -209,6 +218,26 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           ..._emissionOptions(currentConfiguredEffect),
           ..._particleOptions(currentConfiguredEffect),
           ..._randomnessOptions(currentConfiguredEffect),
+          if (_currentConfiguredEffect?.effectConfiguration is RelativisticEffectConfiguration)
+            ..._physicsOptions(currentConfiguredEffect),
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: FilledButton.tonal(
+              onPressed: () {
+                setState(() {
+                  if (_currentConfiguredEffect != null) {
+                    _configuredEffects.remove(_currentConfiguredEffect);
+                    if (_configuredEffects.isNotEmpty) {
+                      _currentConfiguredEffect = _configuredEffects.last;
+                    } else {
+                      _currentConfiguredEffect = null;
+                    }
+                  }
+                });
+              },
+              child: const Text('Delete effect'),
+            ),
+          ),
         ],
       ),
     );
@@ -348,24 +377,92 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: _randomnessOptionsOpened
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _animationDurationSection(configuredEffect),
-                        if (configuredEffect.effectConfiguration is DeterministicEffectConfiguration)
-                          _particleDistanceSection(configuredEffect),
-                        _offsetOriginDxSection(configuredEffect),
-                        _offsetOriginDySection(configuredEffect),
-                        _particleBeginScaleSection(configuredEffect),
-                        _particleEndScaleSection(configuredEffect),
-                        _particleFadeoutProgressSection(configuredEffect),
-                        _particleFadeinProgressSection(configuredEffect),
-                      ],
+                  ? ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 400),
+                      child: Scrollbar(
+                        controller: _randomnessScrollController,
+                        thumbVisibility: true,
+                        child: SingleChildScrollView(
+                          controller: _randomnessScrollController,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _animationDurationSection(configuredEffect),
+                              if (configuredEffect.effectConfiguration is DeterministicEffectConfiguration)
+                                _particleDistanceSection(configuredEffect),
+                              _offsetOriginDxSection(configuredEffect),
+                              _offsetOriginDySection(configuredEffect),
+                              _particleBeginScaleSection(configuredEffect),
+                              _particleEndScaleSection(configuredEffect),
+                              _particleFadeoutProgressSection(configuredEffect),
+                              _particleFadeinProgressSection(configuredEffect),
+                              if (configuredEffect.effectConfiguration is DeterministicEffectConfiguration) ...[
+                                _trailProgressSection(configuredEffect),
+                                _trailWidthSection(configuredEffect),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
                     )
                   : Text(
                       'Randomness',
                       style: TextStyle(
                         decoration: _randomnessOptionsHovered ? TextDecoration.underline : TextDecoration.none,
+                      ),
+                    ),
+            ),
+          ),
+        ),
+      ),
+      const Gap(8),
+    ];
+  }
+
+  List<Widget> _physicsOptions(_ConfiguredEffect configuredEffect) {
+    return [
+      MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) {
+          setState(() {
+            _physicsOptionsHovered = true;
+          });
+        },
+        onExit: (_) {
+          setState(() {
+            _physicsOptionsHovered = false;
+          });
+        },
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              _physicsOptionsOpened = !_physicsOptionsOpened;
+            });
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 400),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.white.withOpacity(.4)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: _physicsOptionsOpened
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _gravityDxSection(configuredEffect),
+                        _gravityDySection(configuredEffect),
+                        _density(configuredEffect),
+                        _friction(configuredEffect),
+                        _restitution(configuredEffect),
+                        _velocity(configuredEffect),
+                      ],
+                    )
+                  : Text(
+                      'Physics',
+                      style: TextStyle(
+                        decoration: _physicsOptionsHovered ? TextDecoration.underline : TextDecoration.none,
                       ),
                     ),
             ),
@@ -444,16 +541,129 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     );
   }
 
-  Widget _particleDistanceSection(_ConfiguredEffect configuredEffect) {
+  Widget _gravityDxSection(_ConfiguredEffect configuredEffect) {
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    return SingleValueSelection(
+      value: relativisticEffectConfiguration.gravity.dx,
+      min: -20,
+      max: 20,
+      title: 'Gravity dx',
+      onChanged: (value) {
+        setState(() {
+          configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
+            gravity: Gravity(value, relativisticEffectConfiguration.gravity.dy),
+          );
+        });
+      },
+    );
+  }
+
+  Widget _gravityDySection(_ConfiguredEffect configuredEffect) {
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    return SingleValueSelection(
+      value: relativisticEffectConfiguration.gravity.dy,
+      min: -20,
+      max: 20,
+      title: 'Gravity dx',
+      onChanged: (value) {
+        setState(() {
+          configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
+            gravity: Gravity(relativisticEffectConfiguration.gravity.dx, value),
+          );
+        });
+      },
+    );
+  }
+
+  Widget _friction(_ConfiguredEffect configuredEffect) {
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
     return RangeSelection(
-      initialMin: (configuredEffect.effectConfiguration as DeterministicEffectConfiguration).minDistance,
-      initialMax: (configuredEffect.effectConfiguration as DeterministicEffectConfiguration).maxDistance,
+      initialMin: relativisticEffectConfiguration.minFriction,
+      initialMax: relativisticEffectConfiguration.maxFriction,
+      min: Friction.ice,
+      max: Friction.ductTape,
+      title: 'Friction',
+      onChanged: (values) {
+        setState(() {
+          configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
+            minFriction: Friction(values.start),
+            maxFriction: Friction(values.end),
+          );
+        });
+      },
+    );
+  }
+
+  Widget _density(_ConfiguredEffect configuredEffect) {
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    return RangeSelection(
+      initialMin: relativisticEffectConfiguration.minDensity,
+      initialMax: relativisticEffectConfiguration.maxDensity,
+      min: Density.hydrogen,
+      max: Density.jupiterCore,
+      title: 'Density',
+      onChanged: (values) {
+        setState(() {
+          configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
+            minDensity: Density(values.start),
+            maxDensity: Density(values.end),
+          );
+        });
+      },
+    );
+  }
+
+  Widget _restitution(_ConfiguredEffect configuredEffect) {
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    return RangeSelection(
+      initialMin: relativisticEffectConfiguration.minRestitution,
+      initialMax: relativisticEffectConfiguration.maxRestitution,
+      min: Restitution.noBounce,
+      max: Restitution.flubber,
+      title: 'Restitution',
+      onChanged: (values) {
+        setState(() {
+          configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
+            minRestitution: Restitution(values.start),
+            maxRestitution: Restitution(values.end),
+          );
+        });
+      },
+    );
+  }
+
+  Widget _velocity(_ConfiguredEffect configuredEffect) {
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    return RangeSelection(
+      initialMin: relativisticEffectConfiguration.minVelocity,
+      initialMax: relativisticEffectConfiguration.maxVelocity,
+      min: Velocity.stationary,
+      max: Velocity.car,
+      title: 'Velocity',
+      onChanged: (values) {
+        setState(() {
+          configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
+            minVelocity: Velocity(values.start),
+            maxVelocity: Velocity(values.end),
+          );
+        });
+      },
+      divisions: 1000,
+      precision: 3,
+    );
+  }
+
+  Widget _particleDistanceSection(_ConfiguredEffect configuredEffect) {
+    final deterministicEffectConfiguration = configuredEffect.effectConfiguration as DeterministicEffectConfiguration;
+    return RangeSelection(
+      initialMin: deterministicEffectConfiguration.minDistance,
+      initialMax: deterministicEffectConfiguration.maxDistance,
       min: 100,
       max: 2000,
       title: 'Particle distance',
       onChanged: (values) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
+          configuredEffect.effectConfiguration = deterministicEffectConfiguration.copyWith(
             minDistance: values.start,
             maxDistance: values.end,
           );
@@ -699,6 +909,12 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       min: 1,
       max: 100,
     );
+  }
+
+  @override
+  void dispose() {
+    _randomnessScrollController.dispose();
+    super.dispose();
   }
 }
 

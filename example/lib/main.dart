@@ -21,7 +21,7 @@ class NewtonExampleApp extends StatelessWidget {
         effectConfigurations: [
           // Emulate light balls falling
           RelativisticEffectConfiguration(
-            gravity: const Gravity(0, 9.807),
+            gravity: Gravity.earthGravity,
             origin: Offset.zero,
             maxOriginOffset: const Offset(1, 0),
             maxAngle: 90,

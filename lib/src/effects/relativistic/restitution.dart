@@ -1,15 +1,15 @@
-extension type Restitution(double value) {
+extension type const Restitution(double value) implements double {
   // Private constructor to restrict instantiation
   const Restitution._(this.value);
 
   // Custom value
   factory Restitution.custom(double value) => Restitution._(value);
 
-  static const  fineAdjustment = 0.0001;
-  static const  minorAdjustment = 0.001;
-  static const  moderateAdjustment = 0.1;
-  static const  majorAdjustment = 0.1;
-  static const  coarseAdjustment = 0.5;
+  static const fineAdjustment = 0.0001;
+  static const minorAdjustment = 0.001;
+  static const moderateAdjustment = 0.1;
+  static const majorAdjustment = 0.1;
+  static const coarseAdjustment = 0.5;
 
   // Predefined values ordered from least bouncy to most bouncy
   static const noBounce = Restitution._(0);

@@ -1,9 +1,32 @@
 import 'package:flutter/widgets.dart' hide Velocity;
 import 'package:newton_particles/newton_particles.dart';
 
-typedef Gravity = Offset;
+@immutable
+class Gravity {
+  final double dx;
+  final double dy;
+
+  const Gravity(this.dx, this.dy);
+
+  static const zero = Gravity(0, 0);
+  static const earthGravity = Gravity(0, 9.807);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Gravity && runtimeType == other.runtimeType && dx == other.dx && dy == other.dy;
+
+  @override
+  int get hashCode => dx.hashCode ^ dy.hashCode;
+
+  @override
+  String toString() {
+    return 'Gravity{dx: $dx, dy: $dy}';
+  }
+}
 
 class HardEdges {
+  static const none = HardEdges.only();
   const HardEdges.all()
       : left = true,
         top = true,
@@ -28,6 +51,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
   const RelativisticEffectConfiguration({
     required this.gravity,
     required super.particleConfiguration,
+    this.configurationOverrider,
     this.hardEdges = const HardEdges.all(),
     this.maxDensity = Density.styrofoam,
     this.maxFriction = Friction.ice,
@@ -75,9 +99,15 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
   final Friction minFriction;
   final Restitution minRestitution;
   final Velocity minVelocity;
+  final RelativisticEffectConfiguration Function(
+    Effect<RelativisticParticle, RelativisticEffectConfiguration>,
+  )? configurationOverrider;
 
   @override
   RelativisticEffectConfiguration copyWith({
+    RelativisticEffectConfiguration Function(
+      Effect<RelativisticParticle, RelativisticEffectConfiguration>,
+    )? configurationOverrider,
     Gravity? gravity,
     HardEdges? hardEdges,
     Density? maxDensity,
@@ -120,6 +150,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
     Trail? trail,
   }) {
     return RelativisticEffectConfiguration(
+      configurationOverrider: configurationOverrider ?? this.configurationOverrider,
       gravity: gravity ?? this.gravity,
       hardEdges: hardEdges ?? this.hardEdges,
       maxDensity: maxDensity ?? this.maxDensity,
