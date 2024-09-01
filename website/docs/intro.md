@@ -41,7 +41,7 @@ Newton(
 )
 ```
 
-Try our [effect configurator](https:://newton.7omtech.fr/configure) to tweak your effect.
+Try our [effect configurator](https://newton.7omtech.fr/configure) to tweak your effect.
 
 ## Example
 

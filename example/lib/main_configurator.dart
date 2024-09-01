@@ -197,25 +197,49 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 150,
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: currentConfiguredEffect.effectName,
-              icon: const Icon(Icons.arrow_drop_down),
-              elevation: 16,
-              onChanged: (String? value) {
-                setState(() {
-                  _currentConfiguredEffect = _configuredEffects.firstWhere((effect) => effect.effectName == value);
-                });
-              },
-              items: _configuredEffects.map<DropdownMenuItem<String>>((effect) {
-                return DropdownMenuItem<String>(
-                  value: effect.effectName,
-                  child: Text(effect.effectName),
-                );
-              }).toList(),
-            ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 150,
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: currentConfiguredEffect.effectName,
+                  icon: const Icon(Icons.arrow_drop_down),
+                  elevation: 16,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _currentConfiguredEffect = _configuredEffects.firstWhere((effect) => effect.effectName == value);
+                    });
+                  },
+                  items: _configuredEffects.map<DropdownMenuItem<String>>((effect) {
+                    return DropdownMenuItem<String>(
+                      value: effect.effectName,
+                      child: Text(effect.effectName),
+                    );
+                  }).toList(),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: FilledButton.tonal(
+                  onPressed: () {
+                    setState(() {
+                      if (_currentConfiguredEffect != null) {
+                        _configuredEffects.remove(_currentConfiguredEffect);
+                        if (_configuredEffects.isNotEmpty) {
+                          _currentConfiguredEffect = _configuredEffects.last;
+                        } else {
+                          _currentConfiguredEffect = null;
+                        }
+                      }
+                    });
+                  },
+                  child: const Text('Delete effect'),
+                ),
+              ),
+            ],
           ),
           const Gap(8),
           ..._emissionOptions(currentConfiguredEffect),
@@ -223,24 +247,6 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           ..._randomnessOptions(currentConfiguredEffect),
           if (_currentConfiguredEffect?.effectConfiguration is RelativisticEffectConfiguration)
             ..._physicsOptions(currentConfiguredEffect),
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: FilledButton.tonal(
-              onPressed: () {
-                setState(() {
-                  if (_currentConfiguredEffect != null) {
-                    _configuredEffects.remove(_currentConfiguredEffect);
-                    if (_configuredEffects.isNotEmpty) {
-                      _currentConfiguredEffect = _configuredEffects.last;
-                    } else {
-                      _currentConfiguredEffect = null;
-                    }
-                  }
-                });
-              },
-              child: const Text('Delete effect'),
-            ),
-          ),
         ],
       ),
     );
