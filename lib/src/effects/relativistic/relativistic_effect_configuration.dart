@@ -61,6 +61,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
     this.minFriction = Friction.ice,
     this.minRestitution = Restitution.rubberBall,
     this.minVelocity = Velocity.rainDrop,
+    this.onlyInteractWithEdges = false,
     super.emitCurve,
     super.emitDuration,
     super.fadeInCurve,
@@ -89,6 +90,9 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
     super.trail,
   });
 
+  final RelativisticEffectConfiguration Function(
+    Effect<RelativisticParticle, RelativisticEffectConfiguration>,
+  )? configurationOverrider;
   final Gravity gravity;
   final HardEdges hardEdges;
   final Density maxDensity;
@@ -99,9 +103,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
   final Friction minFriction;
   final Restitution minRestitution;
   final Velocity minVelocity;
-  final RelativisticEffectConfiguration Function(
-    Effect<RelativisticParticle, RelativisticEffectConfiguration>,
-  )? configurationOverrider;
+  final bool onlyInteractWithEdges;
 
   @override
   RelativisticEffectConfiguration copyWith({
@@ -140,6 +142,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
     double? minFadeOutThreshold,
     Offset? minOriginOffset,
     Velocity? minVelocity,
+    bool? onlyInteractWithEdges,
     Offset? origin,
     ParticleConfiguration? particleConfiguration,
     ParticleLayer? particleLayer,
@@ -180,6 +183,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
       minFadeOutThreshold: minFadeOutThreshold ?? this.minFadeOutThreshold,
       minOriginOffset: minOriginOffset ?? this.minOriginOffset,
       minVelocity: minVelocity ?? this.minVelocity,
+      onlyInteractWithEdges: onlyInteractWithEdges ?? this.onlyInteractWithEdges,
       origin: origin ?? this.origin,
       particleCount: particleCount ?? this.particleCount,
       particleLayer: particleLayer ?? this.particleLayer,
@@ -212,6 +216,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
       super == other &&
           other is RelativisticEffectConfiguration &&
           runtimeType == other.runtimeType &&
+          configurationOverrider == other.configurationOverrider &&
           gravity == other.gravity &&
           hardEdges == other.hardEdges &&
           maxDensity == other.maxDensity &&
@@ -221,11 +226,13 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
           minDensity == other.minDensity &&
           minFriction == other.minFriction &&
           minRestitution == other.minRestitution &&
-          minVelocity == other.minVelocity;
+          minVelocity == other.minVelocity &&
+          onlyInteractWithEdges == other.onlyInteractWithEdges;
 
   @override
   int get hashCode =>
       super.hashCode ^
+      configurationOverrider.hashCode ^
       gravity.hashCode ^
       hardEdges.hashCode ^
       maxDensity.hashCode ^
@@ -235,5 +242,6 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
       minDensity.hashCode ^
       minFriction.hashCode ^
       minRestitution.hashCode ^
-      minVelocity.hashCode;
+      minVelocity.hashCode ^
+      onlyInteractWithEdges.hashCode;
 }

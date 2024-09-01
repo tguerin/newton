@@ -101,7 +101,10 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
                                   _selectedAnimation = AvailableEffect.of(value!);
                                 });
                               },
-                              items: AvailableEffect.values.map<DropdownMenuItem<String>>((AvailableEffect value) {
+                              // Filter out smoke in relativistic effect as it's not supported
+                              items: AvailableEffect.values
+                                  .where((effect) => !_usePhysics || effect != AvailableEffect.smoke)
+                                  .map<DropdownMenuItem<String>>((AvailableEffect value) {
                                 return DropdownMenuItem<String>(
                                   value: value.label,
                                   child: Text(value.label),
@@ -457,6 +460,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
                         _friction(configuredEffect),
                         _restitution(configuredEffect),
                         _velocity(configuredEffect),
+                        _onlyInteractWithEdges(configuredEffect),
                       ],
                     )
                   : Text(
@@ -915,6 +919,26 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   void dispose() {
     _randomnessScrollController.dispose();
     super.dispose();
+  }
+
+  Widget _onlyInteractWithEdges(_ConfiguredEffect configuredEffect) {
+    final effectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Checkbox(
+          value: effectConfiguration.onlyInteractWithEdges,
+          onChanged: (value) {
+            setState(() {
+              configuredEffect.effectConfiguration =
+                  effectConfiguration.copyWith(onlyInteractWithEdges: value ?? false);
+            });
+          },
+        ),
+        const Gap(4),
+        Text('Only interact with edges', style: Theme.of(context).textTheme.labelMedium),
+      ],
+    );
   }
 }
 

@@ -5,6 +5,10 @@ import 'package:forge2d/forge2d.dart' as f2d;
 import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 
+const _particleCategory = 0x0001;
+const _edgeCategory = 0x0002;
+const _edgeMask = _particleCategory;
+
 /// The `ForgeNewtonWorld` class implements the `NewtonWorld` interface using the Forge2D
 /// physics engine. It manages the simulation of relativistic particles within a 2D world,
 /// handling their addition, removal, and updates based on the physical properties defined.
@@ -78,6 +82,7 @@ class ForgeNewtonWorld implements NewtonWorld {
   @override
   void updateParticles(List<RelativisticParticle> activeParticles) {
     for (final relativistParticle in activeParticles) {
+      final particleMask = relativistParticle.onlyInteractWithEdges ? _edgeCategory : _particleCategory | _edgeCategory;
       final body = _particlesBody[relativistParticle];
       if (body == null) continue;
       final fixture = _particlesFixture[relativistParticle];
@@ -99,7 +104,8 @@ class ForgeNewtonWorld implements NewtonWorld {
         ..density = relativistParticle.density.value
         ..friction = relativistParticle.friction.value
         ..restitution = relativistParticle.restitution.value
-        ..filter.groupIndex = -1;
+        ..filter.categoryBits = _particleCategory
+        ..filter.maskBits = particleMask;
       _particlesFixture[relativistParticle] = body.createFixture(fixtureDef);
     }
   }
@@ -168,6 +174,9 @@ class _Boundaries {
       ..position = f2d.Vector2.zero()
       ..type = f2d.BodyType.static;
 
-    return _world.createBody(bodyDef)..createFixtureFromShape(edge);
+    final fixtureDef = f2d.FixtureDef(edge)
+      ..filter.categoryBits = _edgeCategory
+      ..filter.maskBits = _edgeMask;
+    return _world.createBody(bodyDef)..createFixture(fixtureDef);
   }
 }

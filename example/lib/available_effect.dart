@@ -85,23 +85,6 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
     ),
     particlesPerEmit: 15,
   ),
-  AvailableEffect.smoke: DeterministicEffectConfiguration(
-    minAngle: -100,
-    maxAngle: -80,
-    minOriginOffset: const Offset(-.01, 0),
-    minDuration: const Duration(seconds: 4),
-    maxDuration: const Duration(seconds: 7),
-    minFadeOutThreshold: .6,
-    maxFadeOutThreshold: .8,
-    maxOriginOffset: const Offset(.01, 0),
-    minEndScale: 1,
-    maxEndScale: 1,
-    particleConfiguration: const ParticleConfiguration(
-      shape: CircleShape(),
-      size: Size(5, 5),
-    ),
-    particlesPerEmit: 3,
-  ),
   AvailableEffect.fountain: DeterministicEffectConfiguration(
     minDuration: const Duration(seconds: 4),
     maxDuration: const Duration(seconds: 4),

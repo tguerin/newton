@@ -9,6 +9,7 @@ class RelativisticParticle extends AnimatedParticle {
     required this.pathTransformation,
     required this.restitution,
     required this.velocity,
+    required this.onlyInteractWithEdges,
     required super.animationDuration,
     required super.elapsedTimeOnStart,
     required super.fadeInCurve,
@@ -25,6 +26,7 @@ class RelativisticParticle extends AnimatedParticle {
   final double angle;
   final Friction friction;
   final Density density;
+  final bool onlyInteractWithEdges;
   final Restitution restitution;
   final Velocity velocity;
   final RelativisticPathTransformation pathTransformation;

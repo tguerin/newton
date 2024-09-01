@@ -40,6 +40,7 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
       fadeOutCurve: effectConfiguration.fadeOutCurve,
       fadeOutThreshold: effectConfiguration.randomFadeOutThreshold(),
       foreground: effectConfiguration.randomParticleForeground(),
+      onlyInteractWithEdges: effectConfiguration.onlyInteractWithEdges,
       particle: Particle(
         configuration: effectConfiguration.particleConfiguration,
         position: Offset(
