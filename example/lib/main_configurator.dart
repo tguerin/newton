@@ -574,7 +574,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       value: relativisticEffectConfiguration.gravity.dy,
       min: -20,
       max: 20,
-      title: 'Gravity dx',
+      title: 'Gravity dy',
       onChanged: (value) {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
