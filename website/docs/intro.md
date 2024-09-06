@@ -10,7 +10,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.1.8
+  newton_particles: ^0.2.0
 ```
 
 Then, run `flutter pub get` to fetch the package.
@@ -30,18 +30,30 @@ Newton(
     // Add any kind of effects to your UI
     // For example:
     activeEffects: [
-        RainEffect(
-            particleConfiguration: ParticleConfiguration(
-                color: const SingleParticleColor(color: Colors.white),
+        RelativisticEffectConfiguration(
+            gravity: Gravity.earthGravity,
+            maxAngle: 90,
+            maxEndScale: 1,
+            maxFadeOutThreshold: .8,
+            maxOriginOffset: const Offset(1, 0),
+            maxParticleLifespan: const Duration(seconds: 10),
+            maxVelocity: Velocity.stationary,
+            minAngle: 90,
+            minParticleLifespan: const Duration(seconds: 7),
+            minEndScale: 1,
+            minFadeOutThreshold: .6,
+            minVelocity: Velocity.stationary,
+            origin: Offset.zero,
+            particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),
-                size: const Size(5, 5),
+                size: Size(5, 5),
             ),
         )
     ],
 )
 ```
 
-Try our [effect configurator](https:://newton.7omtech.fr/configure) to tweak your effect.
+Try our [effect configurator](https://newton.7omtech.fr/docs/configurator) to tweak your effect.
 
 ## Example
 
@@ -63,14 +75,23 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: Text('Newton Rain Example')),
         body: Newton(
           activeEffects: [
-            RainEffect(
-                particleConfiguration: ParticleConfiguration(
-                    color: const SingleParticleColor(color: Colors.black),
-                    shape: CircleShape(),
-                    size: const Size(5, 5),
-                ),
-                effectConfiguration: const EffectConfiguration()
-            )
+            gravity: Gravity.earthGravity,
+            maxAngle: 90,
+            maxEndScale: 1,
+            maxFadeOutThreshold: .8,
+            maxOriginOffset: const Offset(1, 0),
+            maxParticleLifespan: const Duration(seconds: 10),
+            maxVelocity: Velocity.stationary,
+            minAngle: 90,
+            minParticleLifespan: const Duration(seconds: 7),
+            minEndScale: 1,
+            minFadeOutThreshold: .6,
+            minVelocity: Velocity.stationary,
+            origin: Offset.zero,
+            particleConfiguration: const ParticleConfiguration(
+              shape: CircleShape(),
+              size: Size(5, 5),
+            ),
           ],
         ),
       ),

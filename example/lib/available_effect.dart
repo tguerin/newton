@@ -1,252 +1,301 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
+
+import 'package:flutter/material.dart' hide Velocity;
 import 'package:newton_particles/newton_particles.dart';
 
 enum AvailableEffect {
-  rain(
-    'Rain',
-    supportedParameters: [
-      AnimationParameter.color,
-      AnimationParameter.fadeout,
-      AnimationParameter.scale,
-    ],
-  ),
-  explode(
-    'Explode',
-    supportedParameters: [
-      AnimationParameter.angle,
-      AnimationParameter.color,
-      AnimationParameter.distance,
-      AnimationParameter.fadeout,
-      AnimationParameter.scale,
-    ],
-  ),
-  firework(
-    'Firework',
-    supportedParameters: [
-      AnimationParameter.angle,
-      AnimationParameter.color,
-      AnimationParameter.distance,
-      AnimationParameter.fadeout,
-      AnimationParameter.scale,
-      AnimationParameter.trail,
-    ],
-  ),
-  smoke(
-    'Smoke',
-    supportedParameters: [
-      AnimationParameter.color,
-      AnimationParameter.angle,
-      AnimationParameter.distance,
-      AnimationParameter.fadeout,
-      AnimationParameter.scale,
-    ],
-  ),
-  fountain(
-    'Fountain',
-    supportedParameters: [
-      AnimationParameter.color,
-      AnimationParameter.distance,
-      AnimationParameter.fadeout,
-      AnimationParameter.scale,
-    ],
-  ),
-  pulse(
-    'Pulse',
-    supportedParameters: [
-      AnimationParameter.color,
-      AnimationParameter.distance,
-      AnimationParameter.fadeout,
-      AnimationParameter.scale,
-    ],
-  );
+  scratch('From scratch'),
+  rain('Rain'),
+  explode('Explode'),
+  firework('Firework'),
+  fountain('Fountain'),
+  smoke('Smoke'),
+  pulse('Pulse');
 
-  const AvailableEffect(
-    this.label, {
-    this.supportedParameters = const [],
-  });
+  const AvailableEffect(this.label);
 
   final String label;
-  final List<AnimationParameter> supportedParameters;
-
-  bool supportParameter(AnimationParameter parameter) {
-    return supportedParameters.contains(parameter);
-  }
 
   static AvailableEffect of(String label) {
     return AvailableEffect.values.firstWhere((effect) => effect.label == label);
   }
 }
 
-final defaultEffectConfiguration = EffectConfiguration(
-  minDuration: const Duration(seconds: 4),
-  maxDuration: const Duration(seconds: 7),
-  minFadeOutThreshold: 0.6,
-  maxFadeOutThreshold: 0.8,
-  minEndScale: 1,
-  maxEndScale: 1,
-);
-
-Map<AvailableEffect, EffectConfiguration> defaultEffectConfigurationsPerAnimation = {
-  AvailableEffect.explode: EffectConfiguration(
-    minAngle: -180,
-    maxAngle: 180,
-    minDuration: const Duration(seconds: 4),
-    maxDuration: const Duration(seconds: 7),
-    minFadeOutThreshold: 0.6,
-    maxFadeOutThreshold: 0.8,
-    minEndScale: 1,
-    maxEndScale: 1,
-  ),
-  AvailableEffect.firework: EffectConfiguration(
-    minAngle: -120,
-    maxAngle: -60,
-    maxDuration: const Duration(seconds: 2),
-    minFadeOutThreshold: 0.6,
-    maxFadeOutThreshold: 0.8,
-    minEndScale: 1,
-    maxEndScale: 1,
-    trail: const StraightTrail(
-      trailWidth: 3,
-      trailProgress: 0.3,
+Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfigurationsPerAnimation = {
+  AvailableEffect.scratch: RelativisticEffectConfiguration(
+    gravity: Gravity.earthGravity,
+    particleConfiguration: const ParticleConfiguration(
+      shape: CircleShape(),
+      size: Size(5, 5),
     ),
   ),
-  AvailableEffect.fountain: EffectConfiguration(
-    particlesPerEmit: 10,
-    minDuration: const Duration(seconds: 4),
-    maxDuration: const Duration(seconds: 4),
-    minDistance: 200,
-    minFadeOutThreshold: 0.6,
-    maxFadeOutThreshold: 0.8,
-    minEndScale: 1,
+  AvailableEffect.rain: RelativisticEffectConfiguration(
+    gravity: Gravity.earthGravity,
+    maxAngle: 90,
     maxEndScale: 1,
+    maxFadeOutThreshold: .8,
+    maxOriginOffset: const Offset(1, 0),
+    maxParticleLifespan: const Duration(seconds: 10),
+    minVelocity: Velocity.stationary,
+    maxVelocity: Velocity.stationary,
+    minAngle: 90,
+    minParticleLifespan: const Duration(seconds: 7),
+    minEndScale: 1,
+    minFadeOutThreshold: .6,
+    origin: Offset.zero,
+    particleConfiguration: const ParticleConfiguration(
+      shape: CircleShape(),
+      size: Size(5, 5),
+    ),
   ),
-  AvailableEffect.pulse: EffectConfiguration(
-    particlesPerEmit: 15,
+  AvailableEffect.explode: RelativisticEffectConfiguration(
+    gravity: Gravity.zero,
+    maxAngle: 180,
+    maxEndScale: 1,
+    maxFadeOutThreshold: .8,
+    maxParticleLifespan: const Duration(seconds: 7),
+    minAngle: -180,
+    minEndScale: 1,
+    minFadeOutThreshold: .6,
+    minParticleLifespan: const Duration(seconds: 4),
+    minVelocity: const Velocity(.02),
+    maxVelocity: const Velocity(.3),
+    particleConfiguration: const ParticleConfiguration(
+      shape: CircleShape(),
+      size: Size(5, 5),
+    ),
+  ),
+  AvailableEffect.pulse: RelativisticEffectConfiguration(
+    configurationOverrider: (effect) {
+      final particlesPerEmit = effect.effectConfiguration.particlesPerEmit;
+      final angle = 360 / particlesPerEmit * (effect.activeParticles.length % particlesPerEmit);
+      return effect.effectConfiguration.copyWith(maxAngle: angle, minAngle: angle);
+    },
+    gravity: Gravity.zero,
     emitDuration: const Duration(seconds: 1),
-    minDuration: const Duration(seconds: 4),
-    maxDuration: const Duration(seconds: 4),
-    minDistance: 200,
-    minFadeOutThreshold: 0.8,
-    maxFadeOutThreshold: 0.8,
-    minEndScale: 1,
     maxEndScale: 1,
+    maxFadeOutThreshold: .8,
+    maxParticleLifespan: const Duration(seconds: 4),
+    maxVelocity: const Velocity(.6),
+    minEndScale: 1,
+    onlyInteractWithEdges: true,
+    minParticleLifespan: const Duration(seconds: 4),
+    minVelocity: const Velocity(.6),
+    minFadeOutThreshold: .8,
+    particleConfiguration: const ParticleConfiguration(
+      shape: CircleShape(),
+      size: Size(5, 5),
+    ),
+    particlesPerEmit: 15,
   ),
-  AvailableEffect.smoke: EffectConfiguration(
-    particlesPerEmit: 3,
-    minAngle: -5,
-    maxAngle: 5,
-    minDuration: const Duration(seconds: 4),
-    maxDuration: const Duration(seconds: 7),
-    minFadeOutThreshold: 0.6,
-    maxFadeOutThreshold: 0.8,
+  AvailableEffect.fountain: RelativisticEffectConfiguration(
+    gravity: Gravity.earthGravity,
+    minParticleLifespan: const Duration(seconds: 4),
+    maxParticleLifespan: const Duration(seconds: 4),
+    minFadeOutThreshold: .6,
+    maxFadeOutThreshold: .8,
     minEndScale: 1,
     maxEndScale: 1,
+    minAngle: -100,
+    maxAngle: -80,
+    minVelocity: Velocity.custom(3),
+    maxVelocity: Velocity.custom(5),
+    onlyInteractWithEdges: true,
+    particleConfiguration: const ParticleConfiguration(
+      shape: CircleShape(),
+      size: Size(5, 5),
+    ),
+    particlesPerEmit: 10,
+  ),
+  AvailableEffect.firework: RelativisticEffectConfiguration(
+    gravity: Gravity.earthGravity,
+    minAngle: -100,
+    maxAngle: -80,
+    minFadeOutThreshold: .6,
+    maxFadeOutThreshold: .8,
+    maxParticleLifespan: const Duration(seconds: 1, milliseconds: 500),
+    emitDuration: const Duration(milliseconds: 500),
+    minEndScale: 1,
+    maxEndScale: 1,
+    minVelocity: const Velocity(9),
+    maxVelocity: const Velocity(10),
+    origin: const Offset(0.5, 1),
+    solidEdges: SolidEdges.none,
+    particleConfiguration: ParticleConfiguration(
+      shape: const CircleShape(),
+      size: const Size(5, 5),
+      postEffectBuilder: (particle, effect) {
+        final offset = Offset(
+          particle.position.dx / effect.surfaceSize.width,
+          particle.position.dy / effect.surfaceSize.height,
+        );
+        return RelativisticEffectConfiguration(
+          gravity: Gravity.earthGravity,
+          maxAngle: 180,
+          minAngle: -180,
+          particleCount: 10,
+          solidEdges: SolidEdges.none,
+          minVelocity: const Velocity(5),
+          maxVelocity: const Velocity(5),
+          particleConfiguration: const ParticleConfiguration(
+            shape: CircleShape(),
+            size: Size(5, 5),
+            color: SingleParticleColor(color: Colors.blue),
+          ),
+          particlesPerEmit: 10,
+          origin: offset,
+        );
+      },
+    ),
   ),
 };
 
-extension AvailableEffectExtension on AvailableEffect {
-  Effect instantiate({
-    required Size size,
-    required ParticleColor color,
-    required EffectConfiguration effectConfiguration,
-  }) {
-    switch (this) {
-      case AvailableEffect.rain:
-        return RainEffect(
-          particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
-            size: const Size(5, 5),
-            color: color,
-          ),
-          effectConfiguration: effectConfiguration,
-        );
-      case AvailableEffect.explode:
-        return ExplodeEffect(
-          particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
-            size: const Size(5, 5),
-            color: color,
-          ),
-          effectConfiguration: effectConfiguration.copyWith(
-            origin: const Offset(0.5, 0.5),
-          ),
-        );
-      case AvailableEffect.firework:
-        return ExplodeEffect(
-          particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
-            size: const Size(5, 5),
-            color: color,
-            postEffectBuilder: (particle, surfaceSize) {
-              final offset = Offset(
-                  particle.position.dx / surfaceSize.width,
-                  particle.position.dy / surfaceSize.height,
-                );
-              return ExplodeEffect(
-              particleConfiguration: ParticleConfiguration(
+Map<AvailableEffect, EffectConfiguration> defaultDeterministicEffectConfigurationsPerAnimation(Size screenSize) => {
+      AvailableEffect.scratch: DeterministicEffectConfiguration(
+        particleConfiguration: const ParticleConfiguration(
+          shape: CircleShape(),
+          size: Size(5, 5),
+        ),
+      ),
+      AvailableEffect.rain: DeterministicEffectConfiguration(
+        minDistance: screenSize.height,
+        maxDistance: screenSize.height,
+        origin: Offset.zero,
+        maxOriginOffset: const Offset(1, 0),
+        maxAngle: 90,
+        maxParticleLifespan: const Duration(seconds: 7),
+        maxEndScale: 1,
+        maxFadeOutThreshold: .8,
+        minAngle: 90,
+        minParticleLifespan: const Duration(seconds: 4),
+        minEndScale: 1,
+        minFadeOutThreshold: .6,
+        particleConfiguration: const ParticleConfiguration(
+          shape: CircleShape(),
+          size: Size(5, 5),
+        ),
+      ),
+      AvailableEffect.explode: DeterministicEffectConfiguration(
+        maxAngle: 180,
+        maxParticleLifespan: const Duration(seconds: 7),
+        maxEndScale: 1,
+        maxFadeOutThreshold: .8,
+        minAngle: -180,
+        minParticleLifespan: const Duration(seconds: 4),
+        minEndScale: 1,
+        minFadeOutThreshold: .6,
+        particleConfiguration: const ParticleConfiguration(
+          shape: CircleShape(),
+          size: Size(5, 5),
+        ),
+      ),
+      AvailableEffect.pulse: DeterministicEffectConfiguration(
+        customPathBuilder: (effect, animatedParticle) {
+          final particlesPerEmit = effect.effectConfiguration.particlesPerEmit;
+          final angle = 360 / particlesPerEmit * (effect.activeParticles.length % particlesPerEmit);
+          return StraightPathTransformation(distance: effect.effectConfiguration.randomDistance(), angle: angle);
+        },
+        emitDuration: const Duration(seconds: 1),
+        maxParticleLifespan: const Duration(seconds: 4),
+        maxEndScale: 1,
+        maxFadeOutThreshold: .8,
+        minDistance: 200,
+        minEndScale: 1,
+        minParticleLifespan: const Duration(seconds: 4),
+        minFadeOutThreshold: .8,
+        particleConfiguration: const ParticleConfiguration(
+          shape: CircleShape(),
+          size: Size(5, 5),
+        ),
+        particlesPerEmit: 15,
+      ),
+      AvailableEffect.smoke: DeterministicEffectConfiguration(
+        minAngle: -100,
+        maxAngle: -80,
+        minOriginOffset: const Offset(-.01, 0),
+        minParticleLifespan: const Duration(seconds: 4),
+        maxParticleLifespan: const Duration(seconds: 7),
+        minFadeOutThreshold: .6,
+        maxFadeOutThreshold: .8,
+        maxOriginOffset: const Offset(.01, 0),
+        minEndScale: 1,
+        maxEndScale: 1,
+        particleConfiguration: const ParticleConfiguration(
+          shape: CircleShape(),
+          size: Size(5, 5),
+        ),
+        particlesPerEmit: 3,
+      ),
+      AvailableEffect.fountain: DeterministicEffectConfiguration(
+        minParticleLifespan: const Duration(seconds: 4),
+        maxParticleLifespan: const Duration(seconds: 4),
+        customPathBuilder: (effect, animatedParticle) {
+          const width = 60;
+          final path = Path();
+          final randomWidth = random.nextDoubleRange(-width / 2, width / 2);
+          final distance = effect.effectConfiguration.randomDistance();
+
+          // Define the Bezier path to simulate the fountain trajectory
+          return PathMetricsTransformation(
+            path: path
+              ..moveTo(animatedParticle.particle.initialPosition.dx, animatedParticle.particle.initialPosition.dy)
+              ..relativeQuadraticBezierTo(
+                randomWidth,
+                -distance,
+                randomWidth * 4,
+                -distance / Random().nextIntRange(2, 6),
+              ),
+          );
+        },
+        minDistance: 200,
+        minFadeOutThreshold: .6,
+        maxFadeOutThreshold: .8,
+        minEndScale: 1,
+        maxEndScale: 1,
+        particleConfiguration: const ParticleConfiguration(
+          shape: CircleShape(),
+          size: Size(5, 5),
+        ),
+        particlesPerEmit: 10,
+      ),
+      AvailableEffect.firework: DeterministicEffectConfiguration(
+        minAngle: -120,
+        maxAngle: -60,
+        maxParticleLifespan: const Duration(seconds: 2),
+        minFadeOutThreshold: .6,
+        maxFadeOutThreshold: .8,
+        emitDuration: const Duration(milliseconds: 500),
+        minEndScale: 1,
+        maxEndScale: 1,
+        particleConfiguration: ParticleConfiguration(
+          shape: const CircleShape(),
+          size: const Size(5, 5),
+          postEffectBuilder: (particle, effect) {
+            final offset = Offset(
+              particle.position.dx / effect.surfaceSize.width,
+              particle.position.dy / effect.surfaceSize.height,
+            );
+            return DeterministicEffectConfiguration(
+              maxAngle: 180,
+              minAngle: -180,
+              particleCount: 10,
+              particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),
-                size: const Size(5, 5),
-                color: const SingleParticleColor(color: Colors.blue),
+                size: Size(5, 5),
+                color: SingleParticleColor(color: Colors.blue),
               ),
-              effectConfiguration: effectConfiguration.copyWith(
-                maxAngle: 180,
-                minAngle: -180,
-                particleCount: 10,
-                particlesPerEmit: 10,
-                distanceCurve: Curves.decelerate,
-                origin: offset,
-              ),
-            );},
-          ),
-          effectConfiguration: effectConfiguration.copyWith(
-            emitDuration: const Duration(milliseconds: 600),
-            distanceCurve: Curves.decelerate,
-            origin: const Offset(0.5, 0.5),
-          ),
-        );
-      case AvailableEffect.smoke:
-        return SmokeEffect(
-          particleConfiguration: ParticleConfiguration(shape: CircleShape(), size: const Size(5, 5), color: color),
-          effectConfiguration: effectConfiguration.copyWith(
-            origin: const Offset(
-              0.5,
-              0.5,
-            ),
-          ),
-        );
-      case AvailableEffect.fountain:
-        return FountainEffect(
-          particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
-            size: const Size(5, 5),
-            color: color,
-          ),
-          effectConfiguration: effectConfiguration.copyWith(
-            distanceCurve: Curves.decelerate,
-            origin: const Offset(
-              0.5,
-              0.5,
-            ),
-          ),
-          width: 60,
-        );
-      case AvailableEffect.pulse:
-        return PulseEffect(
-          particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
-            size: const Size(5, 5),
-            color: color,
-          ),
-          effectConfiguration: effectConfiguration.copyWith(
-            origin: const Offset(
-              0.5,
-              0.5,
-            ),
-          ),
-        );
-    }
-  }
-}
+              particlesPerEmit: 10,
+              distanceCurve: Curves.decelerate,
+              origin: offset,
+            );
+          },
+        ),
+        trail: const StraightTrail(
+          trailWidth: 3,
+          trailProgress: .3,
+        ),
+      ),
+    };
 
 enum AnimationParameter {
   angle,

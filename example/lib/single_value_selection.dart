@@ -9,7 +9,6 @@ class SingleValueSelection extends StatefulWidget {
     required this.min,
     required this.max,
     super.key,
-    this.roundValue = true,
     this.precision = 2,
   });
 
@@ -17,7 +16,6 @@ class SingleValueSelection extends StatefulWidget {
   final double value;
   final double min;
   final double max;
-  final bool roundValue;
   final int precision;
   final ValueChanged<double> onChanged;
 
@@ -36,12 +34,11 @@ class _SingleValueSelectionState extends State<SingleValueSelection> {
 
   @override
   Widget build(BuildContext context) {
-    final formattedValue = widget.roundValue ? _value.round() : _value;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '${widget.title}: ${formattedValue.toStringAsPrecision(widget.precision)}',
+          '${widget.title}: ${_value.toStringAsFixed(_value.truncateToDouble() == _value ? 0 : widget.precision)}',
           style: textTheme.labelLarge,
         ),
         SizedBox(
@@ -50,7 +47,7 @@ class _SingleValueSelectionState extends State<SingleValueSelection> {
             value: _value,
             min: widget.min,
             max: widget.max,
-            label: formattedValue.toStringAsPrecision(widget.precision),
+            label: _value.toStringAsFixed(_value.truncateToDouble() == _value ? 0 : widget.precision),
             onChanged: (value) {
               setState(() {
                 _value = value;

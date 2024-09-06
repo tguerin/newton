@@ -1,5 +1,8 @@
 import 'dart:math';
 
+/// Random instance used by effects
+final random = Random();
+
 /// An extension on the `Random` class to provide utility methods for generating random numbers within a specified range.
 ///
 /// This extension adds methods to generate random integers and doubles between a minimum and maximum value, inclusive of the minimum and exclusive of the maximum.

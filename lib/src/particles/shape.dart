@@ -6,6 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newton_particles/newton_particles.dart';
 
+/// Data record to hold necessary information about how to transform the image
+typedef TransformationData = ({
+  ui.Image image,
+  ui.Rect rect,
+  ui.RSTransform transform,
+  ui.Color color,
+  ui.BlendMode? blendMode,
+});
+
 /// A base class representing various shapes for rendering particles.
 ///
 /// This sealed class defines different shapes that can be used for rendering particles.
@@ -31,7 +40,7 @@ sealed class Shape {
   /// - [defaultShapes]: The [ui.Image] representing default shape textures.
   ///
   /// Returns a tuple `(Image, Rect, RSTransform, Color)` with the computed parameters.
-  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
+  TransformationData? computeTransformation(
     Particle particle,
     ui.Image defaultShapes,
   );
@@ -42,8 +51,11 @@ sealed class Shape {
 /// This class calculates the transformation needed to render particles as circles
 /// using the default sprite size.
 class CircleShape extends Shape {
+  /// Well it’s a circle
+  const CircleShape();
+
   @override
-  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
+  TransformationData? computeTransformation(
     Particle particle,
     ui.Image defaultShapes,
   ) {
@@ -65,7 +77,7 @@ class CircleShape extends Shape {
       translateY: particle.position.dy,
     );
     final color = particle.color;
-    return (image: defaultShapes, rect: rect, transform: transform, color: color);
+    return (image: defaultShapes, rect: rect, transform: transform, color: color, blendMode: null);
   }
 }
 
@@ -75,16 +87,19 @@ class CircleShape extends Shape {
 /// is used to define the shape and appearance of the particles.
 class ImageShape extends Shape {
   /// Constructs an [ImageShape] with the specified [image].
-  const ImageShape(this.image);
+  const ImageShape(this.image, {this.blendMode = ui.BlendMode.modulate});
 
   /// The image used to render particles.
   final ui.Image image;
 
+  /// BlendMode to use with color
+  final ui.BlendMode blendMode;
+
   @override
-  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
-      Particle particle,
-      ui.Image defaultShapes,
-      ) {
+  TransformationData? computeTransformation(
+    Particle particle,
+    ui.Image defaultShapes,
+  ) {
     final rect = Rect.fromLTWH(
       0,
       0,
@@ -103,7 +118,7 @@ class ImageShape extends Shape {
       translateY: particle.position.dy,
     );
     final color = particle.color;
-    return (image: image, rect: rect, transform: transform, color: color);
+    return (image: image, rect: rect, transform: transform, color: color, blendMode: blendMode);
   }
 }
 
@@ -118,10 +133,11 @@ class ImageAssetShape extends Shape {
   /// - [placeholderImage]: An optional placeholder image used if the asset fails to load.
   /// - [deferLoading]: If set to true, the image loading will be deferred and must be initiated manually.
   ImageAssetShape(
-      this.imagePath, {
-        bool deferLoading = false,
-        ui.Image? placeholderImage,
-      }) : _imageShape = placeholderImage != null ? ImageShape(placeholderImage) : null {
+    this.imagePath, {
+    this.blendMode = ui.BlendMode.modulate,
+    bool deferLoading = false,
+    ui.Image? placeholderImage,
+  }) : _imageShape = placeholderImage != null ? ImageShape(placeholderImage) : null {
     if (!deferLoading) {
       load();
     }
@@ -129,6 +145,9 @@ class ImageAssetShape extends Shape {
 
   /// The path to the image asset used for rendering.
   final String imagePath;
+
+  /// BlendMode to use with color
+  final ui.BlendMode blendMode;
 
   /// The image shape created from the loaded or placeholder image.
   ImageShape? _imageShape;
@@ -142,17 +161,17 @@ class ImageAssetShape extends Shape {
       final data = await rootBundle.load(imagePath);
       final completer = Completer<ui.Image>();
       ui.decodeImageFromList(Uint8List.view(data.buffer), completer.complete);
-      _imageShape = ImageShape(await completer.future);
+      _imageShape = ImageShape(await completer.future, blendMode: blendMode);
     } catch (e) {
       // If loading fails, keep using the placeholder image
     }
   }
 
   @override
-  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
-      Particle particle,
-      ui.Image defaultShapes,
-      ) {
+  TransformationData? computeTransformation(
+    Particle particle,
+    ui.Image defaultShapes,
+  ) {
     final imageShape = _imageShape;
     if (imageShape == null) {
       return null;
@@ -166,8 +185,10 @@ class ImageAssetShape extends Shape {
 /// This class calculates the transformation needed to render particles as squares
 /// using the default sprite size.
 class SquareShape extends Shape {
+  /// It has 4 edges and looks like a rectangle but all edges have same size
+  const SquareShape();
   @override
-  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
+  TransformationData? computeTransformation(
     Particle particle,
     ui.Image defaultShapes,
   ) {
@@ -189,6 +210,6 @@ class SquareShape extends Shape {
       translateY: particle.position.dy,
     );
     final color = particle.color;
-    return (image: defaultShapes, rect: rect, transform: transform, color: color);
+    return (image: defaultShapes, rect: rect, transform: transform, color: color, blendMode: null);
   }
 }
