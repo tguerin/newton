@@ -26,7 +26,7 @@ https://github.com/user-attachments/assets/2ee8bce1-1df6-4f23-b704-a488afe82000
 
 - **Highly Configurable:** Newton offers an extensive range of options to fine-tune your particle animations. You can adjust particle appearance, behavior, movement, and physics properties, providing complete control over your animations.
 
-- **[Interactive Animation Configurator](https://newton.7omtech.fr/docs/configurator):** Create your particle animations visually using the included app configurator. Experiment with different settings, preview animations in real-time, and easily copy-paste the generated code into your project. *(Note: Chaining animations will be supported in future versions.)*
+- **[Interactive Animation Configurator](https://newton.7omtech.fr/docs/configurator):** Create your particle animations visually using the included app configurator. Experiment with different settings, preview animations in real-time.
 
 - **Custom Particle Design:** Design your particle effects to seamlessly integrate with your app’s aesthetic. Use custom shapes, colors, and sizes to craft truly unique animations that suit your needs.
 
@@ -41,7 +41,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.2.1
+  newton_particles: ^0.2.2
 ```
 
 Then, run `flutter pub get` to fetch the package.

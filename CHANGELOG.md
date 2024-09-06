@@ -1,3 +1,8 @@
+## [0.2.2] - 2024-09-06
+
+- [Fix] Remove code generation that is not available for now.
+- [Fix] Use gif instead of a video.
+
 ## [0.2.1] - 2024-09-06
 
 - [Fix] Pub.dev doc site 
