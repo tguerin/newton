@@ -1,7 +1,7 @@
 ---
 sidebar_position: 4
 ---
-import Configurations from '@site/src/components/Configurations';
+import Configurations from '@site/src/components/configurations';
 
 # Effect Samples
 
