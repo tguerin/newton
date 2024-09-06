@@ -1,3 +1,7 @@
+## [0.2.1] - 2024-09-06
+
+- [Fix] Pub.dev doc site 
+
 ## [0.2.0] - 2024-09-06
 
 - [Breaking] Support physics based animation. Revamp the way effects are configured and added to the Newton widget.
