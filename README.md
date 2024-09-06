@@ -16,7 +16,8 @@
 
 Newton is a highly configurable particle emitter package for Flutter, now with advanced support for both deterministic and physics-based animations. With Newton, you can create captivating animations such as rain, smoke, explosions, and more, along with realistic physics-driven effects like gravity and collisions. This allows you to easily add both visually stunning and physically accurate effects to your Flutter applications, enhancing the user experience with dynamic and interactive animations.
 
-<iframe src="https://newton.7omtech.fr/docs/configurator" width="800" height="600"/>
+https://github.com/user-attachments/assets/92680020-dde3-461a-a4a2-191dcfda2f23
+
 
 ### Features
 
