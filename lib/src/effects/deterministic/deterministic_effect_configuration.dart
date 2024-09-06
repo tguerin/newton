@@ -7,37 +7,56 @@ import 'package:newton_particles/newton_particles.dart';
 /// and to specify a custom path builder for particle motion. It allows for precise control over particle behavior in a deterministic effect.
 @immutable
 class DeterministicEffectConfiguration extends EffectConfiguration {
-  /// Creates an instance of [DeterministicEffectConfiguration] with the specified parameters.
+  /// Creates an instance of [DeterministicEffectConfiguration] with customizable parameters
+  /// to control the behavior of particles in a deterministic manner.
   ///
-  /// - [customPathBuilder]: A function that defines a custom path transformation for particles.
-  /// - [distanceCurve]: A curve to control the particle travel distance. Default is [Curves.linear].
-  /// - [maxDistance]: The maximum distance particles can travel. Default is `200`.
-  /// - [minDistance]: The minimum distance particles can travel. Default is `100`.
-  /// - [emitCurve]: A curve to control the emission timing. Inherited from [EffectConfiguration].
-  /// - [emitDuration]: The duration between particle emissions. Inherited from [EffectConfiguration].
-  /// - [fadeInCurve]: A curve to control the fade-in animation progress. Inherited from [EffectConfiguration].
-  /// - [fadeOutCurve]: A curve to control the fade-out animation progress. Inherited from [EffectConfiguration].
-  /// - [foreground]: Indicates whether the effect should be played in the foreground. Inherited from [EffectConfiguration].
-  /// - [maxAngle]: The maximum angle in degrees for particle trajectory. Inherited from [EffectConfiguration].
-  /// - [maxBeginScale]: The maximum initial particle scale. Inherited from [EffectConfiguration].
-  /// - [maxDuration]: The maximum duration of the particle animation. Inherited from [EffectConfiguration].
-  /// - [maxEndScale]: The maximum final particle scale. Inherited from [EffectConfiguration].
-  /// - [maxFadeInThreshold]: The maximum opacity threshold for particle fade-in. Inherited from [EffectConfiguration].
-  /// - [maxFadeOutThreshold]: The maximum opacity threshold for particle fade-out. Inherited from [EffectConfiguration].
-  /// - [maxOriginOffset]: The offset for the maximum origin point of particle emission. Inherited from [EffectConfiguration].
-  /// - [minAngle]: The minimum angle in degrees for particle trajectory. Inherited from [EffectConfiguration].
-  /// - [minBeginScale]: The minimum initial particle scale. Inherited from [EffectConfiguration].
-  /// - [minDuration]: The minimum duration of the particle animation. Inherited from [EffectConfiguration].
-  /// - [minEndScale]: The minimum final particle scale. Inherited from [EffectConfiguration].
-  /// - [minFadeInThreshold]: The minimum opacity threshold for particle fade-in. Inherited from [EffectConfiguration].
-  /// - [minFadeOutThreshold]: The minimum opacity threshold for particle fade-out. Inherited from [EffectConfiguration].
-  /// - [minOriginOffset]: The offset for the minimum origin point of particle emission. Inherited from [EffectConfiguration].
-  /// - [origin]: The origin point for particle emission, relative from the top left of the container. Inherited from [EffectConfiguration].
-  /// - [particleCount]: The total number of particles to emit. Inherited from [EffectConfiguration].
-  /// - [particlesPerEmit]: The number of particles emitted per emission. Inherited from [EffectConfiguration].
-  /// - [scaleCurve]: A curve to control particle scaling animation progress. Inherited from [EffectConfiguration].
-  /// - [startDelay]: The delay before starting the effect. Inherited from [EffectConfiguration].
-  /// - [trail]: The trail effect associated with the particles. Inherited from [EffectConfiguration].
+  /// This configuration allows detailed control over the movement paths, emission properties,
+  /// and particle scaling, giving fine-grained control over visual effects.
+  ///
+  /// - [particleConfiguration]: General particle configuration inherited from [EffectConfiguration],
+  ///   defining how particles are emitted and animated.
+  /// - [customPathBuilder]: A function to define a custom particle movement path. This allows
+  ///   developers to define unique trajectories for particles beyond standard configurations.
+  /// - [distanceCurve]: A curve that determines how particle travel distance changes over time.
+  ///   The default is [Curves.linear], which provides a constant rate of movement.
+  /// - [maxDistance]: The maximum distance that particles can travel from their origin. Defaults to `200`.
+  /// - [minDistance]: The minimum distance that particles can travel from their origin. Defaults to `100`.
+  ///
+  /// Inherited parameters from [EffectConfiguration]:
+  /// - [emitCurve]: A curve that controls the timing and rate of particle emission.
+  /// - [emitDuration]: The interval between particle emissions, controlling how long the effect lasts.
+  /// - [fadeInCurve]: A curve that controls the fade-in effect for particles, allowing smooth appearance animations.
+  /// - [fadeOutCurve]: A curve that controls the fade-out effect for particles, allowing particles to disappear gradually.
+  /// - [foreground]: Determines whether the effect should render in the foreground layer.
+  ///   When set to `true`, particles are rendered on top of other visual elements.
+  /// - [maxAngle]: The maximum angle (in degrees) for particle trajectory, providing control over the
+  ///   directional spread of particles.
+  /// - [maxBeginScale]: The maximum starting scale for particles, controlling their initial size.
+  /// - [maxEndScale]: The maximum final scale for particles after any scaling animations are applied.
+  /// - [maxFadeInThreshold]: The highest opacity value at which particles will complete fading in,
+  ///   controlling the visibility at the start of the effect.
+  /// - [maxFadeOutThreshold]: The highest opacity value at which particles begin fading out, controlling
+  ///   when particles start to disappear.
+  /// - [maxOriginOffset]: The maximum offset for particle emission, determining how far the particles
+  ///   can start from the specified origin point.
+  /// - [maxParticleLifespan]: The maximum time a particle can exist before being removed from the effect.
+  /// - [minAngle]: The minimum angle (in degrees) for particle trajectory, allowing more control over particle directionality.
+  /// - [minBeginScale]: The minimum initial scale of particles, controlling their starting size for smaller particles.
+  /// - [minEndScale]: The minimum final scale of particles after scaling animations, controlling how small particles can become.
+  /// - [minFadeInThreshold]: The lowest opacity value at which particles start to fade in, controlling
+  ///   when particles become visible.
+  /// - [minFadeOutThreshold]: The lowest opacity value at which particles start to fade out,
+  ///   controlling when particles begin disappearing.
+  /// - [minOriginOffset]: The minimum offset for particle emission relative to the origin point,
+  ///   controlling where particles can be emitted from.
+  /// - [minParticleLifespan]: The minimum lifespan for particles, determining how long they remain visible.
+  /// - [origin]: The starting point for particle emission, relative to the top-left corner of the container.
+  /// - [particleCount]: The total number of particles that will be emitted during the lifetime of the effect.
+  /// - [particlesPerEmit]: The number of particles emitted in each burst or emission cycle.
+  /// - [particleLayer]: The visual layer on which particles are rendered, allowing for layered visual effects.
+  /// - [scaleCurve]: A curve controlling how the particle size changes over time, allowing for smooth scaling animations.
+  /// - [startDelay]: The delay before the effect starts after it has been triggered, useful for timed or staged animations.
+  /// - [trail]: Defines a trailing effect for particles as they move, adding visual trails for more dynamic effects.
   const DeterministicEffectConfiguration({
     required super.particleConfiguration,
     this.customPathBuilder,
@@ -51,18 +70,18 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     super.foreground,
     super.maxAngle,
     super.maxBeginScale,
-    super.maxDuration,
     super.maxEndScale,
     super.maxFadeInThreshold,
     super.maxFadeOutThreshold,
     super.maxOriginOffset,
+    super.maxParticleLifespan,
     super.minAngle,
     super.minBeginScale,
-    super.minDuration,
     super.minEndScale,
     super.minFadeInThreshold,
     super.minFadeOutThreshold,
     super.minOriginOffset,
+    super.minParticleLifespan,
     super.origin,
     super.particleCount,
     super.particleLayer,
@@ -105,20 +124,20 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     bool? foreground,
     double? maxAngle,
     double? maxBeginScale,
-    Duration? maxDuration,
     double? maxDistance,
     double? maxEndScale,
     double? maxFadeInThreshold,
     double? maxFadeOutThreshold,
     Offset? maxOriginOffset,
+    Duration? maxParticleLifespan,
     double? minAngle,
     double? minBeginScale,
-    Duration? minDuration,
     double? minDistance,
     double? minEndScale,
     double? minFadeInThreshold,
     double? minFadeOutThreshold,
     Offset? minOriginOffset,
+    Duration? minParticleLifespan,
     Offset? origin,
     ParticleConfiguration? particleConfiguration,
     int? particleCount,
@@ -129,7 +148,6 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     Trail? trail,
   }) {
     return DeterministicEffectConfiguration(
-      particleConfiguration: particleConfiguration ?? this.particleConfiguration,
       customPathBuilder: customPathBuilder ?? this.customPathBuilder,
       distanceCurve: distanceCurve ?? this.distanceCurve,
       emitCurve: emitCurve ?? this.emitCurve,
@@ -139,21 +157,22 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
       foreground: foreground ?? this.foreground,
       maxAngle: maxAngle ?? this.maxAngle,
       maxBeginScale: maxBeginScale ?? this.maxBeginScale,
-      maxDuration: maxDuration ?? this.maxDuration,
       maxDistance: maxDistance ?? this.maxDistance,
       maxEndScale: maxEndScale ?? this.maxEndScale,
       maxFadeInThreshold: maxFadeInThreshold ?? this.maxFadeInThreshold,
       maxFadeOutThreshold: maxFadeOutThreshold ?? this.maxFadeOutThreshold,
       maxOriginOffset: maxOriginOffset ?? this.maxOriginOffset,
+      maxParticleLifespan: maxParticleLifespan ?? this.maxParticleLifespan,
       minAngle: minAngle ?? this.minAngle,
       minBeginScale: minBeginScale ?? this.minBeginScale,
-      minDuration: minDuration ?? this.minDuration,
       minDistance: minDistance ?? this.minDistance,
       minEndScale: minEndScale ?? this.minEndScale,
       minFadeInThreshold: minFadeInThreshold ?? this.minFadeInThreshold,
       minFadeOutThreshold: minFadeOutThreshold ?? this.minFadeOutThreshold,
       minOriginOffset: minOriginOffset ?? this.minOriginOffset,
+      minParticleLifespan: minParticleLifespan ?? this.minParticleLifespan,
       origin: origin ?? this.origin,
+      particleConfiguration: particleConfiguration ?? this.particleConfiguration,
       particleCount: particleCount ?? this.particleCount,
       particleLayer: particleLayer ?? this.particleLayer,
       particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,

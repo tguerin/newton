@@ -14,21 +14,22 @@
 
 ## Particle Emitter for Flutter
 
-Newton is a highly configurable particle emitter package for Flutter that allows you to create captivating animations such as rain, smoke, explosions, and more. With Newton, you can easily add visually stunning effects to your Flutter applications.
+Newton is a highly configurable particle emitter package for Flutter, now with advanced support for both deterministic and physics-based animations. With Newton, you can create captivating animations such as rain, smoke, explosions, and more, along with realistic physics-driven effects like gravity and collisions. This allows you to easily add both visually stunning and physically accurate effects to your Flutter applications, enhancing the user experience with dynamic and interactive animations.
 
-|                                  Rain                                   |                                   Smoke                                   |                                   Pulse                                   |                                    Explode                                    |                                    Fountain                                     |
-|:-----------------------------------------------------------------------:|:-------------------------------------------------------------------------:|:-------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|:-------------------------------------------------------------------------------:|
-|  ![Rain](https://raw.github.com/tguerin/newton/main/graphics/rain.gif)  |  ![Smoke](https://raw.github.com/tguerin/newton/main/graphics/smoke.gif)  |  ![Pulse](https://raw.github.com/tguerin/newton/main/graphics/pulse.gif)  |  ![Explode](https://raw.github.com/tguerin/newton/main/graphics/explode.gif)  |  ![Fountain](https://raw.github.com/tguerin/newton/main/graphics/fountain.gif)  |
+<iframe src="https://newton.7omtech.fr/docs/configurator" width="800" height="600"/>
 
-## Features
+### Features
 
-- **Highly Configurable:** Newton provides a wide range of options to tweak your particle animations to your liking. You can adjust particle appearance, movement, behavior, and more.
+- **Highly Configurable:** Newton offers an extensive range of options to fine-tune your particle animations. You can adjust particle appearance, behavior, movement, and physics properties, providing complete control over your animations.
 
-- **Ready-to-Use Presets:** Get started quickly with our collection of pre-built presets for common particle effects like rain, smoke, and explosions.
+- **[Interactive Animation Configurator](https://newton.7omtech.fr/docs/configurator):** Create your particle animations visually using the included app configurator. Experiment with different settings, preview animations in real-time, and easily copy-paste the generated code into your project. *(Note: Chaining animations will be supported in future versions.)*
 
-- **Custom Particle Design:** Tailor your particle effects to match your app's aesthetic. Use custom shapes, colors, and sizes to create unique animations.
+- **Custom Particle Design:** Design your particle effects to seamlessly integrate with your app’s aesthetic. Use custom shapes, colors, and sizes to craft truly unique animations that suit your needs.
 
-- **Efficient Performance:** Newton is designed with performance in mind, ensuring smooth animations even on less powerful devices.
+- **Comprehensive Documentation:** Detailed guides and examples are available to help you easily create popular particle effects like rain, smoke, and explosions.
+
+- **Efficient Performance:** Newton is optimized for performance, ensuring smooth animations even on lower-end devices without compromising on visual quality.
+
 
 ## Installation
 
@@ -36,7 +37,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.1.8
+  newton_particles: ^0.2.0
 ```
 
 Then, run `flutter pub get` to fetch the package.
@@ -56,14 +57,25 @@ Newton(
     // Add any kind of effects to your UI
     // For example:
     activeEffects: [
-        RainEffect(
-            particleConfiguration: ParticleConfiguration(
+        RelativisticEffectConfiguration(
+            gravity: Gravity.earthGravity,
+            maxAngle: 90,
+            maxEndScale: 1,
+            maxFadeOutThreshold: .8,
+            maxOriginOffset: const Offset(1, 0),
+            maxParticleLifespan: const Duration(seconds: 10),
+            minVelocity: Velocity.stationary,
+            maxVelocity: Velocity.stationary,
+            minAngle: 90,
+            minParticleLifespan: const Duration(seconds: 7),
+            minEndScale: 1,
+            minFadeOutThreshold: .6,
+            origin: Offset.zero,
+            particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),
-                size: const Size(5, 5),
-                color: const SingleParticleColor(color: Colors.black),
+                size: Size(5, 5),
             ),
-            effectConfiguration: const EffectConfiguration(),
-        )
+        ),
     ],
 )
 ```
@@ -90,14 +102,25 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: Text('Newton Rain Example')),
         body: Newton(
           activeEffects: [
-            RainEffect(
-                particleConfiguration: ParticleConfiguration(
-                    shape: CircleShape(),
-                    size: const Size(5, 5),
-                    color: const SingleParticleColor(color: Colors.black),
-                ),
-                effectConfiguration: const EffectConfiguration()
-            )
+            RelativisticEffectConfiguration(
+              gravity: Gravity.earthGravity,
+              maxAngle: 90,
+              maxEndScale: 1,
+              maxFadeOutThreshold: .8,
+              maxOriginOffset: const Offset(1, 0),
+              maxParticleLifespan: const Duration(seconds: 10),
+              minVelocity: Velocity.stationary,
+              maxVelocity: Velocity.stationary,
+              minAngle: 90,
+              minParticleLifespan: const Duration(seconds: 7),
+              minEndScale: 1,
+              minFadeOutThreshold: .6,
+              origin: Offset.zero,
+              particleConfiguration: const ParticleConfiguration(
+                shape: CircleShape(),
+                size: Size(5, 5),
+              ),
+            ),
           ],
         ),
       ),

@@ -1,3 +1,11 @@
+## [0.2.0] - 2024-09-06
+
+- [Breaking] Support physics based animation. Revamp the way effects are configured and added to the Newton widget.
+- [Breaking] Replace duration based properties as int by Duration.
+- [Breaking] Origin is now relative to the widget size.
+- [Performance] No more unnecessary repaints. thanks @VonZen
+- [Performance] Images are now properly garbage collected when animations end.
+
 ## [0.1.8] - 2024-06-03
 
 ### Fix

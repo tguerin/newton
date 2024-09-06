@@ -36,9 +36,74 @@ extension type const Tag(String value) {}
 /// ```
 @immutable
 abstract class EffectConfiguration<T extends ParticleConfiguration> {
-  /// Creates an instance of `EffectConfiguration` with the specified parameters.
+  /// An abstract class representing the configuration for particle effects,
+  /// providing a foundation for controlling particle emission, animation,
+  /// and visual behavior.
   ///
-  /// All parameters have default values that can be overridden during object creation.
+  /// The [EffectConfiguration] class defines various parameters such as emission rate,
+  /// particle scaling, fading, and lifespans, but it cannot be instantiated directly.
+  /// Instead, this class is meant to be extended by other concrete effect configurations
+  /// that implement specific behavior.
+  ///
+  /// Subclasses such as [DeterministicEffectConfiguration] or [RelativisticEffectConfiguration]
+  /// inherit and build upon the parameters defined here, allowing developers to create
+  /// customized particle effects.
+  ///
+  /// - [particleConfiguration]: The general configuration for how particles are emitted and animated.
+  /// - [emitCurve]: A curve that controls the rate of particle emission over time. Defaults to [Curves.decelerate],
+  ///   which gradually slows the emission rate.
+  /// - [emitDuration]: The interval between each emission of particles. Defaults to 100 milliseconds.
+  /// - [fadeInCurve]: A curve that controls how particles fade in, typically from transparent to fully visible.
+  ///   Defaults to [Curves.linear] for a consistent fade-in.
+  /// - [fadeOutCurve]: A curve that controls how particles fade out, typically from fully visible to transparent.
+  ///   Defaults to [Curves.linear] for a consistent fade-out.
+  /// - [foreground]: A boolean value that determines whether the effect should be rendered in the foreground.
+  ///   If `true`, particles will appear above other visual elements. Defaults to `false`.
+  /// - [maxAngle]: The maximum angle (in degrees) for particle trajectory, determining the directional spread of particles.
+  ///   Defaults to `0`, meaning no spread.
+  /// - [maxBeginScale]: The maximum initial scale of the particles, determining their size when first emitted. Defaults to `1`.
+  /// - [maxEndScale]: The maximum final scale of the particles after scaling animations. Defaults to `-1`,
+  ///   which indicates no scaling applied.
+  /// - [maxFadeInThreshold]: The highest opacity value at which particles will complete fading in, controlling
+  ///   the visibility of the particles when they fully appear. Defaults to `0`.
+  /// - [maxFadeOutThreshold]: The highest opacity value at which particles start to fade out, controlling
+  ///   when particles begin disappearing. Defaults to `1`.
+  /// - [maxOriginOffset]: The maximum offset from the origin point for particle emission. Defaults to [Offset.zero],
+  ///   meaning particles will emit from the specified origin without any additional offset.
+  /// - [maxParticleLifespan]: The maximum time a particle can exist before disappearing. Defaults to 1 second.
+  /// - [minAngle]: The minimum angle (in degrees) for particle trajectory, providing control over particle directionality.
+  ///   Defaults to `0`.
+  /// - [minBeginScale]: The minimum initial scale for particles, defining their smallest possible size when emitted. Defaults to `1`.
+  /// - [minParticleLifespan]: The minimum time a particle can exist before disappearing. Defaults to 1 second.
+  /// - [minEndScale]: The minimum final scale for particles, controlling the smallest size particles can reach after scaling. Defaults to `-1`,
+  ///   meaning no scaling is applied.
+  /// - [minFadeInThreshold]: The lowest opacity value at which particles will start to fade in, controlling
+  ///   the visibility of particles as they begin to appear. Defaults to `0`.
+  /// - [minFadeOutThreshold]: The lowest opacity value at which particles will start fading out, controlling
+  ///   when particles begin to disappear. Defaults to `1`.
+  /// - [minOriginOffset]: The minimum offset from the origin point for particle emission. Defaults to [Offset.zero].
+  /// - [origin]: The origin point for particle emission, relative to the top-left corner of the container.
+  ///   Defaults to the center of the container at [Offset(0.5, 0.5)].
+  /// - [particleCount]: The total number of particles that will be emitted over the lifetime of the effect.
+  ///   Defaults to `0`, meaning no particles will be emitted by default.
+  /// - [particleLayer]: Specifies the layer on which particles will be rendered. Defaults to [ParticleLayer.background],
+  ///   meaning particles will render behind other elements.
+  /// - [particlesPerEmit]: The number of particles emitted during each emission event. Defaults to `1`.
+  /// - [scaleCurve]: A curve controlling how the particle size changes over time. Defaults to [Curves.linear],
+  ///   which means the size change is consistent.
+  /// - [startDelay]: The delay before particle emission starts after the effect is triggered. Defaults to no delay (`Duration.zero`).
+  /// - [tag]: An optional identifier to tag or label the effect for tracking or reference purposes.
+  /// - [trail]: Specifies the trailing effect that follows each particle, providing additional visual flair. Defaults to [NoTrail()],
+  ///   which means no trailing effect will be applied to particles.
+  ///
+  /// Assertions ensure the following conditions are met:
+  /// - [minAngle] cannot be greater than [maxAngle].
+  /// - [minBeginScale] cannot be greater than [maxBeginScale].
+  /// - [minEndScale] cannot be greater than [maxEndScale].
+  /// - [minFadeInThreshold] cannot be greater than [maxFadeInThreshold].
+  /// - [minFadeOutThreshold] cannot be greater than [maxFadeOutThreshold].
+  /// - [minOriginOffset] cannot be greater than [maxOriginOffset].
+  /// - [minParticleLifespan] cannot be greater than [maxParticleLifespan].
   const EffectConfiguration({
     required this.particleConfiguration,
     this.emitCurve = Curves.decelerate,
@@ -48,14 +113,14 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     this.foreground = false,
     this.maxAngle = 0,
     this.maxBeginScale = 1,
-    this.maxDuration = const Duration(seconds: 1),
     this.maxEndScale = -1,
     this.maxFadeInThreshold = 0,
     this.maxFadeOutThreshold = 1,
     this.maxOriginOffset = Offset.zero,
+    this.maxParticleLifespan = const Duration(seconds: 1),
     this.minAngle = 0,
     this.minBeginScale = 1,
-    this.minDuration = const Duration(seconds: 1),
+    this.minParticleLifespan = const Duration(seconds: 1),
     this.minEndScale = -1,
     this.minFadeInThreshold = 0,
     this.minFadeOutThreshold = 1,
@@ -70,7 +135,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     this.trail = const NoTrail(),
   })  : assert(minAngle <= maxAngle, 'Min angle can’t be greater than max angle'),
         assert(minBeginScale <= maxBeginScale, 'Begin min scale can’t be greater than begin max scale'),
-        assert(minDuration <= maxDuration, 'Min duration can’t be greater than max duration'),
         assert(minEndScale <= maxEndScale, 'End min scale can’t be greater than end max scale'),
         assert(
           minFadeInThreshold <= maxFadeInThreshold,
@@ -83,7 +147,8 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
         assert(
           minOriginOffset <= maxOriginOffset,
           'Min origin offset can’t be greater than max origin offset',
-        );
+        ),
+        assert(minParticleLifespan <= maxParticleLifespan, 'Min lifespan can’t be greater than max lifespan');
 
   /// Curve to control the emission timing of particles. Default: [Curves.decelerate].
   final Curve emitCurve;
@@ -106,9 +171,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Maximum initial particle scale. Default: `1`.
   final double maxBeginScale;
 
-  /// Maximum particle animation duration. Default: `1s`.
-  final Duration maxDuration;
-
   /// Maximum final particle scale. Default: `-1` (no scaling).
   final double maxEndScale;
 
@@ -121,14 +183,17 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Offset for the maximum origin point of particle emission. Default: [Offset.zero].
   final Offset maxOriginOffset;
 
+  /// Maximum particle lifespan duration. Default: `1s`.
+  final Duration maxParticleLifespan;
+
   /// Minimum angle in degrees for particle trajectory. Default: `0`.
   final double minAngle;
 
   /// Minimum initial particle scale. Default: `1`.
   final double minBeginScale;
 
-  /// Minimum particle animation duration. Default: `1s`.
-  final Duration minDuration;
+  /// Minimum final particle scale. Default: `-1` (no scaling).
+  final double minEndScale;
 
   /// Minimum opacity threshold for particle fade-in. Default: `0`.
   final double minFadeInThreshold;
@@ -136,11 +201,11 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Minimum opacity threshold for particle fade-out. Default: `1`.
   final double minFadeOutThreshold;
 
-  /// Minimum final particle scale. Default: `-1` (no scaling).
-  final double minEndScale;
-
   /// Offset for the minimum origin point of particle emission. Default: [Offset.zero].
   final Offset minOriginOffset;
+
+  /// Minimum particle lifespan duration. Default: `1s`.
+  final Duration minParticleLifespan;
 
   /// Origin point for particle emission, relative from the top-left of the container. Default: `Offset(0.5, 0.5)`.
   final Offset origin;
@@ -174,10 +239,10 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     return random.nextDoubleRange(minAngle, maxAngle);
   }
 
-  /// Helper method to generate a random duration within the range [minDuration] to [maxDuration].
+  /// Helper method to generate a random duration within the range [minParticleLifespan] to [maxParticleLifespan].
   Duration randomDuration() {
     return Duration(
-      milliseconds: random.nextIntRange(minDuration.inMilliseconds, maxDuration.inMilliseconds),
+      milliseconds: random.nextIntRange(minParticleLifespan.inMilliseconds, maxParticleLifespan.inMilliseconds),
     );
   }
 
@@ -229,7 +294,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     bool? foreground,
     double? maxAngle,
     double? maxBeginScale,
-    Duration? maxDuration,
+    Duration? maxParticleLifespan,
     double? maxDistance,
     double? maxEndScale,
     double? maxFadeInThreshold,
@@ -237,7 +302,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     Offset? maxOriginOffset,
     double? minAngle,
     double? minBeginScale,
-    Duration? minDuration,
+    Duration? minParticleLifespan,
     double? minDistance,
     double? minEndScale,
     double? minFadeInThreshold,
@@ -265,18 +330,18 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
           foreground == other.foreground &&
           maxAngle == other.maxAngle &&
           maxBeginScale == other.maxBeginScale &&
-          maxDuration == other.maxDuration &&
           maxEndScale == other.maxEndScale &&
           maxFadeInThreshold == other.maxFadeInThreshold &&
           maxFadeOutThreshold == other.maxFadeOutThreshold &&
           maxOriginOffset == other.maxOriginOffset &&
+          maxParticleLifespan == other.maxParticleLifespan &&
           minAngle == other.minAngle &&
           minBeginScale == other.minBeginScale &&
-          minDuration == other.minDuration &&
+          minEndScale == other.minEndScale &&
           minFadeInThreshold == other.minFadeInThreshold &&
           minFadeOutThreshold == other.minFadeOutThreshold &&
-          minEndScale == other.minEndScale &&
           minOriginOffset == other.minOriginOffset &&
+          minParticleLifespan == other.minParticleLifespan &&
           origin == other.origin &&
           particleConfiguration == other.particleConfiguration &&
           particleCount == other.particleCount &&
@@ -296,18 +361,18 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
       foreground.hashCode ^
       maxAngle.hashCode ^
       maxBeginScale.hashCode ^
-      maxDuration.hashCode ^
+      maxParticleLifespan.hashCode ^
       maxEndScale.hashCode ^
       maxFadeInThreshold.hashCode ^
       maxFadeOutThreshold.hashCode ^
       maxOriginOffset.hashCode ^
       minAngle.hashCode ^
       minBeginScale.hashCode ^
-      minDuration.hashCode ^
+      minEndScale.hashCode ^
       minFadeInThreshold.hashCode ^
       minFadeOutThreshold.hashCode ^
-      minEndScale.hashCode ^
       minOriginOffset.hashCode ^
+      minParticleLifespan.hashCode ^
       origin.hashCode ^
       particleConfiguration.hashCode ^
       particleCount.hashCode ^

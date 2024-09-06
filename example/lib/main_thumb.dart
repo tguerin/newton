@@ -70,7 +70,7 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
       maxAngle: -45,
       minDistance: 90,
       maxDistance: 220,
-      maxDuration: const Duration(seconds: 3),
+      maxParticleLifespan: const Duration(seconds: 3),
       minFadeOutThreshold: 0.6,
       maxFadeOutThreshold: 0.8,
       minBeginScale: 0.7,
@@ -100,7 +100,8 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
                 HapticFeedback.mediumImpact();
                 _imageAssets.shuffle();
                 for (var i = 0; i < _imageAssets.length; i++) {
-                  _newtonKey.currentState?.addEffect(currentActiveEffectConfiguration(i, Duration(milliseconds: i * 2000)));
+                  _newtonKey.currentState
+                      ?.addEffect(currentActiveEffectConfiguration(i, Duration(milliseconds: i * 2000)));
                 }
               },
               child: Container(

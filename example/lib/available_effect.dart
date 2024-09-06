@@ -31,16 +31,18 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
   ),
   AvailableEffect.rain: RelativisticEffectConfiguration(
     gravity: Gravity.earthGravity,
-    origin: Offset.zero,
-    maxOriginOffset: const Offset(1, 0),
     maxAngle: 90,
-    maxDuration: const Duration(seconds: 7),
     maxEndScale: 1,
     maxFadeOutThreshold: .8,
+    maxOriginOffset: const Offset(1, 0),
+    maxParticleLifespan: const Duration(seconds: 10),
+    minVelocity: Velocity.stationary,
+    maxVelocity: Velocity.stationary,
     minAngle: 90,
-    minDuration: const Duration(seconds: 4),
+    minParticleLifespan: const Duration(seconds: 7),
     minEndScale: 1,
     minFadeOutThreshold: .6,
+    origin: Offset.zero,
     particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
       size: Size(5, 5),
@@ -49,13 +51,13 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
   AvailableEffect.explode: RelativisticEffectConfiguration(
     gravity: Gravity.zero,
     maxAngle: 180,
-    maxDuration: const Duration(seconds: 7),
     maxEndScale: 1,
     maxFadeOutThreshold: .8,
+    maxParticleLifespan: const Duration(seconds: 7),
     minAngle: -180,
-    minDuration: const Duration(seconds: 4),
     minEndScale: 1,
     minFadeOutThreshold: .6,
+    minParticleLifespan: const Duration(seconds: 4),
     minVelocity: const Velocity(.02),
     maxVelocity: const Velocity(.3),
     particleConfiguration: const ParticleConfiguration(
@@ -71,12 +73,13 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
     },
     gravity: Gravity.zero,
     emitDuration: const Duration(seconds: 1),
-    maxDuration: const Duration(seconds: 4),
     maxEndScale: 1,
     maxFadeOutThreshold: .8,
+    maxParticleLifespan: const Duration(seconds: 4),
     maxVelocity: const Velocity(.6),
     minEndScale: 1,
-    minDuration: const Duration(seconds: 4),
+    onlyInteractWithEdges: true,
+    minParticleLifespan: const Duration(seconds: 4),
     minVelocity: const Velocity(.6),
     minFadeOutThreshold: .8,
     particleConfiguration: const ParticleConfiguration(
@@ -85,32 +88,19 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
     ),
     particlesPerEmit: 15,
   ),
-  AvailableEffect.fountain: DeterministicEffectConfiguration(
-    minDuration: const Duration(seconds: 4),
-    maxDuration: const Duration(seconds: 4),
-    customPathBuilder: (effect, animatedParticle) {
-      const width = 60;
-      final path = Path();
-      final randomWidth = random.nextDoubleRange(-width / 2, width / 2);
-      final distance = effect.effectConfiguration.randomDistance();
-
-      // Define the Bezier path to simulate the fountain trajectory
-      return PathMetricsTransformation(
-        path: path
-          ..moveTo(animatedParticle.particle.initialPosition.dx, animatedParticle.particle.initialPosition.dy)
-          ..relativeQuadraticBezierTo(
-            randomWidth,
-            -distance,
-            randomWidth * 4,
-            -distance / Random().nextIntRange(2, 6),
-          ),
-      );
-    },
-    minDistance: 200,
+  AvailableEffect.fountain: RelativisticEffectConfiguration(
+    gravity: Gravity.earthGravity,
+    minParticleLifespan: const Duration(seconds: 4),
+    maxParticleLifespan: const Duration(seconds: 4),
     minFadeOutThreshold: .6,
     maxFadeOutThreshold: .8,
     minEndScale: 1,
     maxEndScale: 1,
+    minAngle: -100,
+    maxAngle: -80,
+    minVelocity: Velocity.custom(3),
+    maxVelocity: Velocity.custom(5),
+    onlyInteractWithEdges: true,
     particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
       size: Size(5, 5),
@@ -121,16 +111,16 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
     gravity: Gravity.earthGravity,
     minAngle: -100,
     maxAngle: -80,
-    maxDuration: const Duration(seconds: 1, milliseconds: 500),
     minFadeOutThreshold: .6,
     maxFadeOutThreshold: .8,
+    maxParticleLifespan: const Duration(seconds: 1, milliseconds: 500),
     emitDuration: const Duration(milliseconds: 500),
     minEndScale: 1,
     maxEndScale: 1,
-    minVelocity: const Velocity(10),
-    maxVelocity: const Velocity(12),
+    minVelocity: const Velocity(9),
+    maxVelocity: const Velocity(10),
     origin: const Offset(0.5, 1),
-    hardEdges: SolidEdges.none,
+    solidEdges: SolidEdges.none,
     particleConfiguration: ParticleConfiguration(
       shape: const CircleShape(),
       size: const Size(5, 5),
@@ -144,7 +134,7 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
           maxAngle: 180,
           minAngle: -180,
           particleCount: 10,
-          hardEdges: SolidEdges.none,
+          solidEdges: SolidEdges.none,
           minVelocity: const Velocity(5),
           maxVelocity: const Velocity(5),
           particleConfiguration: const ParticleConfiguration(
@@ -173,11 +163,11 @@ Map<AvailableEffect, EffectConfiguration> defaultDeterministicEffectConfiguratio
         origin: Offset.zero,
         maxOriginOffset: const Offset(1, 0),
         maxAngle: 90,
-        maxDuration: const Duration(seconds: 7),
+        maxParticleLifespan: const Duration(seconds: 7),
         maxEndScale: 1,
         maxFadeOutThreshold: .8,
         minAngle: 90,
-        minDuration: const Duration(seconds: 4),
+        minParticleLifespan: const Duration(seconds: 4),
         minEndScale: 1,
         minFadeOutThreshold: .6,
         particleConfiguration: const ParticleConfiguration(
@@ -187,11 +177,11 @@ Map<AvailableEffect, EffectConfiguration> defaultDeterministicEffectConfiguratio
       ),
       AvailableEffect.explode: DeterministicEffectConfiguration(
         maxAngle: 180,
-        maxDuration: const Duration(seconds: 7),
+        maxParticleLifespan: const Duration(seconds: 7),
         maxEndScale: 1,
         maxFadeOutThreshold: .8,
         minAngle: -180,
-        minDuration: const Duration(seconds: 4),
+        minParticleLifespan: const Duration(seconds: 4),
         minEndScale: 1,
         minFadeOutThreshold: .6,
         particleConfiguration: const ParticleConfiguration(
@@ -206,12 +196,12 @@ Map<AvailableEffect, EffectConfiguration> defaultDeterministicEffectConfiguratio
           return StraightPathTransformation(distance: effect.effectConfiguration.randomDistance(), angle: angle);
         },
         emitDuration: const Duration(seconds: 1),
-        maxDuration: const Duration(seconds: 4),
+        maxParticleLifespan: const Duration(seconds: 4),
         maxEndScale: 1,
         maxFadeOutThreshold: .8,
         minDistance: 200,
         minEndScale: 1,
-        minDuration: const Duration(seconds: 4),
+        minParticleLifespan: const Duration(seconds: 4),
         minFadeOutThreshold: .8,
         particleConfiguration: const ParticleConfiguration(
           shape: CircleShape(),
@@ -223,8 +213,8 @@ Map<AvailableEffect, EffectConfiguration> defaultDeterministicEffectConfiguratio
         minAngle: -100,
         maxAngle: -80,
         minOriginOffset: const Offset(-.01, 0),
-        minDuration: const Duration(seconds: 4),
-        maxDuration: const Duration(seconds: 7),
+        minParticleLifespan: const Duration(seconds: 4),
+        maxParticleLifespan: const Duration(seconds: 7),
         minFadeOutThreshold: .6,
         maxFadeOutThreshold: .8,
         maxOriginOffset: const Offset(.01, 0),
@@ -237,8 +227,8 @@ Map<AvailableEffect, EffectConfiguration> defaultDeterministicEffectConfiguratio
         particlesPerEmit: 3,
       ),
       AvailableEffect.fountain: DeterministicEffectConfiguration(
-        minDuration: const Duration(seconds: 4),
-        maxDuration: const Duration(seconds: 4),
+        minParticleLifespan: const Duration(seconds: 4),
+        maxParticleLifespan: const Duration(seconds: 4),
         customPathBuilder: (effect, animatedParticle) {
           const width = 60;
           final path = Path();
@@ -271,7 +261,7 @@ Map<AvailableEffect, EffectConfiguration> defaultDeterministicEffectConfiguratio
       AvailableEffect.firework: DeterministicEffectConfiguration(
         minAngle: -120,
         maxAngle: -60,
-        maxDuration: const Duration(seconds: 2),
+        maxParticleLifespan: const Duration(seconds: 2),
         minFadeOutThreshold: .6,
         maxFadeOutThreshold: .8,
         emitDuration: const Duration(milliseconds: 500),

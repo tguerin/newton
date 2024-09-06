@@ -19,6 +19,7 @@ class NewtonExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
       theme: ThemeData(colorScheme: MaterialTheme.lightMediumContrastScheme()),
       darkTheme: ThemeData(colorScheme: MaterialTheme.darkMediumContrastScheme()),
@@ -35,7 +36,11 @@ class NewtonConfigurationPage extends StatefulWidget {
 }
 
 class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
-  final _configuredEffects = <_ConfiguredEffect>[];
+  final _configuredEffects = <_ConfiguredEffect>[
+    _ConfiguredEffect(
+        effectName: 'Rain',
+        effectConfiguration: defaultRelativisticEffectConfigurationsPerAnimation[AvailableEffect.rain]!),
+  ];
   AvailableEffect _selectedAnimation = AvailableEffect.scratch;
 
   bool _usePhysics = true;
@@ -56,6 +61,12 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   final _randomnessScrollController = ScrollController();
 
   _ConfiguredEffect? _currentConfiguredEffect;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentConfiguredEffect = _configuredEffects.first;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -534,8 +545,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget _animationDurationSection(_ConfiguredEffect configuredEffect) {
     return RangeSelection(
-      initialMin: configuredEffect.effectConfiguration.minDuration.inMilliseconds.toDouble(),
-      initialMax: configuredEffect.effectConfiguration.maxDuration.inMilliseconds.toDouble(),
+      initialMin: configuredEffect.effectConfiguration.minParticleLifespan.inMilliseconds.toDouble(),
+      initialMax: configuredEffect.effectConfiguration.maxParticleLifespan.inMilliseconds.toDouble(),
       min: 100,
       max: 10000,
       divisions: 990,
@@ -543,8 +554,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       onChanged: (values) {
         setState(() {
           configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            minDuration: Duration(milliseconds: values.start.round()),
-            maxDuration: Duration(milliseconds: values.end.round()),
+            minParticleLifespan: Duration(milliseconds: values.start.round()),
+            maxParticleLifespan: Duration(milliseconds: values.end.round()),
           );
         });
       },

@@ -19,7 +19,7 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
   RelativistEffect(super.effectConfiguration)
       : _world = ForgeNewtonWorld(
           effectConfiguration.gravity,
-          effectConfiguration.hardEdges,
+          effectConfiguration.solidEdges,
         );
 
   /// The `NewtonWorld` instance representing the simulated environment where particles are managed.
