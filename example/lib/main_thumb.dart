@@ -57,35 +57,32 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
   final _emojiSize = 50.0;
   final _btnSize = 50.0;
 
-  Effect currentActiveEffect(Shape shape, Duration delay) {
-    return SmokeEffect(
+  DeterministicEffectConfiguration currentActiveEffectConfiguration(Shape shape, Duration delay) {
+    return DeterministicEffectConfiguration(
+      particleCount: 100,
+      particlesPerEmit: 100,
+      distanceCurve: Curves.slowMiddle,
+      emitCurve: Curves.fastOutSlowIn,
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      emitDuration: const Duration(milliseconds: 250),
+      minAngle: -135,
+      maxAngle: -45,
+      minDistance: 90,
+      maxDistance: 220,
+      maxParticleLifespan: const Duration(seconds: 3),
+      minFadeOutThreshold: 0.6,
+      maxFadeOutThreshold: 0.8,
+      minBeginScale: 0.7,
+      maxBeginScale: 0.9,
+      minEndScale: 1,
+      maxEndScale: 1.2,
       particleConfiguration: ParticleConfiguration(
         shape: shape,
         size: Size.square(_emojiSize),
       ),
-      effectConfiguration: EffectConfiguration(
-        particleCount: 100,
-        particlesPerEmit: 100,
-        distanceCurve: Curves.slowMiddle,
-        emitCurve: Curves.fastOutSlowIn,
-        fadeInCurve: Curves.easeIn,
-        fadeOutCurve: Curves.easeOut,
-        emitDuration: const Duration(milliseconds: 250),
-        minAngle: -45,
-        maxAngle: 45,
-        minDistance: 90,
-        maxDistance: 220,
-        maxDuration: const Duration(seconds: 3),
-        minFadeOutThreshold: 0.6,
-        maxFadeOutThreshold: 0.8,
-        minBeginScale: 0.7,
-        maxBeginScale: 0.9,
-        minEndScale: 1,
-        maxEndScale: 1.2,
-        startDelay: delay,
-        origin: const Offset(0.5, 0),
-      ),
-      smokeWidth: 0,
+      startDelay: delay,
+      origin: const Offset(0.5, 0),
     );
   }
 
@@ -95,7 +92,6 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
       body: Center(
         child: Newton(
           key: _newtonKey,
-          blendMode: BlendMode.srcIn,
           child: FutureBuilder(
             future: _imageAssets,
             builder: (context, snapshot) => TextButton(

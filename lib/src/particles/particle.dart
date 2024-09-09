@@ -55,7 +55,7 @@ class Particle {
   /// Computes the transformation for rendering the image using the particle state.
   ///
   /// Returns the computed transformation for rendering the image with the current particle state.
-  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
+  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color, ui.BlendMode? blendMode})? computeTransformation(
       ui.Image defaultShapes,
       ) {
     return configuration.shape.computeTransformation(this, defaultShapes);

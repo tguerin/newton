@@ -5,6 +5,7 @@ import 'package:newton_particles/newton_particles.dart';
 ///
 /// The `ParticleConfiguration` class holds information about the shape, size, and color of a particle.
 /// It is used to define the appearance of each particle in the animation.
+@immutable
 class ParticleConfiguration {
   /// Creates a `ParticleConfiguration` with the specified shape, size, and color.
   ///
@@ -20,7 +21,7 @@ class ParticleConfiguration {
   const ParticleConfiguration({
     required this.shape,
     required this.size,
-    this.color = const SingleParticleColor(color: Colors.black),
+    this.color = const SingleParticleColor(color: Colors.white),
     this.postEffectBuilder,
   });
 
@@ -34,7 +35,42 @@ class ParticleConfiguration {
   final ParticleColor color;
 
   /// Effect to trigger once particle travel is over.
-  final Effect<AnimatedParticle> Function(Particle, Size surfaceSize)? postEffectBuilder;
+  final EffectConfiguration Function(Particle, Effect<AnimatedParticle, EffectConfiguration>)? postEffectBuilder;
+
+  /// Creates a copy of this `ParticleConfiguration` but with the given fields replaced with new values.
+  ///
+  /// - [shape] replaces the current shape of the particle.
+  /// - [size] replaces the current size of the particle.
+  /// - [color] replaces the current color of the particle.
+  /// - [postEffectBuilder] replaces the current post-effect builder of the particle.
+  ///
+  /// Returns a new `ParticleConfiguration` instance with the updated properties.
+  ParticleConfiguration copyWith({
+    Shape? shape,
+    Size? size,
+    ParticleColor? color,
+    EffectConfiguration Function(Particle, Effect<AnimatedParticle, EffectConfiguration>)? postEffectBuilder,
+  }) {
+    return ParticleConfiguration(
+      shape: shape ?? this.shape,
+      size: size ?? this.size,
+      color: color ?? this.color,
+      postEffectBuilder: postEffectBuilder ?? this.postEffectBuilder,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ParticleConfiguration &&
+          runtimeType == other.runtimeType &&
+          shape == other.shape &&
+          size == other.size &&
+          color == other.color &&
+          postEffectBuilder == other.postEffectBuilder;
+
+  @override
+  int get hashCode => shape.hashCode ^ size.hashCode ^ color.hashCode ^ postEffectBuilder.hashCode;
 
   void dispose() {
     shape.dispose();

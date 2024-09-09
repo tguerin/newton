@@ -73,12 +73,10 @@ class StraightTrail extends Trail {
     double currentProgress,
     AnimatedParticle animatedParticle,
   ) {
+    if (animatedParticle is! DeterministicAnimatedParticle) return;
     final endTrailProgress = (currentProgress - trailProgress).clamp(0.0, 1.0);
     final endTrailAdjustedProgress = animatedParticle.distanceCurve.transform(endTrailProgress);
-    final endTrailPosition = animatedParticle.pathTransformation.transform(
-      animatedParticle.particle.initialPosition,
-      endTrailAdjustedProgress,
-    );
+    final endTrailPosition = animatedParticle.positionFor(endTrailAdjustedProgress);
 
     final trailPaint = Paint()
       ..shader = ui.Gradient.linear(
