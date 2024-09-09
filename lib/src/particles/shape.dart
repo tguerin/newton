@@ -80,6 +80,9 @@ class CircleShape extends Shape {
 /// is used to define the shape and appearance of the particles.
 class ImageShape extends Shape {
   /// Constructs an [ImageShape] with the specified [image].
+  ///
+  /// The ImageShape will take ownership of the [image]. The [image] will be disposed when it isn't used anymore.
+  /// If the [image] should outlive the shape, create a new image handle by calling [Image.clone].
   const ImageShape(this.image);
 
   /// The image used to render particles.
