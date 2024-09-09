@@ -37,6 +37,8 @@ sealed class Shape {
   );
 
   void dispose();
+
+  Shape clone();
 }
 
 /// Represents a circular shape for rendering particles.
@@ -44,6 +46,8 @@ sealed class Shape {
 /// This class calculates the transformation needed to render particles as circles
 /// using the default sprite size.
 class CircleShape extends Shape {
+  const CircleShape();
+
   @override
   ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
     Particle particle,
@@ -72,6 +76,9 @@ class CircleShape extends Shape {
 
   @override
   void dispose() {}
+
+  @override
+  CircleShape clone() => const CircleShape();
 }
 
 /// Represents a shape based on an image for rendering particles.
@@ -118,6 +125,9 @@ class ImageShape extends Shape {
   void dispose() {
     image.dispose();
   }
+
+  @override
+  ImageShape clone() => ImageShape(image.clone());
 }
 
 /// Represents a shape based on an asset image for rendering particles.
@@ -177,6 +187,9 @@ class ImageAssetShape extends Shape {
   void dispose() {
     _imageShape?.dispose();
   }
+
+  @override
+  ImageAssetShape clone() => ImageAssetShape(this.imagePath).._imageShape = _imageShape?.clone();
 }
 
 /// Represents a square shape for rendering particles.
@@ -184,6 +197,8 @@ class ImageAssetShape extends Shape {
 /// This class calculates the transformation needed to render particles as squares
 /// using the default sprite size.
 class SquareShape extends Shape {
+  const SquareShape();
+
   @override
   ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color})? computeTransformation(
     Particle particle,
@@ -212,4 +227,7 @@ class SquareShape extends Shape {
 
   @override
   void dispose() {}
+
+  @override
+  SquareShape clone() => const SquareShape();
 }
