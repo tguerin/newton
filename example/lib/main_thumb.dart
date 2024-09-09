@@ -60,7 +60,7 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
   Effect currentActiveEffect(int index, Duration delay) {
     return SmokeEffect(
       particleConfiguration: ParticleConfiguration(
-        shape: _imageAssets[index],
+        shape: _imageAssets[index].clone(),
         size: Size.square(_emojiSize),
       ),
       effectConfiguration: EffectConfiguration(

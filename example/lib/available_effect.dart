@@ -154,7 +154,7 @@ extension AvailableEffectExtension on AvailableEffect {
       case AvailableEffect.rain:
         return RainEffect(
           particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
+            shape: const CircleShape(),
             size: const Size(5, 5),
             color: color,
           ),
@@ -163,7 +163,7 @@ extension AvailableEffectExtension on AvailableEffect {
       case AvailableEffect.explode:
         return ExplodeEffect(
           particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
+            shape: const CircleShape(),
             size: const Size(5, 5),
             color: color,
           ),
@@ -174,7 +174,7 @@ extension AvailableEffectExtension on AvailableEffect {
       case AvailableEffect.firework:
         return ExplodeEffect(
           particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
+            shape: const CircleShape(),
             size: const Size(5, 5),
             color: color,
             postEffectBuilder: (particle, surfaceSize) {
@@ -183,10 +183,10 @@ extension AvailableEffectExtension on AvailableEffect {
                   particle.position.dy / surfaceSize.height,
                 );
               return ExplodeEffect(
-              particleConfiguration: ParticleConfiguration(
+              particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),
-                size: const Size(5, 5),
-                color: const SingleParticleColor(color: Colors.blue),
+                size: Size(5, 5),
+                color: SingleParticleColor(color: Colors.blue),
               ),
               effectConfiguration: effectConfiguration.copyWith(
                 maxAngle: 180,
@@ -206,7 +206,7 @@ extension AvailableEffectExtension on AvailableEffect {
         );
       case AvailableEffect.smoke:
         return SmokeEffect(
-          particleConfiguration: ParticleConfiguration(shape: CircleShape(), size: const Size(5, 5), color: color),
+          particleConfiguration: ParticleConfiguration(shape: const CircleShape(), size: const Size(5, 5), color: color),
           effectConfiguration: effectConfiguration.copyWith(
             origin: const Offset(
               0.5,
@@ -217,7 +217,7 @@ extension AvailableEffectExtension on AvailableEffect {
       case AvailableEffect.fountain:
         return FountainEffect(
           particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
+            shape: const CircleShape(),
             size: const Size(5, 5),
             color: color,
           ),
@@ -233,7 +233,7 @@ extension AvailableEffectExtension on AvailableEffect {
       case AvailableEffect.pulse:
         return PulseEffect(
           particleConfiguration: ParticleConfiguration(
-            shape: CircleShape(),
+            shape: const CircleShape(),
             size: const Size(5, 5),
             color: color,
           ),
