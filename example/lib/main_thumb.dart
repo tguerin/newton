@@ -48,19 +48,19 @@ class ThumbUpExample extends StatefulWidget {
 class _ThumbUpExampleState extends State<ThumbUpExample> {
   final _newtonKey = GlobalKey<NewtonState>();
 
-  final List<ImageAssetShape> _imageAssets = [
-    ImageAssetShape('images/thumb_up_1.png'),
-    ImageAssetShape('images/thumb_up_2.png'),
-    ImageAssetShape('images/thumb_up_3.png'),
-  ];
+  final Future<List<Shape>> _imageAssets = Future.wait([
+    ImageShape.loadFromAssetAsync('images/thumb_up_1.png'),
+    ImageShape.loadFromAssetAsync('images/thumb_up_2.png'),
+    ImageShape.loadFromAssetAsync('images/thumb_up_3.png'),
+  ]);
 
   final _emojiSize = 50.0;
   final _btnSize = 50.0;
 
-  Effect currentActiveEffect(int index, Duration delay) {
+  Effect currentActiveEffect(Shape shape, Duration delay) {
     return SmokeEffect(
       particleConfiguration: ParticleConfiguration(
-        shape: _imageAssets[index].clone(),
+        shape: shape,
         size: Size.square(_emojiSize),
       ),
       effectConfiguration: EffectConfiguration(
@@ -96,25 +96,32 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
         child: Newton(
           key: _newtonKey,
           blendMode: BlendMode.srcIn,
-          child: SizedBox(
-            width: _btnSize,
-            height: _btnSize,
-            child: GestureDetector(
-              onTap: () {
-                HapticFeedback.mediumImpact();
-                _imageAssets.shuffle();
-                for (var i = 0; i < _imageAssets.length; i++) {
-                  _newtonKey.currentState?.addEffect(currentActiveEffect(i, Duration(milliseconds: i * 2000)));
-                }
-              },
-              child: Container(
+          child: FutureBuilder(
+            future: _imageAssets,
+            builder: (context, snapshot) => TextButton(
+              onPressed: snapshot.data == null
+                  ? null
+                  : () {
+                      final assets = snapshot.data!..shuffle();
+                      for (var i = 0; i < assets.length; i++) {
+                        _newtonKey.currentState?.addEffect(
+                          currentActiveEffect(
+                            assets[i].clone(),
+                            Duration(milliseconds: i * 2000),
+                          ),
+                        );
+                      }
+                    },
+              child: SizedBox(
                 width: _btnSize,
                 height: _btnSize,
-                decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(_btnSize / 2),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Center(child: Text('click')),
                 ),
-                child: const Center(child: Text('click')),
               ),
             ),
           ),

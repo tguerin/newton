@@ -92,6 +92,16 @@ class ImageShape extends Shape {
   /// If the [image] should outlive the shape, create a new image handle by calling [Image.clone].
   const ImageShape(this.image);
 
+  /// Loads the image from assets.
+  ///
+  /// This method loads the image from the given [imagePath].
+  static Future<ImageShape> loadFromAssetAsync(String imagePath) async {
+    final data = await rootBundle.load(imagePath);
+    final completer = Completer<ui.Image>();
+    ui.decodeImageFromList(Uint8List.view(data.buffer), completer.complete);
+    return ImageShape(await completer.future);
+  }
+
   /// The image used to render particles.
   final ui.Image image;
 
@@ -162,10 +172,7 @@ class ImageAssetShape extends Shape {
   /// loading fails, the [_imageShape] remains as the placeholder if it was provided.
   Future<void> load() async {
     try {
-      final data = await rootBundle.load(imagePath);
-      final completer = Completer<ui.Image>();
-      ui.decodeImageFromList(Uint8List.view(data.buffer), completer.complete);
-      _imageShape = ImageShape(await completer.future);
+      _imageShape = await ImageShape.loadFromAssetAsync(imagePath);
     } catch (e) {
       // If loading fails, keep using the placeholder image
     }
