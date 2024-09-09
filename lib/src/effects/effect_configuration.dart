@@ -382,6 +382,10 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
       startDelay.hashCode ^
       tag.hashCode ^
       trail.hashCode;
+
+  void dispose() {
+    particleConfiguration.dispose();
+  }
 }
 
 /// Extension on `EffectConfiguration` that provides a method to create an `Effect`

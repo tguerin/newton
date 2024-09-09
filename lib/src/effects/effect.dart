@@ -80,6 +80,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     if (_killPending) {
       _killPending = false;
       _state = EffectState.killed;
+      effectConfiguration.dispose();
     } else {
       _killEffectWhenOver();
     }
@@ -104,13 +105,6 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     if (cancel) {
       _activeParticles.clear();
     }
-  }
-
-  /// Immediately stops the effect and clears all particles, marking it as killed.
-  void kill() {
-    stop(cancel: true);
-    postEffectCallback = null;
-    _killPending = true;
   }
 
   /// Invoked when a particle's animation is over.
@@ -196,13 +190,6 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
         effectConfiguration.particleCount > 0;
   }
 
-  /// Kills the effect if emission is over and all particles are cleared.
-  void _killEffectWhenOver() {
-    if (_isEmissionOver()) {
-      kill();
-    }
-  }
-
   /// Updates the state of the effect and notifies the state change callback.
   void _updateState(EffectState state) {
     _state = state;
@@ -222,8 +209,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   /// and clears all active particles and callbacks.
   void dispose() {
     stop(cancel: true);
-    _updateState(EffectState.killed);
+    _killPending = true;
     postEffectCallback = null;
-    particleConfiguration.dispose();
   }
 }

@@ -101,7 +101,7 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
                       final assets = snapshot.data!..shuffle();
                       for (var i = 0; i < assets.length; i++) {
                         _newtonKey.currentState?.addEffect(
-                          currentActiveEffect(
+                          currentActiveEffectConfiguration(
                             assets[i].clone(),
                             Duration(milliseconds: i * 2000),
                           ),

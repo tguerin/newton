@@ -185,15 +185,14 @@ class ImageAssetShape extends Shape {
   /// This method attempts to load the image from the given [imagePath]. If the
   /// loading fails, the [_imageShape] remains as the placeholder if it was provided.
   Future<void> load() async {
+    final placeholderImage = _imageShape;
     try {
-      final data = await rootBundle.load(imagePath);
-      final completer = Completer<ui.Image>();
-      ui.decodeImageFromList(Uint8List.view(data.buffer), completer.complete);
-      _imageShape = ImageShape(await completer.future, blendMode: blendMode);
       _imageShape = await ImageShape.loadFromAssetAsync(imagePath, blendMode: blendMode);
     } catch (e) {
       // If loading fails, keep using the placeholder image
+      return;
     }
+    placeholderImage?.dispose();
   }
 
   @override
@@ -214,7 +213,7 @@ class ImageAssetShape extends Shape {
   }
 
   @override
-  ImageAssetShape clone() => ImageAssetShape(this.imagePath, blendMode: blendMode).._imageShape = _imageShape?.clone();
+  ImageAssetShape clone() => ImageAssetShape(imagePath, blendMode: blendMode).._imageShape = _imageShape?.clone();
 }
 
 /// Represents a square shape for rendering particles.

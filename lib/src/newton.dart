@@ -175,6 +175,9 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     _ticker
       ..stop(canceled: true)
       ..dispose();
+    _effects
+      ..forEach((effect) => effect.dispose())
+      ..clear();
     super.dispose();
   }
 
