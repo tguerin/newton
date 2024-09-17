@@ -80,6 +80,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     if (_killPending) {
       _killPending = false;
       _state = EffectState.killed;
+      effectConfiguration.dispose();
     } else {
       _killEffectWhenOver();
     }
@@ -104,13 +105,6 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     if (cancel) {
       _activeParticles.clear();
     }
-  }
-
-  /// Immediately stops the effect and clears all particles, marking it as killed.
-  void kill() {
-    stop(cancel: true);
-    postEffectCallback = null;
-    _killPending = true;
   }
 
   /// Invoked when a particle's animation is over.
@@ -177,6 +171,13 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     }
   }
 
+  /// Terminates the effect when all emissions are complete and no particles remain active.
+  void _killEffectWhenOver() {
+    if (_isEmissionOver()) {
+      dispose();
+    }
+  }
+
   /// Checks whether particle emission is allowed based on the effect's configuration.
   bool _isEmissionAllowed() {
     return _totalEmittedCount < effectConfiguration.particleCount || effectConfiguration.particleCount <= 0;
@@ -187,13 +188,6 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
     return activeParticles.isEmpty &&
         _totalEmittedCount == effectConfiguration.particleCount &&
         effectConfiguration.particleCount > 0;
-  }
-
-  /// Kills the effect if emission is over and all particles are cleared.
-  void _killEffectWhenOver() {
-    if (_isEmissionOver()) {
-      kill();
-    }
   }
 
   /// Updates the state of the effect and notifies the state change callback.
@@ -208,5 +202,14 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
       element.onAnimationUpdate(totalElapsed - element.elapsedTimeOnStart);
     }
     onParticlesUpdated();
+  }
+  /// Kills the effect, stopping all particle emission and removing active particles.
+  ///
+  /// This method transitions the effect to the killed state, stops emission,
+  /// and clears all active particles and callbacks.
+  void dispose() {
+    stop(cancel: true);
+    _killPending = true;
+    postEffectCallback = null;
   }
 }

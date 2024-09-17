@@ -71,4 +71,8 @@ class ParticleConfiguration {
 
   @override
   int get hashCode => shape.hashCode ^ size.hashCode ^ color.hashCode ^ postEffectBuilder.hashCode;
+
+  void dispose() {
+    shape.dispose();
+  }
 }

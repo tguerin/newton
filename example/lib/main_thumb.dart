@@ -48,16 +48,16 @@ class ThumbUpExample extends StatefulWidget {
 class _ThumbUpExampleState extends State<ThumbUpExample> {
   final _newtonKey = GlobalKey<NewtonState>();
 
-  final List<ImageAssetShape> _imageAssets = [
-    ImageAssetShape('images/thumb_up_1.png'),
-    ImageAssetShape('images/thumb_up_2.png'),
-    ImageAssetShape('images/thumb_up_3.png'),
-  ];
+  final Future<List<Shape>> _imageAssets = Future.wait([
+    ImageShape.loadFromAssetAsync('images/thumb_up_1.png'),
+    ImageShape.loadFromAssetAsync('images/thumb_up_2.png'),
+    ImageShape.loadFromAssetAsync('images/thumb_up_3.png'),
+  ]);
 
   final _emojiSize = 50.0;
   final _btnSize = 50.0;
 
-  DeterministicEffectConfiguration currentActiveEffectConfiguration(int index, Duration delay) {
+  DeterministicEffectConfiguration currentActiveEffectConfiguration(Shape shape, Duration delay) {
     return DeterministicEffectConfiguration(
       particleCount: 100,
       particlesPerEmit: 100,
@@ -78,7 +78,7 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
       minEndScale: 1,
       maxEndScale: 1.2,
       particleConfiguration: ParticleConfiguration(
-        shape: _imageAssets[index],
+        shape: shape,
         size: Size.square(_emojiSize),
       ),
       startDelay: delay,
@@ -92,26 +92,32 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
       body: Center(
         child: Newton(
           key: _newtonKey,
-          child: SizedBox(
-            width: _btnSize,
-            height: _btnSize,
-            child: GestureDetector(
-              onTap: () {
-                HapticFeedback.mediumImpact();
-                _imageAssets.shuffle();
-                for (var i = 0; i < _imageAssets.length; i++) {
-                  _newtonKey.currentState
-                      ?.addEffect(currentActiveEffectConfiguration(i, Duration(milliseconds: i * 2000)));
-                }
-              },
-              child: Container(
+          child: FutureBuilder(
+            future: _imageAssets,
+            builder: (context, snapshot) => TextButton(
+              onPressed: snapshot.data == null
+                  ? null
+                  : () {
+                      final assets = snapshot.data!..shuffle();
+                      for (var i = 0; i < assets.length; i++) {
+                        _newtonKey.currentState?.addEffect(
+                          currentActiveEffectConfiguration(
+                            assets[i].clone(),
+                            Duration(milliseconds: i * 2000),
+                          ),
+                        );
+                      }
+                    },
+              child: SizedBox(
                 width: _btnSize,
                 height: _btnSize,
-                decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(_btnSize / 2),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Center(child: Text('click')),
                 ),
-                child: const Center(child: Text('click')),
               ),
             ),
           ),

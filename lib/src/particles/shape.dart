@@ -44,6 +44,10 @@ sealed class Shape {
     Particle particle,
     ui.Image defaultShapes,
   );
+
+  void dispose();
+
+  Shape clone();
 }
 
 /// Represents a circular shape for rendering particles.
@@ -79,6 +83,12 @@ class CircleShape extends Shape {
     final color = particle.color;
     return (image: defaultShapes, rect: rect, transform: transform, color: color, blendMode: null);
   }
+
+  @override
+  void dispose() {}
+
+  @override
+  CircleShape clone() => const CircleShape();
 }
 
 /// Represents a shape based on an image for rendering particles.
@@ -88,6 +98,16 @@ class CircleShape extends Shape {
 class ImageShape extends Shape {
   /// Constructs an [ImageShape] with the specified [image].
   const ImageShape(this.image, {this.blendMode = ui.BlendMode.modulate});
+
+  /// Loads the image from assets.
+  ///
+  /// This method loads the image from the given [imagePath].
+  static Future<ImageShape> loadFromAssetAsync(String imagePath, {ui.BlendMode blendMode = ui.BlendMode.modulate}) async {
+    final data = await rootBundle.load(imagePath);
+    final completer = Completer<ui.Image>();
+    ui.decodeImageFromList(Uint8List.view(data.buffer), completer.complete);
+    return ImageShape(await completer.future, blendMode: blendMode);
+  }
 
   /// The image used to render particles.
   final ui.Image image;
@@ -120,6 +140,14 @@ class ImageShape extends Shape {
     final color = particle.color;
     return (image: image, rect: rect, transform: transform, color: color, blendMode: blendMode);
   }
+
+  @override
+  void dispose() {
+    image.dispose();
+  }
+
+  @override
+  ImageShape clone() => ImageShape(image.clone(), blendMode: blendMode);
 }
 
 /// Represents a shape based on an asset image for rendering particles.
@@ -157,14 +185,14 @@ class ImageAssetShape extends Shape {
   /// This method attempts to load the image from the given [imagePath]. If the
   /// loading fails, the [_imageShape] remains as the placeholder if it was provided.
   Future<void> load() async {
+    final placeholderImage = _imageShape;
     try {
-      final data = await rootBundle.load(imagePath);
-      final completer = Completer<ui.Image>();
-      ui.decodeImageFromList(Uint8List.view(data.buffer), completer.complete);
-      _imageShape = ImageShape(await completer.future, blendMode: blendMode);
+      _imageShape = await ImageShape.loadFromAssetAsync(imagePath, blendMode: blendMode);
     } catch (e) {
       // If loading fails, keep using the placeholder image
+      return;
     }
+    placeholderImage?.dispose();
   }
 
   @override
@@ -178,6 +206,14 @@ class ImageAssetShape extends Shape {
     }
     return imageShape.computeTransformation(particle, defaultShapes);
   }
+
+  @override
+  void dispose() {
+    _imageShape?.dispose();
+  }
+
+  @override
+  ImageAssetShape clone() => ImageAssetShape(imagePath, blendMode: blendMode).._imageShape = _imageShape?.clone();
 }
 
 /// Represents a square shape for rendering particles.
@@ -187,6 +223,7 @@ class ImageAssetShape extends Shape {
 class SquareShape extends Shape {
   /// It has 4 edges and looks like a rectangle but all edges have same size
   const SquareShape();
+
   @override
   TransformationData? computeTransformation(
     Particle particle,
@@ -212,4 +249,10 @@ class SquareShape extends Shape {
     final color = particle.color;
     return (image: defaultShapes, rect: rect, transform: transform, color: color, blendMode: null);
   }
+
+  @override
+  void dispose() {}
+
+  @override
+  SquareShape clone() => const SquareShape();
 }
