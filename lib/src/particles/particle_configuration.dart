@@ -19,14 +19,22 @@ class ParticleConfiguration {
   /// The `postEffectBuilder` parameter is optional and represents the effect to trigger once particle travel is over.
   /// It defaults to `null`, that means no effect.
   const ParticleConfiguration({
-    required this.shape,
+    this.shape,
+    this.shapeBuilder,
     required this.size,
     this.color = const SingleParticleColor(color: Colors.white),
     this.postEffectBuilder,
-  });
+  }) : assert(
+          (shape != null || shapeBuilder != null) &&
+              (shape == null || shapeBuilder == null),
+          'Either shape or shapeBuilder must be provided but not both',
+        );
 
   /// The shape of the particle.
-  final Shape shape;
+  final Shape? shape;
+
+  /// Builder to create shapes instead of using the singular [shape].
+  final ShapeBuilder? shapeBuilder;
 
   /// The size of the particle.
   final Size size;
@@ -35,7 +43,7 @@ class ParticleConfiguration {
   final ParticleColor color;
 
   /// Effect to trigger once particle travel is over.
-  final EffectConfiguration Function(Particle, Effect<AnimatedParticle, EffectConfiguration>)? postEffectBuilder;
+  final PostEffectBuilder? postEffectBuilder;
 
   /// Creates a copy of this `ParticleConfiguration` but with the given fields replaced with new values.
   ///
@@ -47,12 +55,14 @@ class ParticleConfiguration {
   /// Returns a new `ParticleConfiguration` instance with the updated properties.
   ParticleConfiguration copyWith({
     Shape? shape,
+    ShapeBuilder? shapeBuilder,
     Size? size,
     ParticleColor? color,
-    EffectConfiguration Function(Particle, Effect<AnimatedParticle, EffectConfiguration>)? postEffectBuilder,
+    PostEffectBuilder? postEffectBuilder,
   }) {
     return ParticleConfiguration(
       shape: shape ?? this.shape,
+      shapeBuilder: shapeBuilder ?? this.shapeBuilder,
       size: size ?? this.size,
       color: color ?? this.color,
       postEffectBuilder: postEffectBuilder ?? this.postEffectBuilder,
@@ -65,10 +75,16 @@ class ParticleConfiguration {
       other is ParticleConfiguration &&
           runtimeType == other.runtimeType &&
           shape == other.shape &&
+          shapeBuilder == other.shapeBuilder &&
           size == other.size &&
           color == other.color &&
           postEffectBuilder == other.postEffectBuilder;
 
   @override
-  int get hashCode => shape.hashCode ^ size.hashCode ^ color.hashCode ^ postEffectBuilder.hashCode;
+  int get hashCode =>
+      shape.hashCode ^
+      shapeBuilder.hashCode ^
+      size.hashCode ^
+      color.hashCode ^
+      postEffectBuilder.hashCode;
 }

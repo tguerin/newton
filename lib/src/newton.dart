@@ -64,7 +64,8 @@ class Newton extends StatefulWidget {
 
 /// The `NewtonState` is managing active effects and let you add/remove effects at runtime.
 class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
-  static const _shapeSpriteSheetPath = 'packages/newton_particles/assets/images/newton.png';
+  static const _shapeSpriteSheetPath =
+      'packages/newton_particles/assets/images/newton.png';
   late Ticker _ticker;
   var _lastElapsed = Duration.zero;
   final _pendingActiveEffects = List<Effect>.empty(growable: true);
@@ -125,6 +126,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
                       elapsedTimeNotifier: _effectsElapsedTimeNotifier,
                       effects: _effects,
                       shapesSpriteSheet: snapshot.data!,
+                      foreground: true,
                     ),
                     child: widget.child,
                   );
@@ -143,7 +145,8 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   ///
   /// This method allows you to dynamically add a new particle effect by providing an
   /// `EffectConfiguration` instance. The effect will be automatically rendered on the canvas.
-  Effect<AnimatedParticle, EffectConfiguration> addEffect(EffectConfiguration effectConfiguration) {
+  Effect<AnimatedParticle, EffectConfiguration> addEffect(
+      EffectConfiguration effectConfiguration) {
     final effect = effectConfiguration.effect()
       ..addedAtRuntime = true
       ..postEffectCallback = _onPostEffect
@@ -157,16 +160,20 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   /// Removes a specific effect from the list of active effects.
   ///
   /// The `removeEffect` method removes a particle effect identified by its instance from the active list.
-  void removeEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) {
+  void removeEffect<T extends AnimatedParticle, R extends EffectConfiguration>(
+      Effect<T, R> effect) {
     _effects.removeWhere((e) => e.rootEffect == effect);
   }
 
   /// Removes all effects that match a given effect configuration.
   ///
   /// This method removes all active particle effects that are configured with the specified `EffectConfiguration`.
-  void removeEffectConfiguration<T extends EffectConfiguration>(T effectConfiguration) {
+  void removeEffectConfiguration<T extends EffectConfiguration>(
+      T effectConfiguration) {
     return _effects.removeWhere(
-      (e) => e.effectConfiguration == effectConfiguration || e.rootEffect?.effectConfiguration == effectConfiguration,
+      (e) =>
+          e.effectConfiguration == effectConfiguration ||
+          e.rootEffect?.effectConfiguration == effectConfiguration,
     );
   }
 
@@ -198,14 +205,17 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     }
   }
 
-  bool _isEffectRemoved<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) {
+  bool _isEffectRemoved<T extends AnimatedParticle,
+      R extends EffectConfiguration>(Effect<T, R> effect) {
     // Keep only pending effects that are still active, even if it's a post effect
-    return !widget.effectConfigurations.contains(effect.effectConfiguration) && !effect.addedAtRuntime;
+    return !widget.effectConfigurations.contains(effect.effectConfiguration) &&
+        !effect.addedAtRuntime;
   }
 
   void _setupEffectsFromWidget() {
     for (final configuration in widget.effectConfigurations) {
-      if (_effects.any((effect) => effect.effectConfiguration == configuration)) continue;
+      if (_effects.any((effect) => effect.effectConfiguration == configuration))
+        continue;
       final effect = configuration.effect()
         ..postEffectCallback = _onPostEffect
         ..stateChangeCallback = _onEffectStateChanged;
@@ -213,7 +223,8 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     }
   }
 
-  void _onPostEffect<T extends AnimatedParticle, R extends EffectConfiguration>(Effect<T, R> effect) {
+  void _onPostEffect<T extends AnimatedParticle, R extends EffectConfiguration>(
+      Effect<T, R> effect) {
     _pendingActiveEffects.add(
       effect
         ..postEffectCallback = _onPostEffect
@@ -221,7 +232,8 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     );
   }
 
-  void _onEffectStateChanged<T extends AnimatedParticle, R extends EffectConfiguration>(
+  void _onEffectStateChanged<T extends AnimatedParticle,
+      R extends EffectConfiguration>(
     Effect<T, R> effect,
     EffectState state,
   ) {
@@ -229,7 +241,9 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   }
 }
 
-class _ElapsedTimeNotifier with ChangeNotifier implements ValueListenable<Duration> {
+class _ElapsedTimeNotifier
+    with ChangeNotifier
+    implements ValueListenable<Duration> {
   Duration _duration = Duration.zero;
 
   @override

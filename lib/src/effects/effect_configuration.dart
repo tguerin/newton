@@ -57,8 +57,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   ///   Defaults to [Curves.linear] for a consistent fade-in.
   /// - [fadeOutCurve]: A curve that controls how particles fade out, typically from fully visible to transparent.
   ///   Defaults to [Curves.linear] for a consistent fade-out.
-  /// - [foreground]: A boolean value that determines whether the effect should be rendered in the foreground.
-  ///   If `true`, particles will appear above other visual elements. Defaults to `false`.
   /// - [maxAngle]: The maximum angle (in degrees) for particle trajectory, determining the directional spread of particles.
   ///   Defaults to `0`, meaning no spread.
   /// - [maxBeginScale]: The maximum initial scale of the particles, determining their size when first emitted. Defaults to `1`.
@@ -110,7 +108,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     this.emitDuration = const Duration(milliseconds: 100),
     this.fadeInCurve = Curves.linear,
     this.fadeOutCurve = Curves.linear,
-    this.foreground = false,
     this.maxAngle = 0,
     this.maxBeginScale = 1,
     this.maxEndScale = -1,
@@ -133,9 +130,12 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     this.startDelay = Duration.zero,
     this.tag,
     this.trail = const NoTrail(),
-  })  : assert(minAngle <= maxAngle, 'Min angle can’t be greater than max angle'),
-        assert(minBeginScale <= maxBeginScale, 'Begin min scale can’t be greater than begin max scale'),
-        assert(minEndScale <= maxEndScale, 'End min scale can’t be greater than end max scale'),
+  })  : assert(
+            minAngle <= maxAngle, 'Min angle can’t be greater than max angle'),
+        assert(minBeginScale <= maxBeginScale,
+            'Begin min scale can’t be greater than begin max scale'),
+        assert(minEndScale <= maxEndScale,
+            'End min scale can’t be greater than end max scale'),
         assert(
           minFadeInThreshold <= maxFadeInThreshold,
           'Min fadeIn threshold can’t be greater than max fadeIn threshold',
@@ -148,7 +148,8 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
           minOriginOffset <= maxOriginOffset,
           'Min origin offset can’t be greater than max origin offset',
         ),
-        assert(minParticleLifespan <= maxParticleLifespan, 'Min lifespan can’t be greater than max lifespan');
+        assert(minParticleLifespan <= maxParticleLifespan,
+            'Min lifespan can’t be greater than max lifespan');
 
   /// Curve to control the emission timing of particles. Default: [Curves.decelerate].
   final Curve emitCurve;
@@ -161,9 +162,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
 
   /// Curve to control particle fade-out animation. Default: [Curves.linear].
   final Curve fadeOutCurve;
-
-  /// Indicates whether the effect should be rendered in the foreground. Default: `false`.
-  final bool foreground;
 
   /// Maximum angle in degrees for particle trajectory. Default: `0`.
   final double maxAngle;
@@ -242,7 +240,8 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Helper method to generate a random duration within the range [minParticleLifespan] to [maxParticleLifespan].
   Duration randomDuration() {
     return Duration(
-      milliseconds: random.nextIntRange(minParticleLifespan.inMilliseconds, maxParticleLifespan.inMilliseconds),
+      milliseconds: random.nextIntRange(minParticleLifespan.inMilliseconds,
+          maxParticleLifespan.inMilliseconds),
     );
   }
 
@@ -279,8 +278,9 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// within the range [minBeginScale] to [maxBeginScale] and [minEndScale] to [maxEndScale].
   Tween<double> randomScaleRange() {
     final beginScale = random.nextDoubleRange(minBeginScale, maxBeginScale);
-    final endScale =
-        (minEndScale < 0 || maxEndScale < 0) ? beginScale : random.nextDoubleRange(minEndScale, maxEndScale);
+    final endScale = (minEndScale < 0 || maxEndScale < 0)
+        ? beginScale
+        : random.nextDoubleRange(minEndScale, maxEndScale);
     return Tween(begin: beginScale, end: endScale);
   }
 
@@ -291,7 +291,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     Duration? emitDuration,
     Curve? fadeInCurve,
     Curve? fadeOutCurve,
-    bool? foreground,
     double? maxAngle,
     double? maxBeginScale,
     Duration? maxParticleLifespan,
@@ -327,7 +326,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
           emitDuration == other.emitDuration &&
           fadeInCurve == other.fadeInCurve &&
           fadeOutCurve == other.fadeOutCurve &&
-          foreground == other.foreground &&
           maxAngle == other.maxAngle &&
           maxBeginScale == other.maxBeginScale &&
           maxEndScale == other.maxEndScale &&
@@ -358,7 +356,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
       emitDuration.hashCode ^
       fadeInCurve.hashCode ^
       fadeOutCurve.hashCode ^
-      foreground.hashCode ^
       maxAngle.hashCode ^
       maxBeginScale.hashCode ^
       maxParticleLifespan.hashCode ^
@@ -389,8 +386,10 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
 extension EffectForConfiguration on EffectConfiguration<ParticleConfiguration> {
   /// Creates an `Effect` based on the specific type of `EffectConfiguration`.
   Effect<AnimatedParticle, EffectConfiguration> effect() => switch (this) {
-        final DeterministicEffectConfiguration effectConfiguration => DeterministicEffect(effectConfiguration),
-        final RelativisticEffectConfiguration effectConfiguration => RelativistEffect(effectConfiguration),
+        final DeterministicEffectConfiguration effectConfiguration =>
+          DeterministicEffect(effectConfiguration),
+        final RelativisticEffectConfiguration effectConfiguration =>
+          RelativistEffect(effectConfiguration),
         _ => throw Exception('Unexpected configuration type'),
       } as Effect<AnimatedParticle, EffectConfiguration>;
 }

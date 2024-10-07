@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
-import "package:flutter/animation.dart" show Tween;
+import 'package:flutter/animation.dart' show Tween;
 import 'package:newton_particles/newton_particles.dart';
 import 'package:vector_math/vector_math_64.dart';
 
@@ -15,6 +15,7 @@ import 'package:vector_math/vector_math_64.dart';
 abstract class DeterministicPathTransformation {
   /// Creates a [DeterministicPathTransformation]
   const DeterministicPathTransformation();
+
   /// Transforms the initial position of a [particle] based on the [progress] of the transformation.
   ///
   /// - [particle]: The particle whose position is to be transformed.

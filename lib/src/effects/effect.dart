@@ -3,7 +3,8 @@ import 'package:newton_particles/newton_particles.dart';
 
 /// Abstract class representing a particle effect, defining the behavior of
 /// particles and managing their lifecycle within the effect.
-abstract class Effect<Particle extends AnimatedParticle, Configuration extends EffectConfiguration> {
+abstract class Effect<Particle extends AnimatedParticle,
+    Configuration extends EffectConfiguration> {
   /// Constructor for creating an `Effect` with the specified configurations.
   ///
   /// - [effectConfiguration]: Configuration for the effect itself.
@@ -27,7 +28,8 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   EffectState get state => _state;
 
   /// The callback invoked when the state of the effect changes.
-  void Function(Effect<Particle, Configuration>, EffectState)? _stateChangeCallback;
+  void Function(Effect<Particle, Configuration>, EffectState)?
+      _stateChangeCallback;
 
   /// The size of the surface where the effect is rendered.
   Size get surfaceSize => _surfaceSize;
@@ -46,11 +48,14 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   Duration get totalElapsed => _totalElapsed;
 
   /// Callback triggered after the effect is completed.
-  ValueChanged<Effect<AnimatedParticle, EffectConfiguration>>? postEffectCallback;
+  ValueChanged<Effect<AnimatedParticle, EffectConfiguration>>?
+      postEffectCallback;
 
   /// Sets the state change callback and immediately invokes it with the current state.
   // ignore: avoid_setters_without_getters
-  set stateChangeCallback(void Function(Effect<Particle, EffectConfiguration>, EffectState)? value) {
+  set stateChangeCallback(
+      void Function(Effect<Particle, EffectConfiguration>, EffectState)?
+          value) {
     _stateChangeCallback = value;
     _stateChangeCallback?.call(this, _state);
   }
@@ -142,10 +147,11 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   /// Cleans up particles whose animation has ended.
   void _cleanParticles() {
     _activeParticles.removeWhere((activeParticle) {
-      final animationOver = activeParticle.animationDuration < totalElapsed - activeParticle.elapsedTimeOnStart;
+      final animationOver = activeParticle.animationDuration <
+          totalElapsed - activeParticle.elapsedTimeOnStart;
       if (animationOver) {
         onParticleDestroyed(activeParticle);
-        final postEffectBuilder = activeParticle.particle.configuration.postEffectBuilder;
+        final postEffectBuilder = activeParticle.particle.postEffectBuilder;
         if (postEffectBuilder != null) {
           postEffectCallback?.call(
             postEffectBuilder(activeParticle.particle, this).effect()
@@ -160,14 +166,17 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
 
   /// Emits new particles according to the emission configuration.
   void _emitParticles() {
-    if (_firstEmission || (totalElapsed - _lastInstantiation > effectConfiguration.emitDuration)) {
+    if (_firstEmission ||
+        (totalElapsed - _lastInstantiation >
+            effectConfiguration.emitDuration)) {
       _lastInstantiation = totalElapsed;
       if (_state == EffectState.running) {
         _firstEmission = false;
         for (var i = 0; i < effectConfiguration.particlesPerEmit; i++) {
           if (_isEmissionAllowed()) {
             _totalEmittedCount++;
-            final particle = instantiateParticle(_surfaceSize)..onParticleCreated();
+            final particle = instantiateParticle(_surfaceSize)
+              ..onParticleCreated();
             _activeParticles.add(particle);
           } else {
             break;
@@ -179,7 +188,8 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
 
   /// Checks whether particle emission is allowed based on the effect's configuration.
   bool _isEmissionAllowed() {
-    return _totalEmittedCount < effectConfiguration.particleCount || effectConfiguration.particleCount <= 0;
+    return _totalEmittedCount < effectConfiguration.particleCount ||
+        effectConfiguration.particleCount <= 0;
   }
 
   /// Checks whether the emission is over, and if so, stops the effect.

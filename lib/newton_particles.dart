@@ -19,4 +19,5 @@ export 'src/particles/gradient_orientation.dart';
 export 'src/particles/particle.dart';
 export 'src/particles/particle_configuration.dart';
 export 'src/particles/shape.dart';
+export 'src/types.dart';
 export 'src/utils/random_extensions.dart';
