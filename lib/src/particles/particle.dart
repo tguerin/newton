@@ -27,9 +27,10 @@ class Particle {
         initialSize = configuration.size,
         initialColor = configuration.color,
         postEffectBuilder = configuration.postEffectBuilder {
-    shape = configuration.shapeBuilder?.call(position) ?? configuration.shape!;
+    shape = configuration.shapeBuilder?.call(initialPosition) ??
+        configuration.shape!;
     _color = configuration.color.computeColor(0);
-    _zIndex = configuration.zIndexBuilder?.call(position) ?? 0;
+    _zIndex = configuration.zIndexBuilder?.call(initialPosition) ?? 0;
   }
 
   /// The initial position of the particle when it was created.

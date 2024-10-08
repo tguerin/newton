@@ -9,7 +9,7 @@ typedef PostEffectBuilder = EffectConfiguration Function(
 );
 
 /// Definition of function that returns a Shape
-typedef ShapeBuilder = Shape Function(Offset position);
+typedef ShapeBuilder = Shape Function(Offset initialPosition);
 
 /// Definition of function that returns a z-index value for particles
-typedef ZIndexBuilder = int Function(Offset position);
+typedef ZIndexBuilder = int Function(Offset initialPosition);
