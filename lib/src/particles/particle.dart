@@ -27,8 +27,9 @@ class Particle {
         initialSize = configuration.size,
         initialColor = configuration.color,
         postEffectBuilder = configuration.postEffectBuilder {
-    shape = configuration.shapeBuilder?.call() ?? configuration.shape!;
+    shape = configuration.shapeBuilder?.call(position) ?? configuration.shape!;
     _color = configuration.color.computeColor(0);
+    _zIndex = configuration.zIndexBuilder?.call(position) ?? 0;
   }
 
   /// The initial position of the particle when it was created.
@@ -56,6 +57,11 @@ class Particle {
   Size size;
 
   Color _color = Colors.black;
+
+  late final int _zIndex;
+
+  /// The z-index of the particle, used during painting to determine the order in which particles are rendered.
+  int get zIndex => _zIndex;
 
   /// The current color of the particle
   ///

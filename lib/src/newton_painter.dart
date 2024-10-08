@@ -19,7 +19,10 @@ class NewtonPainter extends CustomPainter {
   ///
   /// The painter listens for changes in the [elapsedTimeNotifier] to update the canvas.
   NewtonPainter({
-    required List<Effect<AnimatedParticle, EffectConfiguration<ParticleConfiguration>>> effects,
+    required List<
+            Effect<AnimatedParticle,
+                EffectConfiguration<ParticleConfiguration>>>
+        effects,
     required ValueListenable<Duration> elapsedTimeNotifier,
     required ui.Image shapesSpriteSheet,
     bool foreground = false,
@@ -61,17 +64,37 @@ class NewtonPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _clearTransformations();
 
-    _effects.expand((effect) {
-      effect
-        ..surfaceSize = size
-        ..forward(_elapsedTimeNotifier.value);
-      return effect.activeParticles;
-    }).forEach((activeParticle) {
-      if (activeParticle.foreground == _foreground) {
-        _updateTransformations(activeParticle);
-        activeParticle.drawExtra(canvas);
-      }
-    });
+    // paint the particles with lowest zIndex first
+    // in case of equal zIndex, draw based on sequence index, lowest first
+    _effects
+        .expand((effect) {
+          effect
+            ..surfaceSize = size
+            ..forward(_elapsedTimeNotifier.value);
+          return effect.activeParticles;
+        })
+        .indexed
+        .toList()
+      ..sort(
+        (ap1, ap2) {
+          //$1 is the index within the List of active particles
+          //$2 is the actual active particle
+
+          //first compare zIndex
+          var comp = ap1.$2.particle.zIndex.compareTo(ap2.$2.particle.zIndex);
+          if (comp == 0) {
+            //tie break based on sequence
+            comp = ap1.$1.compareTo(ap2.$1);
+          }
+          return comp;
+        },
+      )
+      ..map((a) => a.$2).forEach((activeParticle) {
+        if (activeParticle.foreground == _foreground) {
+          _updateTransformations(activeParticle);
+          activeParticle.drawExtra(canvas);
+        }
+      });
 
     // Draw all particles using drawAtlas for efficiency.
     for (final blendedImage in _allBlendedImages) {
@@ -112,7 +135,8 @@ class NewtonPainter extends CustomPainter {
   /// This method adds transformations, rectangles, and colors for each particle
   /// to their respective maps for rendering.
   void _updateTransformations(AnimatedParticle activeParticle) {
-    final transformationData = activeParticle.particle.computeTransformation(_shapesSpriteSheet);
+    final transformationData =
+        activeParticle.particle.computeTransformation(_shapesSpriteSheet);
     if (transformationData == null) return;
 
     final blendedImage = _BlendedImage(
