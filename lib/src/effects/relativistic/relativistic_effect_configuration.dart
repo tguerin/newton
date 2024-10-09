@@ -172,7 +172,6 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
     super.emitDuration,
     super.fadeInCurve,
     super.fadeOutCurve,
-    super.foreground,
     super.maxAngle,
     super.maxBeginScale,
     super.maxParticleLifespan,

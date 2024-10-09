@@ -90,7 +90,7 @@ class ForgeNewtonWorld implements NewtonWorld {
         body.destroyFixture(fixture);
       }
       final particleSize = _sizeToWorld(relativistParticle.particle.size);
-      final circleShape = switch (relativistParticle.particle.configuration.shape) {
+      final circleShape = switch (relativistParticle.particle.shape) {
         CircleShape() => f2d.CircleShape()..radius = particleSize.x / 2,
         _ => f2d.PolygonShape()
           ..setAsBox(

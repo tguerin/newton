@@ -19,19 +19,33 @@ class Particle {
   ///
   /// The `rotation` parameter is optional and represents the rotation of the particle expressed in degrees
   Particle({
-    required this.configuration,
+    required ParticleConfiguration configuration,
     required this.position,
     this.rotation = 0,
   })  : size = configuration.size,
-        initialPosition = position {
+        initialPosition = position,
+        initialSize = configuration.size,
+        initialColor = configuration.color,
+        postEffectBuilder = configuration.postEffectBuilder {
+    shape = configuration.shapeBuilder?.call(initialPosition) ?? configuration.shape!;
     _color = configuration.color.computeColor(0);
+    _zIndex = configuration.zIndexBuilder?.call(initialPosition) ?? 0;
   }
-
-  /// The configuration of the particle, defining its shape, size, and color.
-  final ParticleConfiguration configuration;
 
   /// The initial position of the particle when it was created.
   final Offset initialPosition;
+
+  /// The initial size of the particle as defined in its configuration.
+  final Size initialSize;
+
+  /// The initial color of the particle as defined in its configuration.
+  final ParticleColor initialColor;
+
+  /// The shape of the particle as defined in its configuration.
+  late final Shape shape;
+
+  /// Effect to trigger once particle travel is over.
+  final PostEffectBuilder? postEffectBuilder;
 
   /// The current position of the particle relative to the top left of the canvas.
   Offset position;
@@ -44,21 +58,24 @@ class Particle {
 
   Color _color = Colors.black;
 
+  late final int _zIndex;
+
+  /// The z-index of the particle, used during painting to determine the order in which particles are rendered.
+  int get zIndex => _zIndex;
+
   /// The current color of the particle
   ///
   /// Use [updateColor] and [updateOpacity] to adjust the color of the particle
   Color get color => _color;
 
-  /// Gets the initial size of the particle as defined in its configuration.
-  Size get initialSize => configuration.size;
-
   /// Computes the transformation for rendering the image using the particle state.
   ///
   /// Returns the computed transformation for rendering the image with the current particle state.
-  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color, ui.BlendMode? blendMode})? computeTransformation(
-      ui.Image defaultShapes,
-      ) {
-    return configuration.shape.computeTransformation(this, defaultShapes);
+  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color, ui.BlendMode? blendMode})?
+      computeTransformation(
+    ui.Image defaultShapes,
+  ) {
+    return shape.computeTransformation(this, defaultShapes);
   }
 
   /// Update the `color` of the particle.
@@ -66,7 +83,7 @@ class Particle {
   /// The `updateColor` will adjust the color of the particle according to the current progress of the effect.
   /// If progress is outside the range [0,1] it will be clamped to the nearest value.
   void updateColor(double progress) {
-    _color = configuration.color.computeColor(progress.clamp(0, 1));
+    _color = initialColor.computeColor(progress.clamp(0, 1));
   }
 
   /// Update the `opacity` of the particle.

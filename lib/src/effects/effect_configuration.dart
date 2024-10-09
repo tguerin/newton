@@ -57,8 +57,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   ///   Defaults to [Curves.linear] for a consistent fade-in.
   /// - [fadeOutCurve]: A curve that controls how particles fade out, typically from fully visible to transparent.
   ///   Defaults to [Curves.linear] for a consistent fade-out.
-  /// - [foreground]: A boolean value that determines whether the effect should be rendered in the foreground.
-  ///   If `true`, particles will appear above other visual elements. Defaults to `false`.
   /// - [maxAngle]: The maximum angle (in degrees) for particle trajectory, determining the directional spread of particles.
   ///   Defaults to `0`, meaning no spread.
   /// - [maxBeginScale]: The maximum initial scale of the particles, determining their size when first emitted. Defaults to `1`.
@@ -110,7 +108,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     this.emitDuration = const Duration(milliseconds: 100),
     this.fadeInCurve = Curves.linear,
     this.fadeOutCurve = Curves.linear,
-    this.foreground = false,
     this.maxAngle = 0,
     this.maxBeginScale = 1,
     this.maxEndScale = -1,
@@ -161,9 +158,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
 
   /// Curve to control particle fade-out animation. Default: [Curves.linear].
   final Curve fadeOutCurve;
-
-  /// Indicates whether the effect should be rendered in the foreground. Default: `false`.
-  final bool foreground;
 
   /// Maximum angle in degrees for particle trajectory. Default: `0`.
   final double maxAngle;
@@ -291,7 +285,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     Duration? emitDuration,
     Curve? fadeInCurve,
     Curve? fadeOutCurve,
-    bool? foreground,
     double? maxAngle,
     double? maxBeginScale,
     Duration? maxParticleLifespan,
@@ -327,7 +320,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
           emitDuration == other.emitDuration &&
           fadeInCurve == other.fadeInCurve &&
           fadeOutCurve == other.fadeOutCurve &&
-          foreground == other.foreground &&
           maxAngle == other.maxAngle &&
           maxBeginScale == other.maxBeginScale &&
           maxEndScale == other.maxEndScale &&
@@ -358,7 +350,6 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
       emitDuration.hashCode ^
       fadeInCurve.hashCode ^
       fadeOutCurve.hashCode ^
-      foreground.hashCode ^
       maxAngle.hashCode ^
       maxBeginScale.hashCode ^
       maxParticleLifespan.hashCode ^

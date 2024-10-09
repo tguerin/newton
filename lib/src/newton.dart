@@ -125,6 +125,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
                       elapsedTimeNotifier: _effectsElapsedTimeNotifier,
                       effects: _effects,
                       shapesSpriteSheet: snapshot.data!,
+                      foreground: true,
                     ),
                     child: widget.child,
                   );

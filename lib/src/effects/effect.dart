@@ -145,7 +145,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
       final animationOver = activeParticle.animationDuration < totalElapsed - activeParticle.elapsedTimeOnStart;
       if (animationOver) {
         onParticleDestroyed(activeParticle);
-        final postEffectBuilder = activeParticle.particle.configuration.postEffectBuilder;
+        final postEffectBuilder = activeParticle.particle.postEffectBuilder;
         if (postEffectBuilder != null) {
           postEffectCallback?.call(
             postEffectBuilder(activeParticle.particle, this).effect()
