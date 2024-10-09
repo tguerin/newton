@@ -170,8 +170,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
       minOriginOffset: minOriginOffset ?? this.minOriginOffset,
       minParticleLifespan: minParticleLifespan ?? this.minParticleLifespan,
       origin: origin ?? this.origin,
-      particleConfiguration:
-          particleConfiguration ?? this.particleConfiguration,
+      particleConfiguration: particleConfiguration ?? this.particleConfiguration,
       particleCount: particleCount ?? this.particleCount,
       particleLayer: particleLayer ?? this.particleLayer,
       particlesPerEmit: particlesPerEmit ?? this.particlesPerEmit,

@@ -27,8 +27,7 @@ class Particle {
         initialSize = configuration.size,
         initialColor = configuration.color,
         postEffectBuilder = configuration.postEffectBuilder {
-    shape = configuration.shapeBuilder?.call(initialPosition) ??
-        configuration.shape!;
+    shape = configuration.shapeBuilder?.call(initialPosition) ?? configuration.shape!;
     _color = configuration.color.computeColor(0);
     _zIndex = configuration.zIndexBuilder?.call(initialPosition) ?? 0;
   }
@@ -72,13 +71,8 @@ class Particle {
   /// Computes the transformation for rendering the image using the particle state.
   ///
   /// Returns the computed transformation for rendering the image with the current particle state.
-  ({
-    ui.Image image,
-    ui.Rect rect,
-    ui.RSTransform transform,
-    ui.Color color,
-    ui.BlendMode? blendMode
-  })? computeTransformation(
+  ({ui.Image image, ui.Rect rect, ui.RSTransform transform, ui.Color color, ui.BlendMode? blendMode})?
+      computeTransformation(
     ui.Image defaultShapes,
   ) {
     return shape.computeTransformation(this, defaultShapes);

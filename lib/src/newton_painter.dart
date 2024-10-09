@@ -19,10 +19,7 @@ class NewtonPainter extends CustomPainter {
   ///
   /// The painter listens for changes in the [elapsedTimeNotifier] to update the canvas.
   NewtonPainter({
-    required List<
-            Effect<AnimatedParticle,
-                EffectConfiguration<ParticleConfiguration>>>
-        effects,
+    required List<Effect<AnimatedParticle, EffectConfiguration<ParticleConfiguration>>> effects,
     required ValueListenable<Duration> elapsedTimeNotifier,
     required ui.Image shapesSpriteSheet,
     bool foreground = false,
@@ -135,8 +132,7 @@ class NewtonPainter extends CustomPainter {
   /// This method adds transformations, rectangles, and colors for each particle
   /// to their respective maps for rendering.
   void _updateTransformations(AnimatedParticle activeParticle) {
-    final transformationData =
-        activeParticle.particle.computeTransformation(_shapesSpriteSheet);
+    final transformationData = activeParticle.particle.computeTransformation(_shapesSpriteSheet);
     if (transformationData == null) return;
 
     final blendedImage = _BlendedImage(

@@ -41,8 +41,7 @@ class ForgeNewtonWorld implements NewtonWorld {
 
   @override
   void forward(Duration elapsedDuration) {
-    _world.stepDt(
-        elapsedDuration.inMilliseconds / Duration.millisecondsPerSecond);
+    _world.stepDt(elapsedDuration.inMilliseconds / Duration.millisecondsPerSecond);
   }
 
   @override
@@ -71,8 +70,7 @@ class ForgeNewtonWorld implements NewtonWorld {
       ..type = f2d.BodyType.dynamic
       ..position = _screenToWorld(relativistParticle.particle.initialPosition);
 
-    final body = _world.createBody(bodyDef)
-      ..linearVelocity = f2d.Vector2(vx, vy);
+    final body = _world.createBody(bodyDef)..linearVelocity = f2d.Vector2(vx, vy);
     _particlesBody[relativistParticle] = body;
   }
 
@@ -84,9 +82,7 @@ class ForgeNewtonWorld implements NewtonWorld {
   @override
   void updateParticles(List<RelativisticParticle> activeParticles) {
     for (final relativistParticle in activeParticles) {
-      final particleMask = relativistParticle.onlyInteractWithEdges
-          ? _edgeCategory
-          : _particleCategory | _edgeCategory;
+      final particleMask = relativistParticle.onlyInteractWithEdges ? _edgeCategory : _particleCategory | _edgeCategory;
       final body = _particlesBody[relativistParticle];
       if (body == null) continue;
       final fixture = _particlesFixture[relativistParticle];
@@ -155,25 +151,19 @@ class _Boundaries {
   List<f2d.Body> _createBoundaries(f2d.Vector2 screenSize) {
     final boundaries = <f2d.Body>[];
     if (_hardEdges.left) {
-      final leftEdge = f2d.EdgeShape()
-        ..set(f2d.Vector2(0, 0), f2d.Vector2(0, screenSize.y));
+      final leftEdge = f2d.EdgeShape()..set(f2d.Vector2(0, 0), f2d.Vector2(0, screenSize.y));
       boundaries.add(_createEdgeBoundary(leftEdge));
     }
     if (_hardEdges.top) {
-      final topEdge = f2d.EdgeShape()
-        ..set(f2d.Vector2(0, 0), f2d.Vector2(screenSize.x, 0));
+      final topEdge = f2d.EdgeShape()..set(f2d.Vector2(0, 0), f2d.Vector2(screenSize.x, 0));
       boundaries.add(_createEdgeBoundary(topEdge));
     }
     if (_hardEdges.right) {
-      final rightEdge = f2d.EdgeShape()
-        ..set(f2d.Vector2(screenSize.x, 0),
-            f2d.Vector2(screenSize.x, screenSize.y));
+      final rightEdge = f2d.EdgeShape()..set(f2d.Vector2(screenSize.x, 0), f2d.Vector2(screenSize.x, screenSize.y));
       boundaries.add(_createEdgeBoundary(rightEdge));
     }
     if (_hardEdges.bottom) {
-      final bottomEdge = f2d.EdgeShape()
-        ..set(f2d.Vector2(0, screenSize.y),
-            f2d.Vector2(screenSize.x, screenSize.y));
+      final bottomEdge = f2d.EdgeShape()..set(f2d.Vector2(0, screenSize.y), f2d.Vector2(screenSize.x, screenSize.y));
       boundaries.add(_createEdgeBoundary(bottomEdge));
     }
     return boundaries;

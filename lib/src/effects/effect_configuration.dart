@@ -130,12 +130,9 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
     this.startDelay = Duration.zero,
     this.tag,
     this.trail = const NoTrail(),
-  })  : assert(
-            minAngle <= maxAngle, 'Min angle can’t be greater than max angle'),
-        assert(minBeginScale <= maxBeginScale,
-            'Begin min scale can’t be greater than begin max scale'),
-        assert(minEndScale <= maxEndScale,
-            'End min scale can’t be greater than end max scale'),
+  })  : assert(minAngle <= maxAngle, 'Min angle can’t be greater than max angle'),
+        assert(minBeginScale <= maxBeginScale, 'Begin min scale can’t be greater than begin max scale'),
+        assert(minEndScale <= maxEndScale, 'End min scale can’t be greater than end max scale'),
         assert(
           minFadeInThreshold <= maxFadeInThreshold,
           'Min fadeIn threshold can’t be greater than max fadeIn threshold',
@@ -148,8 +145,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
           minOriginOffset <= maxOriginOffset,
           'Min origin offset can’t be greater than max origin offset',
         ),
-        assert(minParticleLifespan <= maxParticleLifespan,
-            'Min lifespan can’t be greater than max lifespan');
+        assert(minParticleLifespan <= maxParticleLifespan, 'Min lifespan can’t be greater than max lifespan');
 
   /// Curve to control the emission timing of particles. Default: [Curves.decelerate].
   final Curve emitCurve;
@@ -240,8 +236,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Helper method to generate a random duration within the range [minParticleLifespan] to [maxParticleLifespan].
   Duration randomDuration() {
     return Duration(
-      milliseconds: random.nextIntRange(minParticleLifespan.inMilliseconds,
-          maxParticleLifespan.inMilliseconds),
+      milliseconds: random.nextIntRange(minParticleLifespan.inMilliseconds, maxParticleLifespan.inMilliseconds),
     );
   }
 
@@ -278,9 +273,8 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// within the range [minBeginScale] to [maxBeginScale] and [minEndScale] to [maxEndScale].
   Tween<double> randomScaleRange() {
     final beginScale = random.nextDoubleRange(minBeginScale, maxBeginScale);
-    final endScale = (minEndScale < 0 || maxEndScale < 0)
-        ? beginScale
-        : random.nextDoubleRange(minEndScale, maxEndScale);
+    final endScale =
+        (minEndScale < 0 || maxEndScale < 0) ? beginScale : random.nextDoubleRange(minEndScale, maxEndScale);
     return Tween(begin: beginScale, end: endScale);
   }
 
@@ -386,10 +380,8 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
 extension EffectForConfiguration on EffectConfiguration<ParticleConfiguration> {
   /// Creates an `Effect` based on the specific type of `EffectConfiguration`.
   Effect<AnimatedParticle, EffectConfiguration> effect() => switch (this) {
-        final DeterministicEffectConfiguration effectConfiguration =>
-          DeterministicEffect(effectConfiguration),
-        final RelativisticEffectConfiguration effectConfiguration =>
-          RelativistEffect(effectConfiguration),
+        final DeterministicEffectConfiguration effectConfiguration => DeterministicEffect(effectConfiguration),
+        final RelativisticEffectConfiguration effectConfiguration => RelativistEffect(effectConfiguration),
         _ => throw Exception('Unexpected configuration type'),
       } as Effect<AnimatedParticle, EffectConfiguration>;
 }

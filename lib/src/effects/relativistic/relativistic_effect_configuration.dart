@@ -33,10 +33,7 @@ class Gravity {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Gravity &&
-          runtimeType == other.runtimeType &&
-          dx == other.dx &&
-          dy == other.dy;
+      other is Gravity && runtimeType == other.runtimeType && dx == other.dx && dy == other.dy;
 
   @override
   int get hashCode => dx.hashCode ^ dy.hashCode;
@@ -284,8 +281,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
     Trail? trail,
   }) {
     return RelativisticEffectConfiguration(
-      configurationOverrider:
-          configurationOverrider ?? this.configurationOverrider,
+      configurationOverrider: configurationOverrider ?? this.configurationOverrider,
       gravity: gravity ?? this.gravity,
       maxDensity: maxDensity ?? this.maxDensity,
       maxFriction: maxFriction ?? this.maxFriction,
@@ -294,8 +290,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
       minDensity: minDensity ?? this.minDensity,
       minFriction: minFriction ?? this.minFriction,
       minRestitution: minRestitution ?? this.minRestitution,
-      particleConfiguration:
-          particleConfiguration ?? this.particleConfiguration,
+      particleConfiguration: particleConfiguration ?? this.particleConfiguration,
       emitCurve: emitCurve ?? this.emitCurve,
       emitDuration: emitDuration ?? this.emitDuration,
       fadeInCurve: fadeInCurve ?? this.fadeInCurve,
@@ -315,8 +310,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
       minOriginOffset: minOriginOffset ?? this.minOriginOffset,
       minParticleLifespan: minParticleLifespan ?? this.minParticleLifespan,
       minVelocity: minVelocity ?? this.minVelocity,
-      onlyInteractWithEdges:
-          onlyInteractWithEdges ?? this.onlyInteractWithEdges,
+      onlyInteractWithEdges: onlyInteractWithEdges ?? this.onlyInteractWithEdges,
       origin: origin ?? this.origin,
       particleCount: particleCount ?? this.particleCount,
       particleLayer: particleLayer ?? this.particleLayer,
@@ -330,26 +324,22 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
 
   /// Generates a random density within the specified range.
   Density randomDensity() {
-    return Density.custom(
-        random.nextDoubleRange(minDensity.value, maxDensity.value));
+    return Density.custom(random.nextDoubleRange(minDensity.value, maxDensity.value));
   }
 
   /// Generates a random friction coefficient within the specified range.
   Friction randomFriction() {
-    return Friction.custom(
-        random.nextDoubleRange(minFriction.value, maxFriction.value));
+    return Friction.custom(random.nextDoubleRange(minFriction.value, maxFriction.value));
   }
 
   /// Generates a random restitution (bounciness) within the specified range.
   Restitution randomRestitution() {
-    return Restitution.custom(
-        random.nextDoubleRange(minRestitution.value, maxRestitution.value));
+    return Restitution.custom(random.nextDoubleRange(minRestitution.value, maxRestitution.value));
   }
 
   /// Generates a random velocity within the specified range.
   Velocity randomVelocity() {
-    return Velocity.custom(
-        random.nextDoubleRange(minVelocity.value, maxVelocity.value));
+    return Velocity.custom(random.nextDoubleRange(minVelocity.value, maxVelocity.value));
   }
 
   @override

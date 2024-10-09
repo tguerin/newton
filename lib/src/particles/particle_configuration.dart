@@ -31,8 +31,7 @@ class ParticleConfiguration {
     this.zIndexBuilder,
     this.postEffectBuilder,
   }) : assert(
-          (shape != null || shapeBuilder != null) &&
-              (shape == null || shapeBuilder == null),
+          (shape != null || shapeBuilder != null) && (shape == null || shapeBuilder == null),
           'Either shape or shapeBuilder must be provided but not both',
         );
 
