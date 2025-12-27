@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js_interop';
 
 import 'package:example/available_effect.dart';
 import 'package:example/code_generator.dart';
@@ -7,12 +6,10 @@ import 'package:example/color_selection.dart';
 import 'package:example/range_selection.dart';
 import 'package:example/single_value_selection.dart';
 import 'package:example/theme.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart' hide Velocity;
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:newton_particles/newton_particles.dart';
-import 'package:web/web.dart' as web;
 
 void main() {
   runApp(const NewtonExampleApp());
@@ -82,17 +79,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   // Global key to access NewtonState
   final _newtonKey = GlobalKey();
 
-  /// Copies text to clipboard, using web API on web and Flutter's Clipboard on other platforms.
+  /// Copies text to clipboard using Flutter's Clipboard API (works on web and native).
   Future<bool> _copyToClipboard(String text) async {
-    if (kIsWeb) {
-      try {
-        final clipboard = web.window.navigator.clipboard;
-        await clipboard.writeText(text).toDart;
-        return true;
-      } catch (_) {
-        // Fallback to Flutter's Clipboard API
-      }
-    }
     try {
       await Clipboard.setData(ClipboardData(text: text));
       return true;

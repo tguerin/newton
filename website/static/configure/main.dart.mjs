@@ -464,6 +464,7 @@ class CompiledApp {
       _1390: (a, i) => a.splice(i, 1),
       _1391: (a, s) => a.join(s),
       _1392: (a, s, e) => a.slice(s, e),
+      _1394: (a, b) => a == b ? 0 : (a > b ? 1 : -1),
       _1395: a => a.length,
       _1397: (a, i) => a[i],
       _1398: (a, i, v) => a[i] = v,
@@ -500,6 +501,7 @@ class CompiledApp {
       _1421: o => o instanceof Float64Array,
       _1422: (o, start, length) => new Float64Array(o.buffer, o.byteOffset + start, length),
       _1423: (t, s) => t.set(s),
+      _1424: l => new DataView(new ArrayBuffer(l)),
       _1425: (o) => new DataView(o.buffer, o.byteOffset, o.byteLength),
       _1427: o => o.buffer,
       _1428: o => o.byteOffset,
@@ -527,8 +529,12 @@ class CompiledApp {
       _1464: (ms, c) =>
       setTimeout(() => dartInstance.exports.$invokeCallback(c),ms),
       _1465: (handle) => clearTimeout(handle),
+      _1466: (ms, c) =>
+      setInterval(() => dartInstance.exports.$invokeCallback(c), ms),
+      _1467: (handle) => clearInterval(handle),
       _1468: (c) =>
       queueMicrotask(() => dartInstance.exports.$invokeCallback(c)),
+      _1469: () => Date.now(),
       _1470: (s, m) => {
         try {
           return new RegExp(s, m);
@@ -666,6 +672,8 @@ class CompiledApp {
       _1530: (o, p) => p in o,
       _1531: (o, p) => o[p],
       _1534: x0 => x0.random(),
+      _1535: (x0,x1) => x0.getRandomValues(x1),
+      _1536: () => globalThis.crypto,
       _1537: () => globalThis.Math,
       _1538: Function.prototype.call.bind(Number.prototype.toString),
       _1539: Function.prototype.call.bind(BigInt.prototype.toString),
