@@ -88,18 +88,17 @@ RelativisticEffectConfiguration(
 PhysicsEffectConfiguration(
   physicsProperties: PhysicsProperties(
     gravity: Gravity.earthGravity,
-    angle: Range.single(90),
-    velocity: Range.between(Velocity.stationary, Velocity.stationary),
+    angle: NumRange.single(90),
+    velocity: NumRange.between(Velocity.stationary, Velocity.stationary),
   ),
   visualProperties: VisualProperties(
-    endScale: Range.single(1),
-    fadeOutThreshold: Range.between(0.6, 0.8),
+    endScale: NumRange.single(1),
+    fadeOutThreshold: NumRange.between(0.6, 0.8),
   ),
   emissionProperties: EmissionProperties(
     origin: Offset.zero,
     maxOriginOffset: Offset(1, 0),
-    minParticleLifespan: Duration(seconds: 7),
-    maxParticleLifespan: Duration(seconds: 10),
+    particleLifespan: DurationRange.between(Duration(seconds: 7), Duration(seconds: 10)),
   ),
   particleConfiguration: ParticleConfiguration(...),
 )
@@ -130,18 +129,17 @@ DeterministicEffectConfiguration(
 ```dart
 DeterministicEffectConfiguration(
   deterministicProperties: DeterministicProperties(
-    angle: Range.single(90),
-    distance: Range.single(200),
+    angle: NumRange.single(90),
+    distance: NumRange.single(200),
   ),
   visualProperties: VisualProperties(
-    endScale: Range.single(1),
-    fadeOutThreshold: Range.between(0.6, 0.8),
+    endScale: NumRange.single(1),
+    fadeOutThreshold: NumRange.between(0.6, 0.8),
   ),
   emissionProperties: EmissionProperties(
     origin: Offset.zero,
     maxOriginOffset: Offset(1, 0),
-    minParticleLifespan: Duration(seconds: 4),
-    maxParticleLifespan: Duration(seconds: 7),
+    particleLifespan: DurationRange.between(Duration(seconds: 4), Duration(seconds: 7)),
   ),
   particleConfiguration: ParticleConfiguration(...),
 )
@@ -153,20 +151,20 @@ DeterministicEffectConfiguration(
 
 Groups all physics-related properties:
 - `gravity` → `physicsProperties.gravity`
-- `minAngle` / `maxAngle` → `physicsProperties.angle: Range.between(min, max)` or `Range.single(value)`
-- `minVelocity` / `maxVelocity` → `physicsProperties.velocity: Range.between(min, max)`
-- `minDensity` / `maxDensity` → `physicsProperties.density: Range.between(min, max)`
-- `minFriction` / `maxFriction` → `physicsProperties.friction: Range.between(min, max)`
-- `minRestitution` / `maxRestitution` → `physicsProperties.restitution: Range.between(min, max)`
+- `minAngle` / `maxAngle` → `physicsProperties.angle: NumRange.between(min, max)` or `NumRange.single(value)`
+- `minVelocity` / `maxVelocity` → `physicsProperties.velocity: NumRange.between(min, max)`
+- `minDensity` / `maxDensity` → `physicsProperties.density: NumRange.between(min, max)`
+- `minFriction` / `maxFriction` → `physicsProperties.friction: NumRange.between(min, max)`
+- `minRestitution` / `maxRestitution` → `physicsProperties.restitution: NumRange.between(min, max)`
 - `onlyInteractWithEdges` → `physicsProperties.onlyInteractWithEdges`
 - `solidEdges` → `physicsProperties.solidEdges`
 
 ### VisualProperties
 
 Groups all visual appearance properties:
-- `minEndScale` / `maxEndScale` → `visualProperties.endScale: Range.between(min, max)` or `Range.single(value)`
-- `minFadeInThreshold` / `maxFadeInThreshold` → `visualProperties.fadeInThreshold: Range.between(min, max)`
-- `minFadeOutThreshold` / `maxFadeOutThreshold` → `visualProperties.fadeOutThreshold: Range.between(min, max)`
+- `minEndScale` / `maxEndScale` → `visualProperties.endScale: NumRange.between(min, max)` or `NumRange.single(value)`
+- `minFadeInThreshold` / `maxFadeInThreshold` → `visualProperties.fadeInThreshold: NumRange.between(min, max)`
+- `minFadeOutThreshold` / `maxFadeOutThreshold` → `visualProperties.fadeOutThreshold: NumRange.between(min, max)`
 - `scaleCurve` → `visualProperties.scaleCurve`
 - `fadeInCurve` → `visualProperties.fadeInCurve`
 - `fadeOutCurve` → `visualProperties.fadeOutCurve`
@@ -181,13 +179,13 @@ Groups all emission-related properties. **Note:** `EmissionProperties` is now pa
 - `particlesPerEmit` → `emissionProperties.particlesPerEmit`
 - `emitDuration` → `emissionProperties.emitDuration`
 - `emitCurve` → `emissionProperties.emitCurve`
-- `minParticleLifespan` / `maxParticleLifespan` → `emissionProperties.minParticleLifespan` / `maxParticleLifespan`
+- `minParticleLifespan` / `maxParticleLifespan` → `emissionProperties.particleLifespan: DurationRange.between(min, max)`
 
 ### DeterministicProperties
 
 Groups deterministic-specific properties:
-- `minAngle` / `maxAngle` → `deterministicProperties.angle: Range.between(min, max)`
-- `minDistance` / `maxDistance` → `deterministicProperties.distance: Range.between(min, max)`
+- `minAngle` / `maxAngle` → `deterministicProperties.angle: NumRange.between(min, max)`
+- `minDistance` / `maxDistance` → `deterministicProperties.distance: NumRange.between(min, max)`
 
 ### AnimationProperties
 
@@ -202,19 +200,24 @@ Groups layer and trail properties:
 
 ## Using Range Helpers
 
-The new API uses `Range` objects for min/max values. Use these helpers:
+The new API uses `NumRange` and `DurationRange` objects for min/max values. Use these helpers:
 
-- `Range.single(value)` - For a single value (no variation)
-- `Range.between(min, max)` - For a range between min and max
+- `NumRange.single(value)` - For a single numeric value (no variation)
+- `NumRange.between(min, max)` - For a numeric range between min and max
+- `DurationRange.single(Duration(...))` - For a single duration value
+- `DurationRange.between(Duration(...), Duration(...))` - For a duration range
 
 Example:
 ```dart
-// Single value
-endScale: Range.single(1)
+// Single numeric value
+endScale: NumRange.single(1)
 
-// Range
-fadeOutThreshold: Range.between(0.6, 0.8)
-velocity: Range.between(Velocity.custom(3), Velocity.custom(5))
+// Numeric range
+fadeOutThreshold: NumRange.between(0.6, 0.8)
+velocity: NumRange.between(Velocity.custom(3), Velocity.custom(5))
+
+// Duration range
+particleLifespan: DurationRange.between(Duration(seconds: 3), Duration(seconds: 5))
 ```
 
 ## Configuration Overrider Changes
@@ -226,7 +229,7 @@ If you're using `configurationOverrider` (formerly `effectOverrider`), update th
 configurationOverrider: (effect) {
   return effect.effectConfiguration.copyWith(
     physicsProperties: effect.effectConfiguration.physicsProperties.copyWith(
-      angle: Range.single(angle),
+      angle: NumRange.single(angle),
     ),
   );
 }
@@ -237,7 +240,7 @@ configurationOverrider: (effect) {
 configurationOverrider: (effect) {
   return effect.effectConfiguration.copyWith(
     physicsProperties: effect.effectConfiguration.physicsProperties.copyWith(
-      angle: Range.single(angle),
+      angle: NumRange.single(angle),
     ),
   );
 }
@@ -253,7 +256,7 @@ postEffectBuilder: (particle, effect) {
         return PhysicsEffectConfiguration(
           physicsProperties: const PhysicsProperties(
             gravity: Gravity.earthGravity,
-            angle: Range.between(-180, 180),
+            angle: NumRange.between(-180, 180),
     // ... other properties
   );
 }
@@ -265,7 +268,7 @@ postEffectBuilder: (particle, effect) {
   return PhysicsEffectConfiguration(
     physicsProperties: const PhysicsProperties(
       gravity: Gravity.earthGravity,
-      angle: Range.between(-180, 180),
+      angle: NumRange.between(-180, 180),
     ),
     // ... other grouped properties
   );
@@ -307,14 +310,13 @@ RelativisticEffectConfiguration(
 PhysicsEffectConfiguration(
   physicsProperties: const PhysicsProperties(
     gravity: Gravity.earthGravity,
-    angle: Range.single(90),
-    velocity: Range.between(Velocity.stationary, Velocity.stationary),
+    angle: NumRange.single(90),
+    velocity: NumRange.between(Velocity.stationary, Velocity.stationary),
   ),
   emissionProperties: const EmissionProperties(
     origin: Offset.zero,
     maxOriginOffset: Offset(1, 0),
-    minParticleLifespan: Duration(seconds: 7),
-    maxParticleLifespan: Duration(seconds: 10),
+    particleLifespan: DurationRange.between(Duration(seconds: 7), Duration(seconds: 10)),
   ),
   particleConfiguration: ParticleConfiguration(...),
 )

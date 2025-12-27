@@ -70,14 +70,14 @@ class ConfettiPreset {
     return PhysicsEffectConfiguration(
       physicsProperties: PhysicsProperties(
         gravity: gravity,
-        angle: const Range.between(0, 180),
-        velocity: Range.between(Velocity.custom(5), Velocity.custom(15)),
+        angle: const NumRange.between(0, 180),
+        velocity: NumRange.between(Velocity.custom(5), Velocity.custom(15)),
         solidEdges: const SolidEdges.only(bottom: true),
       ),
       visualProperties: const VisualProperties(
-        beginScale: Range.between(0.8, 1.2),
-        endScale: Range.between(0.3, 0.5),
-        fadeOutThreshold: Range.between(0.6, 0.8),
+        beginScale: NumRange.between(0.8, 1.2),
+        endScale: NumRange.between(0.3, 0.5),
+        fadeOutThreshold: NumRange.between(0.6, 0.8),
         scaleCurve: Curves.easeOut,
         fadeOutCurve: Curves.easeIn,
       ),
@@ -88,8 +88,7 @@ class ConfettiPreset {
         origin: origin,
         minOriginOffset: const Offset(-0.2, 0),
         maxOriginOffset: const Offset(0.2, 0),
-        minParticleLifespan: const Duration(seconds: 2),
-        maxParticleLifespan: const Duration(seconds: 3),
+        particleLifespan: const DurationRange.between(Duration(seconds: 2), Duration(seconds: 3)),
       ),
       particleConfiguration: ParticleConfiguration(
         shape: const SquareShape(),

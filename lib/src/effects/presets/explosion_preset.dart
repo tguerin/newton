@@ -61,14 +61,14 @@ class ExplosionPreset {
     return PhysicsEffectConfiguration(
       physicsProperties: PhysicsProperties(
         gravity: gravity,
-        angle: const Range.between(0, 360),
-        velocity: Range.between(Velocity.custom(15), Velocity.custom(25)),
+        angle: const NumRange.between(0, 360),
+        velocity: NumRange.between(Velocity.custom(15), Velocity.custom(25)),
         solidEdges: SolidEdges.none,
       ),
       visualProperties: const VisualProperties(
-        beginScale: Range.single(1.5),
-        endScale: Range.between(0.1, 0.3),
-        fadeOutThreshold: Range.between(0.5, 0.7),
+        beginScale: NumRange.single(1.5),
+        endScale: NumRange.between(0.1, 0.3),
+        fadeOutThreshold: NumRange.between(0.5, 0.7),
         scaleCurve: Curves.easeOut,
         fadeOutCurve: Curves.easeIn,
       ),

@@ -65,15 +65,15 @@ class SnowPreset {
     return PhysicsEffectConfiguration(
       physicsProperties: PhysicsProperties(
         gravity: gravity,
-        angle: Range.between(85 + windStrength * 5, 95 + windStrength * 5), // Slight angle variation for drift
-        velocity: Range.between(Velocity.custom(4), Velocity.custom(8)),
+        angle: NumRange.between(85 + windStrength * 5, 95 + windStrength * 5), // Slight angle variation for drift
+        velocity: NumRange.between(Velocity.custom(4), Velocity.custom(8)),
         solidEdges: const SolidEdges.only(bottom: true),
         onlyInteractWithEdges: true,
       ),
       visualProperties: const VisualProperties(
-        beginScale: Range.single(0.8),
-        endScale: Range.between(0.8, 1.2),
-        fadeOutThreshold: Range.between(0.7, 0.9),
+        beginScale: NumRange.single(0.8),
+        endScale: NumRange.between(0.8, 1.2),
+        fadeOutThreshold: NumRange.between(0.7, 0.9),
         scaleCurve: Curves.easeInOut,
         fadeOutCurve: Curves.easeIn,
       ),
@@ -84,8 +84,7 @@ class SnowPreset {
         origin: origin,
         minOriginOffset: const Offset(-1, 0),
         maxOriginOffset: const Offset(1, 0),
-        minParticleLifespan: const Duration(seconds: 7),
-        maxParticleLifespan: const Duration(seconds: 10),
+        particleLifespan: const DurationRange.between(Duration(seconds: 7), Duration(seconds: 10)),
       ),
       particleConfiguration: ParticleConfiguration(
         shape: const CircleShape(),

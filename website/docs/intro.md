@@ -34,18 +34,17 @@ Newton(
         PhysicsEffectConfiguration(
             physicsProperties: const PhysicsProperties(
                 gravity: Gravity.earthGravity,
-                angle: Range.single(90),
-                velocity: Range.between(Velocity.stationary, Velocity.stationary),
+                angle: NumRange.single(90),
+                velocity: NumRange.between(Velocity.stationary, Velocity.stationary),
             ),
             visualProperties: const VisualProperties(
-                endScale: Range.single(1),
-                fadeOutThreshold: Range.between(0.6, 0.8),
+                endScale: NumRange.single(1),
+                fadeOutThreshold: NumRange.between(0.6, 0.8),
             ),
             emissionProperties: const EmissionProperties(
                 origin: Offset.zero,
                 maxOriginOffset: Offset(1, 0),
-                minParticleLifespan: Duration(seconds: 7),
-                maxParticleLifespan: Duration(seconds: 10),
+                particleLifespan: DurationRange.between(Duration(seconds: 7), Duration(seconds: 10)),
             ),
             particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),
@@ -57,7 +56,7 @@ Newton(
 ```
 
 Try our [effect configurator](https://newton.7omtech.fr/docs/configurator) to
-tweak your effect.
+tweak your effect and copy the generated code directly into your project.
 
 ## Widget Collisions
 
@@ -109,18 +108,17 @@ class MyApp extends StatelessWidget {
             PhysicsEffectConfiguration(
               physicsProperties: const PhysicsProperties(
                 gravity: Gravity.earthGravity,
-                angle: Range.single(90),
-                velocity: Range.between(Velocity.stationary, Velocity.stationary),
+                angle: NumRange.single(90),
+                velocity: NumRange.between(Velocity.stationary, Velocity.stationary),
               ),
               visualProperties: const VisualProperties(
-                endScale: Range.single(1),
-                fadeOutThreshold: Range.between(0.6, 0.8),
+                endScale: NumRange.single(1),
+                fadeOutThreshold: NumRange.between(0.6, 0.8),
               ),
               emissionProperties: const EmissionProperties(
                 origin: Offset.zero,
                 maxOriginOffset: Offset(1, 0),
-                minParticleLifespan: Duration(seconds: 7),
-                maxParticleLifespan: Duration(seconds: 10),
+                particleLifespan: DurationRange.between(Duration(seconds: 7), Duration(seconds: 10)),
               ),
               particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),

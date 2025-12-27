@@ -33,3 +33,44 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Improved Dart syntax highlighting colors */
+[data-theme='dark'] .token.keyword {
+  color: #569cd6; /* Blue for keywords (const, final, class, etc.) */
+}
+
+[data-theme='dark'] .token.string {
+  color: #ce9178; /* Orange for strings */
+}
+
+[data-theme='dark'] .token.function {
+  color: #dcdcaa; /* Yellow for functions */
+}
+
+[data-theme='dark'] .token.class-name {
+  color: #4ec9b0; /* Cyan for class names */
+}
+
+[data-theme='dark'] .token.number {
+  color: #b5cea8; /* Green for numbers */
+}
+
+[data-theme='dark'] .token.operator {
+  color: #d4d4d4; /* Light gray for operators */
+}
+
+[data-theme='dark'] .token.punctuation {
+  color: #d4d4d4; /* Light gray for punctuation */
+}
+
+[data-theme='dark'] .token.comment {
+  color: #6a9955; /* Green for comments */
+}
+
+[data-theme='dark'] .token.property {
+  color: #9cdcfe; /* Light blue for properties */
+}
+
+[data-theme='dark'] .token.boolean {
+  color: #569cd6; /* Blue for booleans */
+}

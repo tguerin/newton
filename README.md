@@ -32,7 +32,8 @@ with dynamic and interactive animations.
 
 - **[Interactive Animation Configurator](https://newton.7omtech.fr/docs/configurator):**
   Create your particle animations visually using the included app configurator.
-  Experiment with different settings, preview animations in real-time.
+  Experiment with different settings, preview animations in real-time, and copy
+  the generated code directly into your project.
 
 - **Custom Particle Design:** Design your particle effects to seamlessly
   integrate with your app’s aesthetic. Use custom shapes, colors, and sizes to
@@ -61,6 +62,30 @@ dependencies:
 
 Then, run `flutter pub get` to fetch the package.
 
+## What's New in 0.3.0
+
+### Breaking Changes
+- **Renamed Physics Effects**: `RelativisticEffect` is now `PhysicsEffect` and `RelativisticEffectConfiguration` is now `PhysicsEffectConfiguration` for better clarity. The old names are deprecated.
+- **Revamped Configuration API**: Configuration properties are now organized into logical groups (`PhysicsProperties`, `VisualProperties`, `EmissionProperties`, etc.) for better type safety and code organization. See the [Migration Guide](https://newton.7omtech.fr/docs/migration) for upgrade instructions.
+
+### Major Features
+- **Widget Collisions**: New `NewtonCollider` widget allows particles to collide with Flutter widgets! Create interactive effects where particles bounce off UI elements with accurate physics, including support for rounded corners, friction, and restitution.
+- **Effect Presets**: Quick-start presets for common effects including confetti, rain, snow, explosions, and fountains. Perfect for rapid prototyping or production use.
+- **Code Generator**: Enhanced configurator now allows you to copy generated code directly! Configure your effects visually and get ready-to-use Dart code with a single click.
+- **Particle Pool**: Memory-efficient particle reuse system that reduces allocations and improves performance.
+- **Debug Data Stream**: Real-time monitoring of particle effects with `debugDataStream` for tracking active particles and performance metrics.
+
+### Performance Improvements
+- **Viewport Culling**: Particles outside the visible area are now automatically culled, dramatically improving performance for large particle counts.
+- **Optimized Rendering**: Improved particle sorting and fixture caching for smoother animations.
+- **Optimized Collider Reporting**: Reduced unnecessary work in collider position reporting.
+
+### Bug Fixes
+- Fixed `clearEffects()` not triggering widget rebuilds
+- Fixed colliders stopping to work when configuration properties change
+- Improved collider stability and preservation during widget rebuilds
+- Enhanced collider syncing to physics effects
+
 ## Usage
 
 1. Import the Newton package:
@@ -80,18 +105,17 @@ Newton(
         PhysicsEffectConfiguration(
             physicsProperties: const PhysicsProperties(
                 gravity: Gravity.earthGravity,
-                angle: Range.single(90),
-                velocity: Range.between(Velocity.stationary, Velocity.stationary),
+                angle: NumRange.single(90),
+                velocity: NumRange.between(Velocity.stationary, Velocity.stationary),
             ),
             visualProperties: const VisualProperties(
-                endScale: Range.single(1),
-                fadeOutThreshold: Range.between(0.6, 0.8),
+                endScale: NumRange.single(1),
+                fadeOutThreshold: NumRange.between(0.6, 0.8),
             ),
             emissionProperties: const EmissionProperties(
                 origin: Offset.zero,
                 maxOriginOffset: Offset(1, 0),
-                minParticleLifespan: Duration(seconds: 7),
-                maxParticleLifespan: Duration(seconds: 10),
+                particleLifespan: DurationRange.between(Duration(seconds: 7), Duration(seconds: 10)),
             ),
             particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),
@@ -103,7 +127,7 @@ Newton(
 ```
 
 Try our [effect configurator](https://newton.7omtech.fr/docs/configurator) to
-tweak your effect.
+tweak your effect and copy the generated code directly into your project.
 
 ## Example
 
@@ -129,18 +153,17 @@ class MyApp extends StatelessWidget {
             PhysicsEffectConfiguration(
               physicsProperties: const PhysicsProperties(
                 gravity: Gravity.earthGravity,
-                angle: Range.single(90),
-                velocity: Range.between(Velocity.stationary, Velocity.stationary),
+                angle: NumRange.single(90),
+                velocity: NumRange.between(Velocity.stationary, Velocity.stationary),
               ),
               visualProperties: const VisualProperties(
-                endScale: Range.single(1),
-                fadeOutThreshold: Range.between(0.6, 0.8),
+                endScale: NumRange.single(1),
+                fadeOutThreshold: NumRange.between(0.6, 0.8),
               ),
               emissionProperties: const EmissionProperties(
                 origin: Offset.zero,
                 maxOriginOffset: Offset(1, 0),
-                minParticleLifespan: Duration(seconds: 7),
-                maxParticleLifespan: Duration(seconds: 10),
+                particleLifespan: DurationRange.between(Duration(seconds: 7), Duration(seconds: 10)),
               ),
               particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),

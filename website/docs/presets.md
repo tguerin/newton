@@ -8,7 +8,7 @@ import Configurations from '@site/src/components/configurations';
 
 In the upcoming section, we will explore how to create animations using
 Newtonian dynamics, such as simulating rain or pulse effects. These animations
-can be constructed either deterministically or by applying relativistic
+can be constructed either deterministically or by applying physics-based
 principles.
 
 ## Rain
@@ -30,18 +30,17 @@ each particle to enhance the natural look of the rain.
 ```dart
 DeterministicEffectConfiguration(
   deterministicProperties: DeterministicProperties(
-    distance: Range.single(screenSize.height),
-    angle: const Range.single(90),
+    distance: NumRange.single(screenSize.height),
+    angle: const NumRange.single(90),
   ),
   visualProperties: const VisualProperties(
-    endScale: Range.single(1),
-    fadeOutThreshold: Range.between(0.6, 0.8),
+    endScale: NumRange.single(1),
+    fadeOutThreshold: NumRange.between(0.6, 0.8),
   ),
   emissionProperties: const EmissionProperties(
     origin: Offset.zero,
     maxOriginOffset: Offset(1, 0),
-    minParticleLifespan: Duration(seconds: 4),
-    maxParticleLifespan: Duration(seconds: 7),
+    particleLifespan: DurationRange.between(Duration(seconds: 4), Duration(seconds: 7)),
   ),
   particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
@@ -58,7 +57,7 @@ DeterministicEffectConfiguration(
 </>
 <>
 
-For the relativistic version, the process is similar. However, there is no need
+For the physics-based version, the process is similar. However, there is no need
 to define the distance, as the effect relies solely on applying Earth's gravity
 to the particles. This simplifies the setup, as the gravity will dictate the
 motion and speed of the particles without explicitly setting a distance.
@@ -67,18 +66,17 @@ motion and speed of the particles without explicitly setting a distance.
  PhysicsEffectConfiguration(
     physicsProperties: const PhysicsProperties(
       gravity: Gravity.earthGravity,
-      angle: Range.single(90),
-      velocity: Range.between(Velocity.stationary, Velocity.stationary),
+      angle: NumRange.single(90),
+      velocity: NumRange.between(Velocity.stationary, Velocity.stationary),
     ),
     visualProperties: const VisualProperties(
-      endScale: Range.single(1),
-      fadeOutThreshold: Range.between(0.6, 0.8),
+      endScale: NumRange.single(1),
+      fadeOutThreshold: NumRange.between(0.6, 0.8),
     ),
     emissionProperties: const EmissionProperties(
       origin: Offset.zero,
       maxOriginOffset: Offset(1, 0),
-      minParticleLifespan: Duration(seconds: 7),
-      maxParticleLifespan: Duration(seconds: 10),
+      particleLifespan: DurationRange.between(Duration(seconds: 7), Duration(seconds: 10)),
     ),
     particleConfiguration: const ParticleConfiguration(
         shape: CircleShape(),
@@ -113,16 +111,15 @@ more natural by altering the particles' paths dynamically.
 ```dart
 DeterministicEffectConfiguration(
   deterministicProperties: const DeterministicProperties(
-    distance: Range.single(200),
+    distance: NumRange.single(200),
   ),
   visualProperties: const VisualProperties(
-    endScale: Range.single(1),
-    fadeOutThreshold: Range.between(0.6, 0.8),
+    endScale: NumRange.single(1),
+    fadeOutThreshold: NumRange.between(0.6, 0.8),
   ),
   emissionProperties: const EmissionProperties(
     particlesPerEmit: 10,
-    minParticleLifespan: Duration(seconds: 4),
-    maxParticleLifespan: Duration(seconds: 4),
+    particleLifespan: DurationRange.single(Duration(seconds: 4)),
   ),
   customPathBuilder: (effect, animatedParticle) {
     const width = 60;
@@ -157,7 +154,7 @@ DeterministicEffectConfiguration(
 </>
 <>
 
-In the relativistic version of the fountain animation, particles are emitted at
+In the physics-based version of the fountain animation, particles are emitted at
 angles between -80 and -100 degrees, causing them to move upward. The variation
 in the emission angle is the key factor that alters the trajectory of each
 particle, making them follow different paths. Additional randomness is applied
@@ -168,18 +165,17 @@ fountain effect.
 PhysicsEffectConfiguration(
    physicsProperties: PhysicsProperties(
      gravity: Gravity.earthGravity,
-     angle: const Range.between(-100, -80),
-     velocity: Range.between(Velocity.custom(3), Velocity.custom(5)),
+     angle: const NumRange.between(-100, -80),
+     velocity: NumRange.between(Velocity.custom(3), Velocity.custom(5)),
      onlyInteractWithEdges: true,
    ),
    visualProperties: const VisualProperties(
-     endScale: Range.single(1),
-     fadeOutThreshold: Range.between(0.6, 0.8),
+     endScale: NumRange.single(1),
+     fadeOutThreshold: NumRange.between(0.6, 0.8),
    ),
    emissionProperties: const EmissionProperties(
      particlesPerEmit: 10,
-     minParticleLifespan: Duration(seconds: 4),
-     maxParticleLifespan: Duration(seconds: 6),
+     particleLifespan: DurationRange.between(Duration(seconds: 4), Duration(seconds: 6)),
    ),
    particleConfiguration: const ParticleConfiguration(
      shape: CircleShape(),
@@ -211,17 +207,16 @@ creating a synchronized and cohesive pulse effect.
 ```dart
 DeterministicEffectConfiguration(
   deterministicProperties: const DeterministicProperties(
-    distance: Range.single(200),
+    distance: NumRange.single(200),
   ),
   visualProperties: const VisualProperties(
-    endScale: Range.single(1),
-    fadeOutThreshold: Range.single(0.8),
+    endScale: NumRange.single(1),
+    fadeOutThreshold: NumRange.single(0.8),
   ),
   emissionProperties: const EmissionProperties(
     emitDuration: Duration(seconds: 1),
     particlesPerEmit: 15,
-    minParticleLifespan: Duration(seconds: 4),
-    maxParticleLifespan: Duration(seconds: 4),
+    particleLifespan: DurationRange.single(Duration(seconds: 4)),
   ),
   customPathBuilder: (effect, animatedParticle) {
     final particlesPerEmit = effect.effectConfiguration.particlesPerEmit;
@@ -251,25 +246,24 @@ PhysicsEffectConfiguration(
      final angle = 360 / particlesPerEmit * (effect.activeParticles.length % particlesPerEmit);
      return effect.effectConfiguration.copyWith(
        physicsProperties: effect.effectConfiguration.physicsProperties.copyWith(
-         angle: Range.single(angle),
+         angle: NumRange.single(angle),
        ),
      );
    },
    physicsProperties: const PhysicsProperties(
      gravity: Gravity.zero,
-     angle: Range.single(0), // Angle is set dynamically in configurationOverrider
-     velocity: Range.between(Velocity(.6), Velocity(.6)),
+     angle: NumRange.single(0), // Angle is set dynamically in configurationOverrider
+     velocity: NumRange.between(Velocity(.6), Velocity(.6)),
      onlyInteractWithEdges: true,
    ),
    visualProperties: const VisualProperties(
-     endScale: Range.single(1),
-     fadeOutThreshold: Range.single(0.8),
+     endScale: NumRange.single(1),
+     fadeOutThreshold: NumRange.single(0.8),
    ),
    emissionProperties: const EmissionProperties(
      emitDuration: Duration(seconds: 1),
      particlesPerEmit: 15,
-     minParticleLifespan: Duration(seconds: 4),
-     maxParticleLifespan: Duration(seconds: 4),
+     particleLifespan: DurationRange.single(Duration(seconds: 4)),
    ),
    particleConfiguration: const ParticleConfiguration(
      shape: CircleShape(),
@@ -295,18 +289,17 @@ For the smoke effect, particles are emitted upward with a small angle randomness
 ```dart
 DeterministicEffectConfiguration(
   deterministicProperties: const DeterministicProperties(
-    angle: Range.between(-100, -80),
+    angle: NumRange.between(-100, -80),
   ),
   visualProperties: const VisualProperties(
-    endScale: Range.single(1),
-    fadeOutThreshold: Range.between(0.6, 0.8),
+    endScale: NumRange.single(1),
+    fadeOutThreshold: NumRange.between(0.6, 0.8),
   ),
   emissionProperties: const EmissionProperties(
     particlesPerEmit: 3,
     minOriginOffset: Offset(-.01, 0),
     maxOriginOffset: Offset(.01, 0),
-    minParticleLifespan: Duration(seconds: 4),
-    maxParticleLifespan: Duration(seconds: 7),
+    particleLifespan: DurationRange.between(Duration(seconds: 4), Duration(seconds: 7)),
   ),
   particleConfiguration: const ParticleConfiguration(
     shape: CircleShape(),
@@ -323,7 +316,7 @@ DeterministicEffectConfiguration(
 </>
 <>
 <div>
-The relativistic version is not available yet, as it requires buoyancy to be implemented first.
+The physics-based version is not available yet, as it requires buoyancy to be implemented first.
 </div>
 </>
 </Configurations>
@@ -334,19 +327,19 @@ The relativistic version is not available yet, as it requires buoyancy to be imp
 <>
 <div>
 The firework effect introduces a key concept: the `postEffectBuilder` in the particle configuration. This allows triggering a new effect when a particle's lifespan ends. For the firework, we emit particles upward with some randomness in their angle. In the `postEffectBuilder`, we create an explosion effect at the last particle's position, using that as the origin for the explosion. Additionally, we enable the trail effect to simulate the fire trail of the launching firework, making the animation more realistic.
-> **Note:** You can mix both relativistic and deterministic effects, though particles from each effect will not interact with each other.
+> **Note:** You can mix both physics-based and deterministic effects, though particles from each effect will not interact with each other.
   ```dart
   DeterministicEffectConfiguration(
     deterministicProperties: const DeterministicProperties(
-      angle: Range.between(-120, -60),
+      angle: NumRange.between(-120, -60),
     ),
     visualProperties: const VisualProperties(
-      endScale: Range.single(1),
-      fadeOutThreshold: Range.between(0.6, 0.8),
+      endScale: NumRange.single(1),
+      fadeOutThreshold: NumRange.between(0.6, 0.8),
     ),
     emissionProperties: const EmissionProperties(
       emitDuration: Duration(milliseconds: 500),
-      maxParticleLifespan: Duration(seconds: 2),
+      particleLifespan: DurationRange.single(Duration(seconds: 2)),
     ),
     layerProperties: const LayerProperties(
       trail: StraightTrail(
@@ -364,7 +357,7 @@ The firework effect introduces a key concept: the `postEffectBuilder` in the par
         );
         return DeterministicEffectConfiguration(
           deterministicProperties: const DeterministicProperties(
-            angle: Range.between(-180, 180),
+            angle: NumRange.between(-180, 180),
           ),
           emissionProperties: EmissionProperties(
             particleCount: 10,
@@ -390,24 +383,24 @@ The firework effect introduces a key concept: the `postEffectBuilder` in the par
 </div>
 </>
 <>
-For the relativistic version, the process is similar, but we remove solid edges by setting `SolidEdges.none`, allowing particles to travel without interacting with boundaries.
+For the physics-based version, the process is similar, but we remove solid edges by setting `SolidEdges.none`, allowing particles to travel without interacting with boundaries.
 
 ```dart
 PhysicsEffectConfiguration(
    physicsProperties: const PhysicsProperties(
      gravity: Gravity.earthGravity,
-     angle: Range.between(-100, -80),
-     velocity: Range.between(Velocity(9), Velocity(10)),
+     angle: NumRange.between(-100, -80),
+     velocity: NumRange.between(Velocity(9), Velocity(10)),
      solidEdges: SolidEdges.none,
    ),
    visualProperties: const VisualProperties(
-     endScale: Range.single(1),
-     fadeOutThreshold: Range.between(0.6, 0.8),
+     endScale: NumRange.single(1),
+     fadeOutThreshold: NumRange.between(0.6, 0.8),
    ),
    emissionProperties: const EmissionProperties(
      emitDuration: Duration(milliseconds: 500),
      origin: Offset(0.5, 1),
-     maxParticleLifespan: Duration(seconds: 1, milliseconds: 500),
+     particleLifespan: DurationRange.single(Duration(seconds: 1, milliseconds: 500)),
    ),
    particleConfiguration: ParticleConfiguration(
      shape: const CircleShape(),
@@ -420,8 +413,8 @@ PhysicsEffectConfiguration(
        return PhysicsEffectConfiguration(
          physicsProperties: const PhysicsProperties(
            gravity: Gravity.earthGravity,
-           angle: Range.between(-180, 180),
-           velocity: Range.between(Velocity(5), Velocity(5)),
+           angle: NumRange.between(-180, 180),
+           velocity: NumRange.between(Velocity(5), Velocity(5)),
            solidEdges: SolidEdges.none,
          ),
          emissionProperties: EmissionProperties(

@@ -144,14 +144,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
 
   /// Helper method to generate a random duration within the configured lifespan range.
   Duration randomDuration() {
-    return Duration(
-      milliseconds: random
-          .nextDoubleRange(
-            emissionProperties.minParticleLifespan.inMilliseconds.toDouble(),
-            emissionProperties.maxParticleLifespan.inMilliseconds.toDouble(),
-          )
-          .round(),
-    );
+    return emissionProperties.particleLifespan.random();
   }
 
   /// Helper method to generate a random fade-in threshold within the configured range.

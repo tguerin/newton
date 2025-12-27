@@ -10,11 +10,11 @@ import 'package:newton_particles/newton_particles.dart';
 ///
 /// ```dart
 /// final properties = PhysicsProperties(
-///   density: Range.between(Density.defaultDensity, Density.defaultDensity),
-///   friction: Range.between(Friction.ice, Friction.rubber),
-///   restitution: Range.between(Restitution.rubberBall, Restitution.basketball),
-///   velocity: Range.between(Velocity.rainDrop, Velocity.car),
-///   angle: Range.between(0, 360),
+///   density: NumRange.between(Density.defaultDensity, Density.defaultDensity),
+///   friction: NumRange.between(Friction.ice, Friction.rubber),
+///   restitution: NumRange.between(Restitution.rubberBall, Restitution.basketball),
+///   velocity: NumRange.between(Velocity.rainDrop, Velocity.car),
+///   angle: NumRange.between(0, 360),
 ///   gravity: Gravity.earthGravity,
 /// );
 /// ```
@@ -30,11 +30,11 @@ class PhysicsProperties {
   /// - Velocity: >= 0.0 (negative values allowed for special effects)
   /// - Angle: -180.0 to 180.0 degrees (or 0.0 to 360.0)
   const PhysicsProperties({
-    this.density = const Range.between(Density.defaultDensity, Density.defaultDensity),
-    this.friction = const Range.between(Friction.ice, Friction.ice),
-    this.restitution = const Range.between(Restitution.rubberBall, Restitution.rubberBall),
-    this.velocity = const Range.between(Velocity.rainDrop, Velocity.rainDrop),
-    this.angle = const Range.single(0),
+    this.density = const NumRange.between(Density.defaultDensity, Density.defaultDensity),
+    this.friction = const NumRange.between(Friction.ice, Friction.ice),
+    this.restitution = const NumRange.between(Restitution.rubberBall, Restitution.rubberBall),
+    this.velocity = const NumRange.between(Velocity.rainDrop, Velocity.rainDrop),
+    this.angle = const NumRange.single(0),
     this.gravity = Gravity.earthGravity,
     this.onlyInteractWithEdges = false,
     this.solidEdges = const SolidEdges.all(),
@@ -52,21 +52,21 @@ class PhysicsProperties {
   ///
   /// All parameters are optional and can be overridden.
   factory PhysicsProperties.slippery({
-    Range<Density>? density,
-    Range<Friction>? friction,
-    Range<Restitution>? restitution,
-    Range<Velocity>? velocity,
-    Range<double>? angle,
+    NumRange<Density>? density,
+    NumRange<Friction>? friction,
+    NumRange<Restitution>? restitution,
+    NumRange<Velocity>? velocity,
+    NumRange<double>? angle,
     Gravity? gravity,
     bool? onlyInteractWithEdges,
     SolidEdges? solidEdges,
   }) {
     return PhysicsProperties(
-      density: density ?? const Range.between(Density.defaultDensity, Density.defaultDensity),
-      friction: friction ?? const Range.between(Friction.ice, Friction.teflon),
-      restitution: restitution ?? const Range.between(Restitution.rubberBall, Restitution.rubberBall),
-      velocity: velocity ?? const Range.between(Velocity.rainDrop, Velocity.highway),
-      angle: angle ?? const Range.single(0),
+      density: density ?? const NumRange.between(Density.defaultDensity, Density.defaultDensity),
+      friction: friction ?? const NumRange.between(Friction.ice, Friction.teflon),
+      restitution: restitution ?? const NumRange.between(Restitution.rubberBall, Restitution.rubberBall),
+      velocity: velocity ?? const NumRange.between(Velocity.rainDrop, Velocity.highway),
+      angle: angle ?? const NumRange.single(0),
       gravity: gravity ?? Gravity.earthGravity,
       onlyInteractWithEdges: onlyInteractWithEdges ?? false,
       solidEdges: solidEdges ?? const SolidEdges.all(),
@@ -85,21 +85,21 @@ class PhysicsProperties {
   ///
   /// All parameters are optional and can be overridden.
   factory PhysicsProperties.bouncy({
-    Range<Density>? density,
-    Range<Friction>? friction,
-    Range<Restitution>? restitution,
-    Range<Velocity>? velocity,
-    Range<double>? angle,
+    NumRange<Density>? density,
+    NumRange<Friction>? friction,
+    NumRange<Restitution>? restitution,
+    NumRange<Velocity>? velocity,
+    NumRange<double>? angle,
     Gravity? gravity,
     bool? onlyInteractWithEdges,
     SolidEdges? solidEdges,
   }) {
     return PhysicsProperties(
-      density: density ?? const Range.between(Density.defaultDensity, Density.defaultDensity),
-      friction: friction ?? const Range.between(Friction.ice, Friction.ice),
-      restitution: restitution ?? const Range.between(Restitution.basketball, Restitution.superBall),
-      velocity: velocity ?? const Range.between(Velocity.rainDrop, Velocity.car),
-      angle: angle ?? const Range.single(0),
+      density: density ?? const NumRange.between(Density.defaultDensity, Density.defaultDensity),
+      friction: friction ?? const NumRange.between(Friction.ice, Friction.ice),
+      restitution: restitution ?? const NumRange.between(Restitution.basketball, Restitution.superBall),
+      velocity: velocity ?? const NumRange.between(Velocity.rainDrop, Velocity.car),
+      angle: angle ?? const NumRange.single(0),
       gravity: gravity ?? Gravity.earthGravity,
       onlyInteractWithEdges: onlyInteractWithEdges ?? false,
       solidEdges: solidEdges ?? const SolidEdges.all(),
@@ -107,19 +107,19 @@ class PhysicsProperties {
   }
 
   /// The density range for particles.
-  final Range<double> density;
+  final NumRange<double> density;
 
   /// The friction range for particles.
-  final Range<double> friction;
+  final NumRange<double> friction;
 
   /// The restitution (bounciness) range for particles.
-  final Range<double> restitution;
+  final NumRange<double> restitution;
 
   /// The velocity range for particles.
-  final Range<double> velocity;
+  final NumRange<double> velocity;
 
   /// The angle range for particles in degrees.
-  final Range<double> angle;
+  final NumRange<double> angle;
 
   /// The gravitational force applied to particles.
   final Gravity gravity;
@@ -157,11 +157,11 @@ class PhysicsProperties {
 
   /// Creates a copy of this [PhysicsProperties] with the given fields replaced with new values.
   PhysicsProperties copyWith({
-    Range<double>? density,
-    Range<double>? friction,
-    Range<double>? restitution,
-    Range<double>? velocity,
-    Range<double>? angle,
+    NumRange<double>? density,
+    NumRange<double>? friction,
+    NumRange<double>? restitution,
+    NumRange<double>? velocity,
+    NumRange<double>? angle,
     Gravity? gravity,
     bool? onlyInteractWithEdges,
     SolidEdges? solidEdges,

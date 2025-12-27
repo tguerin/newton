@@ -61,13 +61,13 @@ class FountainPreset {
     return PhysicsEffectConfiguration(
       physicsProperties: PhysicsProperties(
         gravity: gravity,
-        angle: const Range.between(240, 300), // Spray upward (270 degrees) with slight spread
-        velocity: Range.between(Velocity.custom(15), Velocity.custom(20)),
+        angle: const NumRange.between(240, 300), // Spray upward (270 degrees) with slight spread
+        velocity: NumRange.between(Velocity.custom(15), Velocity.custom(20)),
       ),
       visualProperties: const VisualProperties(
-        beginScale: Range.single(0.8),
-        endScale: Range.between(0.6, 0.8),
-        fadeOutThreshold: Range.between(0.6, 0.8),
+        beginScale: NumRange.single(0.8),
+        endScale: NumRange.between(0.6, 0.8),
+        fadeOutThreshold: NumRange.between(0.6, 0.8),
         scaleCurve: Curves.easeOut,
         fadeOutCurve: Curves.easeIn,
       ),
@@ -78,8 +78,7 @@ class FountainPreset {
         origin: origin,
         minOriginOffset: const Offset(-0.1, 0),
         maxOriginOffset: const Offset(0.1, 0),
-        minParticleLifespan: const Duration(seconds: 2),
-        maxParticleLifespan: const Duration(seconds: 3),
+        particleLifespan: const DurationRange.between(Duration(seconds: 2), Duration(seconds: 3)),
       ),
       particleConfiguration: ParticleConfiguration(
         shape: const CircleShape(),

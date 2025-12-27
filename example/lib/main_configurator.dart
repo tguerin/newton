@@ -853,27 +853,29 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     final config = configuredEffect.effectConfiguration;
     final emissionProps = config.emissionProperties;
     return RangeSelection(
-      initialMin: emissionProps.minParticleLifespan.inMilliseconds.toDouble(),
-      initialMax: emissionProps.maxParticleLifespan.inMilliseconds.toDouble(),
+      initialMin: emissionProps.particleLifespan.min.inMilliseconds.toDouble(),
+      initialMax: emissionProps.particleLifespan.max.inMilliseconds.toDouble(),
       min: 100,
       max: 10000,
       divisions: 990,
       title: 'Particle effect duration',
       onChanged: (values) {
         setState(() {
+          final particleLifespan = DurationRange.between(
+            Duration(milliseconds: values.start.round()),
+            Duration(milliseconds: values.end.round()),
+          );
           if (config is PhysicsEffectConfiguration) {
             configuredEffect.effectConfiguration = config.copyWith(
               emissionProperties: emissionProps.copyWith(
-                minParticleLifespan: Duration(milliseconds: values.start.round()),
-                maxParticleLifespan: Duration(milliseconds: values.end.round()),
+                particleLifespan: particleLifespan,
               ),
             );
           } else {
             final detConfig = config as DeterministicEffectConfiguration;
             configuredEffect.effectConfiguration = detConfig.copyWith(
               emissionProperties: emissionProps.copyWith(
-                minParticleLifespan: Duration(milliseconds: values.start.round()),
-                maxParticleLifespan: Duration(milliseconds: values.end.round()),
+                particleLifespan: particleLifespan,
               ),
             );
           }
@@ -932,7 +934,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
             physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
-              friction: Range.between(Friction(values.start), Friction(values.end)),
+              friction: NumRange.between(Friction(values.start), Friction(values.end)),
             ),
           );
         });
@@ -952,7 +954,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
             physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
-              density: Range.between(Density(values.start), Density(values.end)),
+              density: NumRange.between(Density(values.start), Density(values.end)),
             ),
           );
         });
@@ -972,7 +974,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
             physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
-              restitution: Range.between(Restitution(values.start), Restitution(values.end)),
+              restitution: NumRange.between(Restitution(values.start), Restitution(values.end)),
             ),
           );
         });
@@ -992,7 +994,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
             physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
-              velocity: Range.between(Velocity(values.start), Velocity(values.end)),
+              velocity: NumRange.between(Velocity(values.start), Velocity(values.end)),
             ),
           );
         });
@@ -1015,7 +1017,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         setState(() {
           configuredEffect.effectConfiguration = deterministicEffectConfiguration.copyWith(
             deterministicProperties: detProps.copyWith(
-              distance: Range.between(values.start, values.end),
+              distance: NumRange.between(values.start, values.end),
             ),
           );
         });
@@ -1039,14 +1041,14 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           if (config is PhysicsEffectConfiguration) {
             configuredEffect.effectConfiguration = config.copyWith(
               visualProperties: visualProps.copyWith(
-                fadeInThreshold: Range.between(values.start, values.end),
+                fadeInThreshold: NumRange.between(values.start, values.end),
               ),
             );
           } else {
             final detConfig = config as DeterministicEffectConfiguration;
             configuredEffect.effectConfiguration = detConfig.copyWith(
               visualProperties: visualProps.copyWith(
-                fadeInThreshold: Range.between(values.start, values.end),
+                fadeInThreshold: NumRange.between(values.start, values.end),
               ),
             );
           }
@@ -1071,14 +1073,14 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           if (config is PhysicsEffectConfiguration) {
             configuredEffect.effectConfiguration = config.copyWith(
               visualProperties: visualProps.copyWith(
-                fadeOutThreshold: Range.between(values.start, values.end),
+                fadeOutThreshold: NumRange.between(values.start, values.end),
               ),
             );
           } else {
             final detConfig = config as DeterministicEffectConfiguration;
             configuredEffect.effectConfiguration = detConfig.copyWith(
               visualProperties: visualProps.copyWith(
-                fadeOutThreshold: Range.between(values.start, values.end),
+                fadeOutThreshold: NumRange.between(values.start, values.end),
               ),
             );
           }
@@ -1103,14 +1105,14 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           if (config is PhysicsEffectConfiguration) {
             configuredEffect.effectConfiguration = config.copyWith(
               visualProperties: visualProps.copyWith(
-                beginScale: Range.between(values.start, values.end),
+                beginScale: NumRange.between(values.start, values.end),
               ),
             );
           } else {
             final detConfig = config as DeterministicEffectConfiguration;
             configuredEffect.effectConfiguration = detConfig.copyWith(
               visualProperties: visualProps.copyWith(
-                beginScale: Range.between(values.start, values.end),
+                beginScale: NumRange.between(values.start, values.end),
               ),
             );
           }
@@ -1135,14 +1137,14 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           if (config is PhysicsEffectConfiguration) {
             configuredEffect.effectConfiguration = config.copyWith(
               visualProperties: visualProps.copyWith(
-                endScale: Range.between(values.start, values.end),
+                endScale: NumRange.between(values.start, values.end),
               ),
             );
           } else {
             final detConfig = config as DeterministicEffectConfiguration;
             configuredEffect.effectConfiguration = detConfig.copyWith(
               visualProperties: visualProps.copyWith(
-                endScale: Range.between(values.start, values.end),
+                endScale: NumRange.between(values.start, values.end),
               ),
             );
           }
@@ -1288,7 +1290,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           setState(() {
             configuredEffect.effectConfiguration = config.copyWith(
               physicsProperties: physicsProps.copyWith(
-                angle: Range.between(values.start, values.end),
+                angle: NumRange.between(values.start, values.end),
               ),
             );
           });
@@ -1309,7 +1311,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           setState(() {
             configuredEffect.effectConfiguration = detConfig.copyWith(
               deterministicProperties: detProps.copyWith(
-                angle: Range.between(values.start, values.end),
+                angle: NumRange.between(values.start, values.end),
               ),
             );
           });

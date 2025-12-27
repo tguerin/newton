@@ -11,10 +11,10 @@ import 'package:newton_particles/src/utils/range.dart';
 ///
 /// ```dart
 /// final properties = VisualProperties(
-///   beginScale: Range.between(0.5, 1.0),
-///   endScale: Range.between(0.0, 0.5),
-///   fadeInThreshold: Range.between(0.0, 0.2),
-///   fadeOutThreshold: Range.between(0.8, 1.0),
+///   beginScale: NumRange.between(0.5, 1.0),
+///   endScale: NumRange.between(0.0, 0.5),
+///   fadeInThreshold: NumRange.between(0.0, 0.2),
+///   fadeOutThreshold: NumRange.between(0.8, 1.0),
 ///   scaleCurve: Curves.easeInOut,
 ///   fadeInCurve: Curves.easeIn,
 ///   fadeOutCurve: Curves.easeOut,
@@ -29,27 +29,27 @@ class VisualProperties {
   /// - Scale: > 0.0
   /// - Fade thresholds: 0.0 to 1.0
   const VisualProperties({
-    this.beginScale = const Range.single(1),
-    this.endScale = const Range.single(-1),
-    this.fadeInThreshold = const Range.single(0),
-    this.fadeOutThreshold = const Range.single(1),
+    this.beginScale = const NumRange.single(1),
+    this.endScale = const NumRange.single(-1),
+    this.fadeInThreshold = const NumRange.single(0),
+    this.fadeOutThreshold = const NumRange.single(1),
     this.scaleCurve = Curves.linear,
     this.fadeInCurve = Curves.linear,
     this.fadeOutCurve = Curves.linear,
   });
 
   /// The begin scale range for particles.
-  final Range<double> beginScale;
+  final NumRange<double> beginScale;
 
   /// The end scale range for particles.
   /// -1 indicates no scaling.
-  final Range<double> endScale;
+  final NumRange<double> endScale;
 
   /// The fade in threshold range for particles.
-  final Range<double> fadeInThreshold;
+  final NumRange<double> fadeInThreshold;
 
   /// The fade out threshold range for particles.
-  final Range<double> fadeOutThreshold;
+  final NumRange<double> fadeOutThreshold;
 
   /// The curve that controls how particle scale changes over time.
   final Curve scaleCurve;
@@ -81,11 +81,11 @@ class VisualProperties {
     // If min is -1, we need to handle it specially
     if (endScale.min == -1) {
       // Randomly choose between -1 and a value in the positive range
-      const range = Range<double>.between(0, 1);
+      const range = NumRange<double>.between(0, 1);
       if (range.random() < 0.5) {
         return -1;
       }
-      return Range<double>.between(0, endScale.max).random();
+      return NumRange<double>.between(0, endScale.max).random();
     }
     return endScale.random();
   }
@@ -115,10 +115,10 @@ class VisualProperties {
 
   /// Creates a copy of this [VisualProperties] with the given fields replaced with new values.
   VisualProperties copyWith({
-    Range<double>? beginScale,
-    Range<double>? endScale,
-    Range<double>? fadeInThreshold,
-    Range<double>? fadeOutThreshold,
+    NumRange<double>? beginScale,
+    NumRange<double>? endScale,
+    NumRange<double>? fadeInThreshold,
+    NumRange<double>? fadeOutThreshold,
     Curve? scaleCurve,
     Curve? fadeInCurve,
     Curve? fadeOutCurve,

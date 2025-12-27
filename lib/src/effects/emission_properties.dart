@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:newton_particles/src/utils/range.dart';
 
 /// Groups all emission-related properties for particle effects.
 ///
@@ -15,8 +16,7 @@ class EmissionProperties {
     this.origin = const Offset(0.5, 0.5),
     this.minOriginOffset = Offset.zero,
     this.maxOriginOffset = Offset.zero,
-    this.minParticleLifespan = const Duration(seconds: 1),
-    this.maxParticleLifespan = const Duration(seconds: 1),
+    this.particleLifespan = const DurationRange.single(Duration(seconds: 1)),
   });
 
   /// Curve to control the emission timing of particles.
@@ -40,11 +40,15 @@ class EmissionProperties {
   /// Maximum offset from the origin point for particle emission.
   final Offset maxOriginOffset;
 
-  /// Minimum particle lifespan duration.
-  final Duration minParticleLifespan;
-
-  /// Maximum particle lifespan duration.
-  final Duration maxParticleLifespan;
+  /// Particle lifespan range.
+  ///
+  /// Use [DurationRange.single] for a fixed duration or [DurationRange.between] for a range.
+  /// Example:
+  /// ```dart
+  /// particleLifespan: DurationRange.between(Duration(seconds: 3), Duration(seconds: 5)),
+  /// particleLifespan: DurationRange.single(Duration(seconds: 4)),
+  /// ```
+  final DurationRange particleLifespan;
 
   /// Creates a copy of this [EmissionProperties] with the given fields replaced with new values.
   EmissionProperties copyWith({
@@ -55,8 +59,7 @@ class EmissionProperties {
     Offset? origin,
     Offset? minOriginOffset,
     Offset? maxOriginOffset,
-    Duration? minParticleLifespan,
-    Duration? maxParticleLifespan,
+    DurationRange? particleLifespan,
   }) {
     return EmissionProperties(
       emitCurve: emitCurve ?? this.emitCurve,
@@ -66,8 +69,7 @@ class EmissionProperties {
       origin: origin ?? this.origin,
       minOriginOffset: minOriginOffset ?? this.minOriginOffset,
       maxOriginOffset: maxOriginOffset ?? this.maxOriginOffset,
-      minParticleLifespan: minParticleLifespan ?? this.minParticleLifespan,
-      maxParticleLifespan: maxParticleLifespan ?? this.maxParticleLifespan,
+      particleLifespan: particleLifespan ?? this.particleLifespan,
     );
   }
 
@@ -83,8 +85,7 @@ class EmissionProperties {
           origin == other.origin &&
           minOriginOffset == other.minOriginOffset &&
           maxOriginOffset == other.maxOriginOffset &&
-          minParticleLifespan == other.minParticleLifespan &&
-          maxParticleLifespan == other.maxParticleLifespan;
+          particleLifespan == other.particleLifespan;
 
   @override
   int get hashCode =>
@@ -95,10 +96,9 @@ class EmissionProperties {
       origin.hashCode ^
       minOriginOffset.hashCode ^
       maxOriginOffset.hashCode ^
-      minParticleLifespan.hashCode ^
-      maxParticleLifespan.hashCode;
+      particleLifespan.hashCode;
 
   @override
   String toString() =>
-      'EmissionProperties(emitCurve: $emitCurve, emitDuration: $emitDuration, particleCount: $particleCount, particlesPerEmit: $particlesPerEmit, origin: $origin, minOriginOffset: $minOriginOffset, maxOriginOffset: $maxOriginOffset, minParticleLifespan: $minParticleLifespan, maxParticleLifespan: $maxParticleLifespan)';
+      'EmissionProperties(emitCurve: $emitCurve, emitDuration: $emitDuration, particleCount: $particleCount, particlesPerEmit: $particlesPerEmit, origin: $origin, minOriginOffset: $minOriginOffset, maxOriginOffset: $maxOriginOffset, particleLifespan: $particleLifespan)';
 }

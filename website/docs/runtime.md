@@ -35,17 +35,16 @@ class HomeScreen extends StatelessWidget {
               PhysicsEffectConfiguration(
               physicsProperties: const PhysicsProperties(
                 gravity: Gravity.earthGravity,
-                angle: Range.single(90),
+                angle: NumRange.single(90),
               ),
                 visualProperties: const VisualProperties(
-                  endScale: Range.single(1),
-                  fadeOutThreshold: Range.between(0.6, 0.8),
+                  endScale: NumRange.single(1),
+                  fadeOutThreshold: NumRange.between(0.6, 0.8),
                 ),
                 emissionProperties: const EmissionProperties(
                   origin: Offset.zero,
                   maxOriginOffset: Offset(1, 0),
-                  minParticleLifespan: Duration(seconds: 4),
-                  maxParticleLifespan: Duration(seconds: 7),
+                  particleLifespan: DurationRange.between(Duration(seconds: 4), Duration(seconds: 7)),
                 ),
                 particleConfiguration: const ParticleConfiguration(
                   shape: CircleShape(),

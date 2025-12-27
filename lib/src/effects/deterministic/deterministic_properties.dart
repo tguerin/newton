@@ -10,8 +10,8 @@ import 'package:newton_particles/src/utils/range.dart';
 ///
 /// ```dart
 /// final properties = DeterministicProperties(
-///   distance: Range.between(100.0, 200.0),
-///   angle: Range.between(-180.0, 180.0),
+///   distance: NumRange.between(100.0, 200.0),
+///   angle: NumRange.between(-180.0, 180.0),
 /// );
 /// ```
 @immutable
@@ -23,8 +23,8 @@ class DeterministicProperties {
   /// - Distance: > 0.0
   /// - Angle: -180.0 to 180.0 degrees
   const DeterministicProperties({
-    this.distance = const Range.between(100, 200),
-    this.angle = const Range.single(0),
+    this.distance = const NumRange.between(100, 200),
+    this.angle = const NumRange.single(0),
   });
 
   /// Creates a [DeterministicProperties] for a radial explosion effect.
@@ -35,8 +35,8 @@ class DeterministicProperties {
   ///
   /// All parameters are optional and can be overridden.
   factory DeterministicProperties.explosion({
-    Range<double> distance = const Range.between(50, 300),
-    Range<double> angle = const Range.between(-180, 180),
+    NumRange<double> distance = const NumRange.between(50, 300),
+    NumRange<double> angle = const NumRange.between(-180, 180),
   }) {
     return DeterministicProperties(
       distance: distance,
@@ -52,8 +52,8 @@ class DeterministicProperties {
   ///
   /// All parameters are optional and can be overridden.
   factory DeterministicProperties.rain({
-    Range<double> distance = const Range.between(200, 500),
-    Range<double> angle = const Range.single(90),
+    NumRange<double> distance = const NumRange.between(200, 500),
+    NumRange<double> angle = const NumRange.single(90),
   }) {
     return DeterministicProperties(
       distance: distance,
@@ -62,10 +62,10 @@ class DeterministicProperties {
   }
 
   /// The distance range for particles.
-  final Range<double> distance;
+  final NumRange<double> distance;
 
   /// The angle range for particles.
-  final Range<double> angle;
+  final NumRange<double> angle;
 
   /// Generates a random distance within the specified range.
   double randomDistance() {
@@ -79,8 +79,8 @@ class DeterministicProperties {
 
   /// Creates a copy of this [DeterministicProperties] with the given fields replaced with new values.
   DeterministicProperties copyWith({
-    Range<double>? distance,
-    Range<double>? angle,
+    NumRange<double>? distance,
+    NumRange<double>? angle,
   }) {
     return DeterministicProperties(
       distance: distance ?? this.distance,

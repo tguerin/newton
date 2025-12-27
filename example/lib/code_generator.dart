@@ -373,10 +373,8 @@ Expression _generateEmissionProperties(EmissionProperties props) {
     parameters['maxOriginOffset'] = _formatOffset(props.maxOriginOffset);
   }
 
-  if (props.minParticleLifespan != const Duration(seconds: 1) ||
-      props.maxParticleLifespan != const Duration(seconds: 1)) {
-    parameters['minParticleLifespan'] = _formatDuration(props.minParticleLifespan);
-    parameters['maxParticleLifespan'] = _formatDuration(props.maxParticleLifespan);
+  if (props.particleLifespan != const DurationRange.single(Duration(seconds: 1))) {
+    parameters['particleLifespan'] = _formatDurationRange(props.particleLifespan);
   }
 
   return InvokeExpression.newOf(
@@ -446,16 +444,30 @@ Expression _generateParticleConfiguration(ParticleConfiguration config) {
   );
 }
 
-Expression _formatRange<T extends num>(Range<T> range) {
+Expression _formatRange<T extends num>(NumRange<T> range) {
   if (range.min == range.max) {
     return InvokeExpression.newOf(
-      refer('Range').property('single'),
+      refer('NumRange').property('single'),
       [literal(range.min)],
     );
   } else {
     return InvokeExpression.newOf(
-      refer('Range').property('between'),
+      refer('NumRange').property('between'),
       [literal(range.min), literal(range.max)],
+    );
+  }
+}
+
+Expression _formatDurationRange(DurationRange range) {
+  if (range.min == range.max) {
+    return InvokeExpression.newOf(
+      refer('DurationRange').property('single'),
+      [_formatDuration(range.min)],
+    );
+  } else {
+    return InvokeExpression.newOf(
+      refer('DurationRange').property('between'),
+      [_formatDuration(range.min), _formatDuration(range.max)],
     );
   }
 }
