@@ -63,34 +63,35 @@ class SnowPreset {
     const gravity = Gravity(0, 2);
 
     return PhysicsEffectConfiguration(
-      gravity: gravity,
-      origin: origin,
-      maxOriginOffset: const Offset(1, 0),
-      minOriginOffset: const Offset(-1, 0),
-      // Slight angle variation for drift
-      maxAngle: 95 + windStrength * 5,
-      minAngle: 85 + windStrength * 5,
-      maxVelocity: Velocity.custom(8),
-      minVelocity: Velocity.custom(4),
-      maxParticleLifespan: const Duration(seconds: 10),
-      minParticleLifespan: const Duration(seconds: 7),
-      maxEndScale: 1.2,
-      minEndScale: 0.8,
-      minBeginScale: 0.8,
-      maxFadeOutThreshold: 0.9,
-      minFadeOutThreshold: 0.7,
-      particleCount: particleCount,
-      particlesPerEmit: particlesPerEmit,
-      emitDuration: emitDuration,
+      physicsProperties: PhysicsProperties(
+        gravity: gravity,
+        angle: Range.between(85 + windStrength * 5, 95 + windStrength * 5), // Slight angle variation for drift
+        velocity: Range.between(Velocity.custom(4), Velocity.custom(8)),
+        solidEdges: const SolidEdges.only(bottom: true),
+        onlyInteractWithEdges: true,
+      ),
+      visualProperties: const VisualProperties(
+        beginScale: Range.single(0.8),
+        endScale: Range.between(0.8, 1.2),
+        fadeOutThreshold: Range.between(0.7, 0.9),
+        scaleCurve: Curves.easeInOut,
+        fadeOutCurve: Curves.easeIn,
+      ),
+      emissionProperties: EmissionProperties(
+        particleCount: particleCount,
+        particlesPerEmit: particlesPerEmit,
+        emitDuration: emitDuration,
+        origin: origin,
+        minOriginOffset: const Offset(-1, 0),
+        maxOriginOffset: const Offset(1, 0),
+        minParticleLifespan: const Duration(seconds: 7),
+        maxParticleLifespan: const Duration(seconds: 10),
+      ),
       particleConfiguration: ParticleConfiguration(
         shape: const CircleShape(),
         size: const Size(6, 6),
         color: SingleParticleColor(color: color),
       ),
-      solidEdges: const SolidEdges.only(bottom: true),
-      onlyInteractWithEdges: true,
-      scaleCurve: Curves.easeInOut,
-      fadeOutCurve: Curves.easeIn,
     );
   }
 }

@@ -496,14 +496,29 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _particlesPerEmitSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final emissionProps = config is PhysicsEffectConfiguration
+        ? config.emissionProperties
+        : (config as DeterministicEffectConfiguration).emissionProperties;
     return SingleValueSelection(
-      value: configuredEffect.effectConfiguration.particlesPerEmit.toDouble(),
+      value: emissionProps.particlesPerEmit.toDouble(),
       title: 'Particles per emit',
       onChanged: (value) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            particlesPerEmit: value.round(),
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                particlesPerEmit: value.round(),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                particlesPerEmit: value.round(),
+              ),
+            );
+          }
         });
       },
       min: 1,
@@ -512,14 +527,29 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _particleCount(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final emissionProps = config is PhysicsEffectConfiguration
+        ? config.emissionProperties
+        : (config as DeterministicEffectConfiguration).emissionProperties;
     return SingleValueSelection(
-      value: configuredEffect.effectConfiguration.particleCount.toDouble(),
+      value: emissionProps.particleCount.toDouble(),
       title: 'Particle count',
       onChanged: (value) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            particleCount: value.round(),
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                particleCount: value.round(),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                particleCount: value.round(),
+              ),
+            );
+          }
         });
       },
       min: 0,
@@ -528,14 +558,29 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _emitDurationSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final emissionProps = config is PhysicsEffectConfiguration
+        ? config.emissionProperties
+        : (config as DeterministicEffectConfiguration).emissionProperties;
     return SingleValueSelection(
-      value: configuredEffect.effectConfiguration.emitDuration.inMilliseconds.toDouble(),
+      value: emissionProps.emitDuration.inMilliseconds.toDouble(),
       title: 'Emit duration',
       onChanged: (value) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            emitDuration: Duration(milliseconds: value.round()),
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                emitDuration: Duration(milliseconds: value.round()),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                emitDuration: Duration(milliseconds: value.round()),
+              ),
+            );
+          }
         });
       },
       precision: 4,
@@ -545,19 +590,35 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _animationDurationSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final emissionProps = config is PhysicsEffectConfiguration
+        ? config.emissionProperties
+        : (config as DeterministicEffectConfiguration).emissionProperties;
     return RangeSelection(
-      initialMin: configuredEffect.effectConfiguration.minParticleLifespan.inMilliseconds.toDouble(),
-      initialMax: configuredEffect.effectConfiguration.maxParticleLifespan.inMilliseconds.toDouble(),
+      initialMin: emissionProps.minParticleLifespan.inMilliseconds.toDouble(),
+      initialMax: emissionProps.maxParticleLifespan.inMilliseconds.toDouble(),
       min: 100,
       max: 10000,
       divisions: 990,
       title: 'Particle effect duration',
       onChanged: (values) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            minParticleLifespan: Duration(milliseconds: values.start.round()),
-            maxParticleLifespan: Duration(milliseconds: values.end.round()),
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                minParticleLifespan: Duration(milliseconds: values.start.round()),
+                maxParticleLifespan: Duration(milliseconds: values.end.round()),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                minParticleLifespan: Duration(milliseconds: values.start.round()),
+                maxParticleLifespan: Duration(milliseconds: values.end.round()),
+              ),
+            );
+          }
         });
       },
     );
@@ -573,7 +634,9 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       onChanged: (value) {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
-            gravity: Gravity(value, relativisticEffectConfiguration.gravity.dy),
+            physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
+              gravity: Gravity(value, relativisticEffectConfiguration.gravity.dy),
+            ),
           );
         });
       },
@@ -590,7 +653,9 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       onChanged: (value) {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
-            gravity: Gravity(relativisticEffectConfiguration.gravity.dx, value),
+            physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
+              gravity: Gravity(relativisticEffectConfiguration.gravity.dx, value),
+            ),
           );
         });
       },
@@ -608,8 +673,9 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       onChanged: (values) {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
-            minFriction: Friction(values.start),
-            maxFriction: Friction(values.end),
+            physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
+              friction: Range.between(Friction(values.start), Friction(values.end)),
+            ),
           );
         });
       },
@@ -627,8 +693,9 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       onChanged: (values) {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
-            minDensity: Density(values.start),
-            maxDensity: Density(values.end),
+            physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
+              density: Range.between(Density(values.start), Density(values.end)),
+            ),
           );
         });
       },
@@ -646,8 +713,9 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       onChanged: (values) {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
-            minRestitution: Restitution(values.start),
-            maxRestitution: Restitution(values.end),
+            physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
+              restitution: Range.between(Restitution(values.start), Restitution(values.end)),
+            ),
           );
         });
       },
@@ -665,8 +733,9 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
       onChanged: (values) {
         setState(() {
           configuredEffect.effectConfiguration = relativisticEffectConfiguration.copyWith(
-            minVelocity: Velocity(values.start),
-            maxVelocity: Velocity(values.end),
+            physicsProperties: relativisticEffectConfiguration.physicsProperties.copyWith(
+              velocity: Range.between(Velocity(values.start), Velocity(values.end)),
+            ),
           );
         });
       },
@@ -677,17 +746,19 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget _particleDistanceSection(_ConfiguredEffect configuredEffect) {
     final deterministicEffectConfiguration = configuredEffect.effectConfiguration as DeterministicEffectConfiguration;
+    final detProps = deterministicEffectConfiguration.deterministicProperties;
     return RangeSelection(
-      initialMin: deterministicEffectConfiguration.minDistance,
-      initialMax: deterministicEffectConfiguration.maxDistance,
+      initialMin: detProps.distance.min,
+      initialMax: detProps.distance.max,
       min: 100,
       max: 2000,
       title: 'Particle distance',
       onChanged: (values) {
         setState(() {
           configuredEffect.effectConfiguration = deterministicEffectConfiguration.copyWith(
-            minDistance: values.start,
-            maxDistance: values.end,
+            deterministicProperties: detProps.copyWith(
+              distance: Range.between(values.start, values.end),
+            ),
           );
         });
       },
@@ -695,177 +766,334 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _particleFadeinProgressSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final visualProps = config is PhysicsEffectConfiguration
+        ? config.visualProperties
+        : (config as DeterministicEffectConfiguration).visualProperties;
     return RangeSelection(
-      initialMin: configuredEffect.effectConfiguration.minFadeInThreshold,
-      initialMax: configuredEffect.effectConfiguration.maxFadeInThreshold,
+      initialMin: visualProps.fadeInThreshold.min,
+      initialMax: visualProps.fadeInThreshold.max,
       min: 0,
       max: 1,
       title: 'Particle fadein threshold',
       onChanged: (values) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            minFadeInThreshold: values.start,
-            maxFadeInThreshold: values.end,
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              visualProperties: visualProps.copyWith(
+                fadeInThreshold: Range.between(values.start, values.end),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              visualProperties: visualProps.copyWith(
+                fadeInThreshold: Range.between(values.start, values.end),
+              ),
+            );
+          }
         });
       },
     );
   }
 
   Widget _particleFadeoutProgressSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final visualProps = config is PhysicsEffectConfiguration
+        ? config.visualProperties
+        : (config as DeterministicEffectConfiguration).visualProperties;
     return RangeSelection(
-      initialMin: configuredEffect.effectConfiguration.minFadeOutThreshold,
-      initialMax: configuredEffect.effectConfiguration.maxFadeOutThreshold,
+      initialMin: visualProps.fadeOutThreshold.min,
+      initialMax: visualProps.fadeOutThreshold.max,
       min: 0,
       max: 1,
       title: 'Particle fadeout threshold',
       onChanged: (values) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            minFadeOutThreshold: values.start,
-            maxFadeOutThreshold: values.end,
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              visualProperties: visualProps.copyWith(
+                fadeOutThreshold: Range.between(values.start, values.end),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              visualProperties: visualProps.copyWith(
+                fadeOutThreshold: Range.between(values.start, values.end),
+              ),
+            );
+          }
         });
       },
     );
   }
 
   Widget _particleBeginScaleSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final visualProps = config is PhysicsEffectConfiguration
+        ? config.visualProperties
+        : (config as DeterministicEffectConfiguration).visualProperties;
     return RangeSelection(
-      initialMin: configuredEffect.effectConfiguration.minBeginScale,
-      initialMax: configuredEffect.effectConfiguration.maxBeginScale,
+      initialMin: visualProps.beginScale.min,
+      initialMax: visualProps.beginScale.max,
       min: 0,
       max: 10,
       title: 'Particle begin scale',
       onChanged: (values) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            minBeginScale: values.start,
-            maxBeginScale: values.end,
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              visualProperties: visualProps.copyWith(
+                beginScale: Range.between(values.start, values.end),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              visualProperties: visualProps.copyWith(
+                beginScale: Range.between(values.start, values.end),
+              ),
+            );
+          }
         });
       },
     );
   }
 
   Widget _particleEndScaleSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final visualProps = config is PhysicsEffectConfiguration
+        ? config.visualProperties
+        : (config as DeterministicEffectConfiguration).visualProperties;
     return RangeSelection(
-      initialMin: configuredEffect.effectConfiguration.minEndScale,
-      initialMax: configuredEffect.effectConfiguration.maxEndScale,
+      initialMin: visualProps.endScale.min,
+      initialMax: visualProps.endScale.max,
       min: -1,
       max: 10,
       title: 'Particle end scale',
       onChanged: (values) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            minEndScale: values.start,
-            maxEndScale: values.end,
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              visualProperties: visualProps.copyWith(
+                endScale: Range.between(values.start, values.end),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              visualProperties: visualProps.copyWith(
+                endScale: Range.between(values.start, values.end),
+              ),
+            );
+          }
         });
       },
     );
   }
 
   Widget _originDxSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final emissionProps = config is PhysicsEffectConfiguration
+        ? config.emissionProperties
+        : (config as DeterministicEffectConfiguration).emissionProperties;
     return SingleValueSelection(
-      value: configuredEffect.effectConfiguration.origin.dx,
+      value: emissionProps.origin.dx,
       min: 0,
       max: 1,
       title: 'Origin dx',
       onChanged: (value) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            origin: Offset(value, configuredEffect.effectConfiguration.origin.dy),
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                origin: Offset(value, emissionProps.origin.dy),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                origin: Offset(value, emissionProps.origin.dy),
+              ),
+            );
+          }
         });
       },
     );
   }
 
   Widget _originDySection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final emissionProps = config is PhysicsEffectConfiguration
+        ? config.emissionProperties
+        : (config as DeterministicEffectConfiguration).emissionProperties;
     return SingleValueSelection(
-      value: configuredEffect.effectConfiguration.origin.dy,
+      value: emissionProps.origin.dy,
       min: 0,
       max: 1,
       title: 'Origin dy',
       onChanged: (value) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            origin: Offset(configuredEffect.effectConfiguration.origin.dx, value),
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                origin: Offset(emissionProps.origin.dx, value),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                origin: Offset(emissionProps.origin.dx, value),
+              ),
+            );
+          }
         });
       },
     );
   }
 
   Widget _offsetOriginDxSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final emissionProps = config is PhysicsEffectConfiguration
+        ? config.emissionProperties
+        : (config as DeterministicEffectConfiguration).emissionProperties;
     return RangeSelection(
-      initialMin: configuredEffect.effectConfiguration.minOriginOffset.dx,
-      initialMax: configuredEffect.effectConfiguration.maxOriginOffset.dx,
+      initialMin: emissionProps.minOriginOffset.dx,
+      initialMax: emissionProps.maxOriginOffset.dx,
       min: 0,
       max: 1,
       title: 'Offset origin dx',
       onChanged: (values) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            minOriginOffset: Offset(values.start, configuredEffect.effectConfiguration.minOriginOffset.dy),
-            maxOriginOffset: Offset(values.end, configuredEffect.effectConfiguration.maxOriginOffset.dy),
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                minOriginOffset: Offset(values.start, emissionProps.minOriginOffset.dy),
+                maxOriginOffset: Offset(values.end, emissionProps.maxOriginOffset.dy),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                minOriginOffset: Offset(values.start, emissionProps.minOriginOffset.dy),
+                maxOriginOffset: Offset(values.end, emissionProps.maxOriginOffset.dy),
+              ),
+            );
+          }
         });
       },
     );
   }
 
   Widget _offsetOriginDySection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final emissionProps = config is PhysicsEffectConfiguration
+        ? config.emissionProperties
+        : (config as DeterministicEffectConfiguration).emissionProperties;
     return RangeSelection(
-      initialMin: configuredEffect.effectConfiguration.minOriginOffset.dy,
-      initialMax: configuredEffect.effectConfiguration.maxOriginOffset.dy,
+      initialMin: emissionProps.minOriginOffset.dy,
+      initialMax: emissionProps.maxOriginOffset.dy,
       min: 0,
       max: 1,
       title: 'Offset origin dy',
       onChanged: (values) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            minOriginOffset: Offset(configuredEffect.effectConfiguration.minOriginOffset.dx, values.start),
-            maxOriginOffset: Offset(configuredEffect.effectConfiguration.maxOriginOffset.dx, values.end),
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                minOriginOffset: Offset(emissionProps.minOriginOffset.dx, values.start),
+                maxOriginOffset: Offset(emissionProps.maxOriginOffset.dx, values.end),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              emissionProperties: emissionProps.copyWith(
+                minOriginOffset: Offset(emissionProps.minOriginOffset.dx, values.start),
+                maxOriginOffset: Offset(emissionProps.maxOriginOffset.dx, values.end),
+              ),
+            );
+          }
         });
       },
     );
   }
 
   Widget _particleAngleSection(_ConfiguredEffect configuredEffect) {
-    return RangeSelection(
-      initialMin: configuredEffect.effectConfiguration.minAngle,
-      initialMax: configuredEffect.effectConfiguration.maxAngle,
-      min: -180,
-      max: 180,
-      divisions: 360,
-      title: 'Particle angle',
-      onChanged: (values) {
-        setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            minAngle: values.start,
-            maxAngle: values.end,
-          );
-        });
-      },
-      precision: 3,
-    );
+    final config = configuredEffect.effectConfiguration;
+    if (config is PhysicsEffectConfiguration) {
+      final physicsProps = config.physicsProperties;
+      return RangeSelection(
+        initialMin: physicsProps.angle.min,
+        initialMax: physicsProps.angle.max,
+        min: -180,
+        max: 180,
+        divisions: 360,
+        title: 'Particle angle',
+        onChanged: (values) {
+          setState(() {
+            configuredEffect.effectConfiguration = config.copyWith(
+              physicsProperties: physicsProps.copyWith(
+                angle: Range.between(values.start, values.end),
+              ),
+            );
+          });
+        },
+        precision: 3,
+      );
+    } else {
+      final detConfig = config as DeterministicEffectConfiguration;
+      final detProps = detConfig.deterministicProperties;
+      return RangeSelection(
+        initialMin: detProps.angle.min,
+        initialMax: detProps.angle.max,
+        min: -180,
+        max: 180,
+        divisions: 360,
+        title: 'Particle angle',
+        onChanged: (values) {
+          setState(() {
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              deterministicProperties: detProps.copyWith(
+                angle: Range.between(values.start, values.end),
+              ),
+            );
+          });
+        },
+        precision: 3,
+      );
+    }
   }
 
   Widget _trailProgressSection(_ConfiguredEffect configuredEffect) {
+    final config = configuredEffect.effectConfiguration;
+    final layerProps = config is PhysicsEffectConfiguration
+        ? config.layerProperties
+        : (config as DeterministicEffectConfiguration).layerProperties;
     return SingleValueSelection(
-      value: configuredEffect.effectConfiguration.trail.trailProgress,
+      value: layerProps.trail.trailProgress,
       title: 'Trail Progress',
       onChanged: (value) {
         setState(() {
-          final trailWidth = configuredEffect.effectConfiguration.trail is NoTrail
-              ? 0.0
-              : (configuredEffect.effectConfiguration.trail as StraightTrail).trailWidth;
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            trail: StraightTrail(trailProgress: value, trailWidth: trailWidth),
-          );
+          final trailWidth = layerProps.trail is NoTrail ? 0.0 : (layerProps.trail as StraightTrail).trailWidth;
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              layerProperties: layerProps.copyWith(
+                trail: StraightTrail(trailProgress: value, trailWidth: trailWidth),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              layerProperties: layerProps.copyWith(
+                trail: StraightTrail(trailProgress: value, trailWidth: trailWidth),
+              ),
+            );
+          }
         });
       },
       precision: 3,
@@ -875,20 +1103,36 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _trailWidthSection(_ConfiguredEffect configuredEffect) {
-    final trailWidth = configuredEffect.effectConfiguration.trail is NoTrail
-        ? 0.0
-        : (configuredEffect.effectConfiguration.trail as StraightTrail).trailWidth;
+    final config = configuredEffect.effectConfiguration;
+    final layerProps = config is PhysicsEffectConfiguration
+        ? config.layerProperties
+        : (config as DeterministicEffectConfiguration).layerProperties;
+    final trailWidth = layerProps.trail is NoTrail ? 0.0 : (layerProps.trail as StraightTrail).trailWidth;
     return SingleValueSelection(
       value: trailWidth,
       title: 'Trail Width',
       onChanged: (value) {
         setState(() {
-          configuredEffect.effectConfiguration = configuredEffect.effectConfiguration.copyWith(
-            trail: StraightTrail(
-              trailProgress: configuredEffect.effectConfiguration.trail.trailProgress,
-              trailWidth: value,
-            ),
-          );
+          if (config is PhysicsEffectConfiguration) {
+            configuredEffect.effectConfiguration = config.copyWith(
+              layerProperties: layerProps.copyWith(
+                trail: StraightTrail(
+                  trailProgress: layerProps.trail.trailProgress,
+                  trailWidth: value,
+                ),
+              ),
+            );
+          } else {
+            final detConfig = config as DeterministicEffectConfiguration;
+            configuredEffect.effectConfiguration = detConfig.copyWith(
+              layerProperties: layerProps.copyWith(
+                trail: StraightTrail(
+                  trailProgress: layerProps.trail.trailProgress,
+                  trailWidth: value,
+                ),
+              ),
+            );
+          }
         });
       },
       precision: 3,
@@ -948,8 +1192,12 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           value: effectConfiguration.onlyInteractWithEdges,
           onChanged: (value) {
             setState(() {
-              configuredEffect.effectConfiguration =
-                  effectConfiguration.copyWith(onlyInteractWithEdges: value ?? false);
+              final physicsProps = effectConfiguration.physicsProperties;
+              configuredEffect.effectConfiguration = effectConfiguration.copyWith(
+                physicsProperties: physicsProps.copyWith(
+                  onlyInteractWithEdges: value ?? false,
+                ),
+              );
             });
           },
         ),

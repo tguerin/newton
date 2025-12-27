@@ -59,30 +59,33 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
 
   DeterministicEffectConfiguration currentActiveEffectConfiguration(int index, Duration delay) {
     return DeterministicEffectConfiguration(
-      particleCount: 100,
-      particlesPerEmit: 100,
+      deterministicProperties: const DeterministicProperties(
+        distance: Range.between(90, 220),
+        angle: Range.between(-135, -45),
+      ),
+      visualProperties: const VisualProperties(
+        beginScale: Range.between(0.7, 0.9),
+        endScale: Range.between(1, 1.2),
+        fadeInCurve: Curves.easeIn,
+        fadeOutCurve: Curves.easeOut,
+        fadeOutThreshold: Range.between(0.6, 0.8),
+      ),
+      emissionProperties: const EmissionProperties(
+        particleCount: 100,
+        particlesPerEmit: 100,
+        emitCurve: Curves.fastOutSlowIn,
+        emitDuration: Duration(milliseconds: 250),
+        origin: Offset(0.5, 0),
+        maxParticleLifespan: Duration(seconds: 3),
+      ),
+      animationProperties: AnimationProperties(
+        startDelay: delay,
+      ),
       distanceCurve: Curves.slowMiddle,
-      emitCurve: Curves.fastOutSlowIn,
-      fadeInCurve: Curves.easeIn,
-      fadeOutCurve: Curves.easeOut,
-      emitDuration: const Duration(milliseconds: 250),
-      minAngle: -135,
-      maxAngle: -45,
-      minDistance: 90,
-      maxDistance: 220,
-      maxParticleLifespan: const Duration(seconds: 3),
-      minFadeOutThreshold: 0.6,
-      maxFadeOutThreshold: 0.8,
-      minBeginScale: 0.7,
-      maxBeginScale: 0.9,
-      minEndScale: 1,
-      maxEndScale: 1.2,
       particleConfiguration: ParticleConfiguration(
         shape: _imageAssets[index],
         size: Size.square(_emojiSize),
       ),
-      startDelay: delay,
-      origin: const Offset(0.5, 0),
     );
   }
 

@@ -68,32 +68,34 @@ class ConfettiPreset {
   /// The old `RelativisticEffectConfiguration` is deprecated.
   PhysicsEffectConfiguration toConfiguration() {
     return PhysicsEffectConfiguration(
-      gravity: gravity,
-      origin: origin,
-      maxOriginOffset: const Offset(0.2, 0),
-      minOriginOffset: const Offset(-0.2, 0),
-      maxAngle: 180,
-      maxVelocity: Velocity.custom(15),
-      minVelocity: Velocity.custom(5),
-      maxParticleLifespan: const Duration(seconds: 3),
-      minParticleLifespan: const Duration(seconds: 2),
-      maxEndScale: 0.5,
-      minEndScale: 0.3,
-      maxBeginScale: 1.2,
-      minBeginScale: 0.8,
-      maxFadeOutThreshold: 0.8,
-      minFadeOutThreshold: 0.6,
-      particleCount: particleCount,
-      particlesPerEmit: particlesPerEmit,
-      emitDuration: emitDuration,
+      physicsProperties: PhysicsProperties(
+        gravity: gravity,
+        angle: const Range.between(0, 180),
+        velocity: Range.between(Velocity.custom(5), Velocity.custom(15)),
+        solidEdges: const SolidEdges.only(bottom: true),
+      ),
+      visualProperties: const VisualProperties(
+        beginScale: Range.between(0.8, 1.2),
+        endScale: Range.between(0.3, 0.5),
+        fadeOutThreshold: Range.between(0.6, 0.8),
+        scaleCurve: Curves.easeOut,
+        fadeOutCurve: Curves.easeIn,
+      ),
+      emissionProperties: EmissionProperties(
+        particleCount: particleCount,
+        particlesPerEmit: particlesPerEmit,
+        emitDuration: emitDuration,
+        origin: origin,
+        minOriginOffset: const Offset(-0.2, 0),
+        maxOriginOffset: const Offset(0.2, 0),
+        minParticleLifespan: const Duration(seconds: 2),
+        maxParticleLifespan: const Duration(seconds: 3),
+      ),
       particleConfiguration: ParticleConfiguration(
         shape: const SquareShape(),
         size: const Size(8, 8),
         color: LinearInterpolationParticleColor(colors: colors),
       ),
-      solidEdges: const SolidEdges.only(bottom: true),
-      scaleCurve: Curves.easeOut,
-      fadeOutCurve: Curves.easeIn,
     );
   }
 }

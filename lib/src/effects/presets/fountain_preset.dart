@@ -59,32 +59,33 @@ class FountainPreset {
   /// The old `RelativisticEffectConfiguration` is deprecated.
   PhysicsEffectConfiguration toConfiguration() {
     return PhysicsEffectConfiguration(
-      gravity: gravity,
-      origin: origin,
-      maxOriginOffset: const Offset(0.1, 0),
-      minOriginOffset: const Offset(-0.1, 0),
-      // Spray upward (270 degrees) with slight spread
-      maxAngle: 300,
-      minAngle: 240,
-      maxVelocity: Velocity.custom(20),
-      minVelocity: Velocity.custom(15),
-      maxParticleLifespan: const Duration(seconds: 3),
-      minParticleLifespan: const Duration(seconds: 2),
-      maxEndScale: 0.8,
-      minEndScale: 0.6,
-      minBeginScale: 0.8,
-      maxFadeOutThreshold: 0.8,
-      minFadeOutThreshold: 0.6,
-      particleCount: particleCount,
-      particlesPerEmit: particlesPerEmit,
-      emitDuration: emitDuration,
+      physicsProperties: PhysicsProperties(
+        gravity: gravity,
+        angle: const Range.between(240, 300), // Spray upward (270 degrees) with slight spread
+        velocity: Range.between(Velocity.custom(15), Velocity.custom(20)),
+      ),
+      visualProperties: const VisualProperties(
+        beginScale: Range.single(0.8),
+        endScale: Range.between(0.6, 0.8),
+        fadeOutThreshold: Range.between(0.6, 0.8),
+        scaleCurve: Curves.easeOut,
+        fadeOutCurve: Curves.easeIn,
+      ),
+      emissionProperties: EmissionProperties(
+        particleCount: particleCount,
+        particlesPerEmit: particlesPerEmit,
+        emitDuration: emitDuration,
+        origin: origin,
+        minOriginOffset: const Offset(-0.1, 0),
+        maxOriginOffset: const Offset(0.1, 0),
+        minParticleLifespan: const Duration(seconds: 2),
+        maxParticleLifespan: const Duration(seconds: 3),
+      ),
       particleConfiguration: ParticleConfiguration(
         shape: const CircleShape(),
         size: const Size(4, 4),
         color: SingleParticleColor(color: color),
       ),
-      scaleCurve: Curves.easeOut,
-      fadeOutCurve: Curves.easeIn,
     );
   }
 }

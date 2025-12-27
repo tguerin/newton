@@ -59,27 +59,30 @@ class ExplosionPreset {
   /// The old `RelativisticEffectConfiguration` is deprecated.
   PhysicsEffectConfiguration toConfiguration() {
     return PhysicsEffectConfiguration(
-      gravity: gravity,
-      origin: origin,
-      maxAngle: 360,
-      maxVelocity: Velocity.custom(25),
-      minVelocity: Velocity.custom(15),
-      maxEndScale: 0.3,
-      minEndScale: 0.1,
-      maxBeginScale: 1.5,
-      maxFadeOutThreshold: 0.7,
-      minFadeOutThreshold: 0.5,
-      particleCount: particleCount,
-      particlesPerEmit: particlesPerEmit,
-      emitDuration: const Duration(milliseconds: 1),
+      physicsProperties: PhysicsProperties(
+        gravity: gravity,
+        angle: const Range.between(0, 360),
+        velocity: Range.between(Velocity.custom(15), Velocity.custom(25)),
+        solidEdges: SolidEdges.none,
+      ),
+      visualProperties: const VisualProperties(
+        beginScale: Range.single(1.5),
+        endScale: Range.between(0.1, 0.3),
+        fadeOutThreshold: Range.between(0.5, 0.7),
+        scaleCurve: Curves.easeOut,
+        fadeOutCurve: Curves.easeIn,
+      ),
+      emissionProperties: EmissionProperties(
+        particleCount: particleCount,
+        particlesPerEmit: particlesPerEmit,
+        emitDuration: const Duration(milliseconds: 1),
+        origin: origin,
+      ),
       particleConfiguration: ParticleConfiguration(
         shape: const CircleShape(),
         size: const Size(6, 6),
         color: LinearInterpolationParticleColor(colors: colors),
       ),
-      solidEdges: SolidEdges.none,
-      scaleCurve: Curves.easeOut,
-      fadeOutCurve: Curves.easeIn,
     );
   }
 }
