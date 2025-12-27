@@ -52,9 +52,12 @@ class RainPreset {
   /// Gravity applied to rain drops.
   final Gravity gravity;
 
-  /// Creates a [RelativisticEffectConfiguration] for the rain effect.
-  RelativisticEffectConfiguration toConfiguration() {
-    return RelativisticEffectConfiguration(
+  /// Creates a [PhysicsEffectConfiguration] for the rain effect.
+  ///
+  /// **Note**: This returns a `PhysicsEffectConfiguration` (the new recommended API).
+  /// The old `RelativisticEffectConfiguration` is deprecated.
+  PhysicsEffectConfiguration toConfiguration() {
+    return PhysicsEffectConfiguration(
       gravity: gravity,
       origin: origin,
       maxOriginOffset: const Offset(1, 0),

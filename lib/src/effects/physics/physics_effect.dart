@@ -2,24 +2,26 @@ import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/relativistic/forge/forge_newton_world.dart';
 import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
-import 'package:newton_particles/src/effects/relativistic/path.dart';
 
-/// The `RelativistEffect` class represents a particle effect that applies relativistic physics
-/// principles to particles within a simulated world.
+/// The `PhysicsEffect` class represents a particle effect that applies physics-based
+/// simulation to particles within a simulated world.
 ///
 /// This effect leverages the `NewtonWorld` to simulate particles with properties such as gravity,
-/// friction, restitution, and velocity under relativistic transformations. The effect configuration
-/// is highly customizable, allowing for dynamic creation and management of relativistic particles.
-class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectConfiguration> {
-  /// Creates a `RelativistEffect` with the specified configuration.
+/// friction, restitution, and velocity using physics simulation. The effect configuration
+/// is highly customizable, allowing for dynamic creation and management of physics-based particles.
+///
+/// This is the recommended class name. The old `RelativistEffect` name
+/// is deprecated and will be removed in a future version.
+class PhysicsEffect extends Effect<PhysicsParticle, PhysicsEffectConfiguration> {
+  /// Creates a `PhysicsEffect` with the specified configuration.
   ///
-  /// The `RelativistEffect` initializes a new `ForgeNewtonWorld` with the provided gravity and
+  /// The `PhysicsEffect` initializes a new `ForgeNewtonWorld` with the provided gravity and
   /// hard edges settings from the effect configuration. This world serves as the environment
   /// where particles are simulated.
   ///
   /// - [effectConfiguration]: Configuration for the effect.
   /// - [particlePool]: Optional particle pool for reusing particle instances.
-  RelativistEffect(
+  PhysicsEffect(
     super.effectConfiguration, {
     super.particlePool,
   }) : _world = ForgeNewtonWorld(
@@ -33,7 +35,7 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
   /// Advances the simulation by the given duration.
   ///
   /// This method forwards the state of the simulation by the specified [elapsedDuration], updating
-  /// the positions and states of all particles in the world according to the rules of relativistic physics.
+  /// the positions and states of all particles in the world according to the rules of physics simulation.
   @override
   void onTimeForwarded(Duration elapsedDuration) {
     _world.forward(elapsedDuration);
@@ -43,25 +45,25 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
   ///
   /// When a particle is destroyed, this method ensures that it is removed from the `NewtonWorld`.
   ///
-  /// - [particle]: The `RelativisticParticle` that has been destroyed.
+  /// - [particle]: The `PhysicsParticle` that has been destroyed.
   @override
-  void onParticleDestroyed(RelativisticParticle particle) {
+  void onParticleDestroyed(PhysicsParticle particle) {
     _world.removeParticle(particle);
   }
 
-  /// Instantiates a new `RelativisticParticle` with randomized properties based on the effect configuration.
+  /// Instantiates a new `PhysicsParticle` with randomized properties based on the effect configuration.
   ///
   /// This method creates a new particle, applying random variations to its properties such as
   /// angle, restitution, friction, velocity, and more. The particle is then added to the `NewtonWorld` for simulation.
   ///
   /// - [surfaceSize]: The size of the surface on which the particles are rendered.
   ///
-  /// Returns a newly created `RelativisticParticle` instance.
+  /// Returns a newly created `PhysicsParticle` instance.
   @override
-  RelativisticParticle instantiateParticle(Size surfaceSize) {
+  PhysicsParticle instantiateParticle(Size surfaceSize) {
     final effectConfiguration = this.effectConfiguration.configurationOverrider?.call(this) ?? this.effectConfiguration;
     final randomOriginOffset = effectConfiguration.randomOriginOffset();
-    final relativistParticle = RelativisticParticle(
+    final physicsParticle = PhysicsParticle(
       angle: effectConfiguration.randomAngle(),
       restitution: effectConfiguration.randomRestitution(),
       friction: effectConfiguration.randomFriction(),
@@ -86,13 +88,13 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
               randomOriginOffset.dy * surfaceSize.height,
             ),
       ),
-      pathTransformation: RelativisticPathTransformation(world: _world),
+      pathTransformation: PhysicsPathTransformation(world: _world),
       scaleRange: effectConfiguration.randomScaleRange(),
       scaleCurve: effectConfiguration.scaleCurve,
       trail: effectConfiguration.trail,
     );
-    _world.addParticle(relativistParticle);
-    return relativistParticle;
+    _world.addParticle(physicsParticle);
+    return physicsParticle;
   }
 
   /// Updates the size of the simulation surface.

@@ -22,14 +22,14 @@ enum AvailableEffect {
 }
 
 Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfigurationsPerAnimation = {
-  AvailableEffect.scratch: RelativisticEffectConfiguration(
+  AvailableEffect.scratch: PhysicsEffectConfiguration(
     gravity: Gravity.earthGravity,
     particleConfiguration: const ParticleConfiguration(
       shape: CircleShape(),
       size: Size(5, 5),
     ),
   ),
-  AvailableEffect.rain: RelativisticEffectConfiguration(
+  AvailableEffect.rain: PhysicsEffectConfiguration(
     gravity: Gravity.earthGravity,
     maxAngle: 90,
     maxEndScale: 1,
@@ -48,7 +48,7 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
       size: Size(5, 5),
     ),
   ),
-  AvailableEffect.explode: RelativisticEffectConfiguration(
+  AvailableEffect.explode: PhysicsEffectConfiguration(
     gravity: Gravity.zero,
     maxAngle: 180,
     maxEndScale: 1,
@@ -65,7 +65,7 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
       size: Size(5, 5),
     ),
   ),
-  AvailableEffect.pulse: RelativisticEffectConfiguration(
+  AvailableEffect.pulse: PhysicsEffectConfiguration(
     configurationOverrider: (effect) {
       final particlesPerEmit = effect.effectConfiguration.particlesPerEmit;
       final angle = 360 / particlesPerEmit * (effect.activeParticles.length % particlesPerEmit);
@@ -88,7 +88,7 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
     ),
     particlesPerEmit: 15,
   ),
-  AvailableEffect.fountain: RelativisticEffectConfiguration(
+  AvailableEffect.fountain: PhysicsEffectConfiguration(
     gravity: Gravity.earthGravity,
     minParticleLifespan: const Duration(seconds: 4),
     maxParticleLifespan: const Duration(seconds: 4),
@@ -107,7 +107,7 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
     ),
     particlesPerEmit: 10,
   ),
-  AvailableEffect.firework: RelativisticEffectConfiguration(
+  AvailableEffect.firework: PhysicsEffectConfiguration(
     gravity: Gravity.earthGravity,
     minAngle: -100,
     maxAngle: -80,
@@ -129,7 +129,7 @@ Map<AvailableEffect, EffectConfiguration> defaultRelativisticEffectConfiguration
           particle.position.dx / effect.surfaceSize.width,
           particle.position.dy / effect.surfaceSize.height,
         );
-        return RelativisticEffectConfiguration(
+        return PhysicsEffectConfiguration(
           gravity: Gravity.earthGravity,
           maxAngle: 180,
           minAngle: -180,

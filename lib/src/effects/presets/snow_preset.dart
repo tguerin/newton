@@ -54,12 +54,15 @@ class SnowPreset {
   /// Horizontal wind effect (negative = left, positive = right).
   final double windStrength;
 
-  /// Creates a [RelativisticEffectConfiguration] for the snow effect.
-  RelativisticEffectConfiguration toConfiguration() {
+  /// Creates a [PhysicsEffectConfiguration] for the snow effect.
+  ///
+  /// **Note**: This returns a `PhysicsEffectConfiguration` (the new recommended API).
+  /// The old `RelativisticEffectConfiguration` is deprecated.
+  PhysicsEffectConfiguration toConfiguration() {
     // Light gravity for slow fall
     const gravity = Gravity(0, 2);
 
-    return RelativisticEffectConfiguration(
+    return PhysicsEffectConfiguration(
       gravity: gravity,
       origin: origin,
       maxOriginOffset: const Offset(1, 0),

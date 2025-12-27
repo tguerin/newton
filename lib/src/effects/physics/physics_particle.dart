@@ -1,20 +1,44 @@
 import 'package:newton_particles/newton_particles.dart';
-import 'package:newton_particles/src/effects/relativistic/path.dart';
 
-/// The `RelativisticParticle` class represents a particle that is influenced by relativistic effects
-/// within a particle system.
+/// The `PhysicsParticle` class represents a particle that is influenced by physics-based
+/// simulation within a particle system.
 ///
 /// This class extends `AnimatedParticle` and adds properties that allow for the simulation of
 /// physical attributes such as angle, density, friction, restitution, and velocity. Additionally,
-/// it incorporates a `RelativisticPathTransformation` that dictates how the particle's position
-/// is transformed over time based on relativistic principles.
-class RelativisticParticle extends AnimatedParticle {
-  /// Creates a `RelativisticParticle` with the specified properties.
+/// it incorporates a `PhysicsPathTransformation` that dictates how the particle's position
+/// is transformed over time based on physics simulation.
+///
+/// Example usage:
+///
+/// ```dart
+/// final particle = PhysicsParticle(
+///   angle: 45,
+///   density: Density.defaultDensity,
+///   friction: Friction.ice,
+///   pathTransformation: PhysicsPathTransformation(world: world),
+///   restitution: Restitution.rubberBall,
+///   velocity: Velocity.rainDrop,
+///   onlyInteractWithEdges: false,
+///   animationDuration: Duration(seconds: 2),
+///   elapsedTimeOnStart: Duration.zero,
+///   fadeInCurve: Curves.easeIn,
+///   fadeInThreshold: 0.5,
+///   fadeOutCurve: Curves.easeOut,
+///   fadeOutThreshold: 0.5,
+///   foreground: true,
+///   particle: Particle(...),
+///   scaleCurve: Curves.linear,
+///   scaleRange: ScaleRange(min: 0.5, max: 1.0),
+///   trail: null,
+/// );
+/// ```
+class PhysicsParticle extends AnimatedParticle {
+  /// Creates a `PhysicsParticle` with the specified properties.
   ///
   /// - [angle]: The initial angle of the particle in degrees.
   /// - [density]: The density of the particle, affecting its mass and behavior in the system.
   /// - [friction]: The friction coefficient applied to the particle, affecting its resistance to motion.
-  /// - [pathTransformation]: The transformation applied to the particle's path based on relativistic effects.
+  /// - [pathTransformation]: The transformation applied to the particle's path based on physics simulation.
   /// - [restitution]: The restitution (bounciness) of the particle when it collides with other objects.
   /// - [velocity]: The velocity of the particle, determining its speed and direction.
   /// - [onlyInteractWithEdges]: A boolean that indicates whether the particle should only interact with the edges of the container.
@@ -29,7 +53,7 @@ class RelativisticParticle extends AnimatedParticle {
   /// - [scaleCurve]: The curve that defines the particle's scaling over time.
   /// - [scaleRange]: The range of scaling applied to the particle.
   /// - [trail]: An optional trail effect that follows the particle's movement.
-  RelativisticParticle({
+  PhysicsParticle({
     required this.angle,
     required this.density,
     required this.friction,
@@ -68,13 +92,13 @@ class RelativisticParticle extends AnimatedParticle {
   /// The velocity of the particle, defining its speed and direction.
   final Velocity velocity;
 
-  /// The transformation that dictates how the particle's position changes over time, based on relativistic effects.
-  final RelativisticPathTransformation pathTransformation;
+  /// The transformation that dictates how the particle's position changes over time, based on physics simulation.
+  final PhysicsPathTransformation pathTransformation;
 
   /// Updates the particle's animation based on the total elapsed time.
   ///
   /// This method is called periodically during the animation to update the particle's state.
-  /// It applies the `RelativisticPathTransformation` to adjust the particle's position according
+  /// It applies the `PhysicsPathTransformation` to adjust the particle's position according
   /// to the current simulation state.
   ///
   /// - [totalElapsed]: The total elapsed time since the start of the animation.

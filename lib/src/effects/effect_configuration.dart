@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/deterministic/deterministic_effect.dart';
-import 'package:newton_particles/src/effects/relativistic/relativistic_effect.dart';
 import 'package:newton_particles/src/utils/particle_pool.dart';
 
 /// Extension type `Tag` represents a simple wrapper around a string value that can be used
@@ -23,7 +22,7 @@ extension type const Tag(String value) {}
 /// behavior and appearance of particles in a Newton effect.
 ///
 /// This class is abstract and is meant to be extended by specific configurations, such as
-/// `DeterministicEffectConfiguration` or `RelativisticEffectConfiguration`.
+/// `DeterministicEffectConfiguration` or `PhysicsEffectConfiguration`.
 ///
 /// Example usage:
 ///
@@ -46,9 +45,9 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Instead, this class is meant to be extended by other concrete effect configurations
   /// that implement specific behavior.
   ///
-  /// Subclasses such as [DeterministicEffectConfiguration] or [RelativisticEffectConfiguration]
-  /// inherit and build upon the parameters defined here, allowing developers to create
-  /// customized particle effects.
+  /// Subclasses such as [DeterministicEffectConfiguration] or [PhysicsEffectConfiguration]
+  /// (recommended) inherit and build upon the parameters defined here, allowing developers
+  /// to create customized particle effects.
   ///
   /// - [particleConfiguration]: The general configuration for how particles are emitted and animated.
   /// - [emitCurve]: A curve that controls the rate of particle emission over time. Defaults to [Curves.decelerate],
@@ -390,7 +389,7 @@ extension EffectForConfiguration on EffectConfiguration<ParticleConfiguration> {
             effectConfiguration,
             particlePool: particlePool,
           ),
-        final RelativisticEffectConfiguration effectConfiguration => RelativistEffect(
+        final PhysicsEffectConfiguration effectConfiguration => PhysicsEffect(
             effectConfiguration,
             particlePool: particlePool,
           ),

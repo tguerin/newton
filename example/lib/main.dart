@@ -20,7 +20,7 @@ class NewtonExampleApp extends StatelessWidget {
       home: Newton(
         effectConfigurations: [
           // Emulate light balls falling
-          RelativisticEffectConfiguration(
+          PhysicsEffectConfiguration(
             gravity: Gravity.earthGravity,
             origin: Offset.zero,
             maxOriginOffset: const Offset(1, 0),

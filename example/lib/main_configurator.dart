@@ -257,7 +257,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
           ..._emissionOptions(currentConfiguredEffect),
           ..._particleOptions(currentConfiguredEffect),
           ..._randomnessOptions(currentConfiguredEffect),
-          if (_currentConfiguredEffect?.effectConfiguration is RelativisticEffectConfiguration)
+          if (_currentConfiguredEffect?.effectConfiguration is PhysicsEffectConfiguration)
             ..._physicsOptions(currentConfiguredEffect),
         ],
       ),
@@ -564,7 +564,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _gravityDxSection(_ConfiguredEffect configuredEffect) {
-    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as PhysicsEffectConfiguration;
     return SingleValueSelection(
       value: relativisticEffectConfiguration.gravity.dx,
       min: -20,
@@ -581,7 +581,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _gravityDySection(_ConfiguredEffect configuredEffect) {
-    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as PhysicsEffectConfiguration;
     return SingleValueSelection(
       value: relativisticEffectConfiguration.gravity.dy,
       min: -20,
@@ -598,7 +598,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _friction(_ConfiguredEffect configuredEffect) {
-    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as PhysicsEffectConfiguration;
     return RangeSelection(
       initialMin: relativisticEffectConfiguration.minFriction,
       initialMax: relativisticEffectConfiguration.maxFriction,
@@ -617,7 +617,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _density(_ConfiguredEffect configuredEffect) {
-    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as PhysicsEffectConfiguration;
     return RangeSelection(
       initialMin: relativisticEffectConfiguration.minDensity,
       initialMax: relativisticEffectConfiguration.maxDensity,
@@ -636,7 +636,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _restitution(_ConfiguredEffect configuredEffect) {
-    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as PhysicsEffectConfiguration;
     return RangeSelection(
       initialMin: relativisticEffectConfiguration.minRestitution,
       initialMax: relativisticEffectConfiguration.maxRestitution,
@@ -655,7 +655,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _velocity(_ConfiguredEffect configuredEffect) {
-    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    final relativisticEffectConfiguration = configuredEffect.effectConfiguration as PhysicsEffectConfiguration;
     return RangeSelection(
       initialMin: relativisticEffectConfiguration.minVelocity,
       initialMax: relativisticEffectConfiguration.maxVelocity,
@@ -940,7 +940,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   }
 
   Widget _onlyInteractWithEdges(_ConfiguredEffect configuredEffect) {
-    final effectConfiguration = configuredEffect.effectConfiguration as RelativisticEffectConfiguration;
+    final effectConfiguration = configuredEffect.effectConfiguration as PhysicsEffectConfiguration;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [

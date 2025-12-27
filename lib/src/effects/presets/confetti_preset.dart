@@ -62,9 +62,12 @@ class ConfettiPreset {
   /// Gravity applied to particles.
   final Gravity gravity;
 
-  /// Creates a [RelativisticEffectConfiguration] for the confetti effect.
-  RelativisticEffectConfiguration toConfiguration() {
-    return RelativisticEffectConfiguration(
+  /// Creates a [PhysicsEffectConfiguration] for the confetti effect.
+  ///
+  /// **Note**: This returns a `PhysicsEffectConfiguration` (the new recommended API).
+  /// The old `RelativisticEffectConfiguration` is deprecated.
+  PhysicsEffectConfiguration toConfiguration() {
+    return PhysicsEffectConfiguration(
       gravity: gravity,
       origin: origin,
       maxOriginOffset: const Offset(0.2, 0),

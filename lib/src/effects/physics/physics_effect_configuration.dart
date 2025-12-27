@@ -1,97 +1,8 @@
 import 'package:flutter/widgets.dart' hide Velocity;
 import 'package:newton_particles/newton_particles.dart';
 
-/// The `Gravity` class represents a gravitational force in the 2D plane.
-///
-/// This class encapsulates gravitational forces along the x-axis (`dx`) and y-axis (`dy`), allowing
-/// for customized gravity in particle systems or physics simulations. The class also provides some
-/// predefined constants, such as `zero` (no gravity) and `earthGravity` (standard Earth gravity).
-///
-/// Example usage:
-///
-/// ```dart
-/// final gravity = Gravity.earthGravity;
-/// print(gravity.dy); // Output: 9.807
-/// ```
-@immutable
-class Gravity {
-  /// Creates a `Gravity` instance with the specified gravitational forces along the x and y axes.
-  const Gravity(this.dx, this.dy);
-
-  /// The gravitational force along the x-axis.
-  final double dx;
-
-  /// The gravitational force along the y-axis.
-  final double dy;
-
-  /// Represents no gravity, with `dx = 0` and `dy = 0`.
-  static const zero = Gravity(0, 0);
-
-  /// Represents standard Earth gravity, with `dx = 0` and `dy = 9.807 m/s²`.
-  static const earthGravity = Gravity(0, 9.807);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Gravity && runtimeType == other.runtimeType && dx == other.dx && dy == other.dy;
-
-  @override
-  int get hashCode => dx.hashCode ^ dy.hashCode;
-
-  @override
-  String toString() {
-    return 'Gravity{dx: $dx, dy: $dy}';
-  }
-}
-
-/// The `SolidEdges` class is used to specify which edges of a 2D boundary are solid, meaning that
-/// particles or objects will interact with them as impenetrable boundaries.
-///
-/// This class provides constructors to define solid edges on specific sides (`left`, `top`, `right`, `bottom`)
-/// and predefined constants such as `none` (no solid edges) and `all` (all edges are solid).
-///
-/// Example usage:
-///
-/// ```dart
-/// final edges = SolidEdges.only(left: true, top: false);
-/// print(edges.left); // Output: true
-/// ```
-class SolidEdges {
-  /// Creates a `SolidEdges` instance with specific edges set to solid.
-  ///
-  /// By default, all edges are set to `false` (not solid).
-  const SolidEdges.only({
-    this.left = false,
-    this.top = false,
-    this.right = false,
-    this.bottom = false,
-  });
-
-  /// Creates a `SolidEdges` instance where all edges are set to solid.
-  const SolidEdges.all()
-      : left = true,
-        top = true,
-        right = true,
-        bottom = true;
-
-  /// Represents no solid edges, where all edges are set to `false`.
-  static const none = SolidEdges.only();
-
-  /// Indicates if the left edge is solid.
-  final bool left;
-
-  /// Indicates if the top edge is solid.
-  final bool top;
-
-  /// Indicates if the right edge is solid.
-  final bool right;
-
-  /// Indicates if the bottom edge is solid.
-  final bool bottom;
-}
-
-/// The `RelativisticEffectConfiguration` class extends `EffectConfiguration` to add
-/// additional properties for simulating relativistic effects in a particle system.
+/// The `PhysicsEffectConfiguration` class extends `EffectConfiguration` to add
+/// additional properties for simulating physics-based effects in a particle system.
 ///
 /// This class allows you to configure various properties such as gravity, hard edges, density,
 /// friction, restitution, and velocity, with options for both minimum and maximum values.
@@ -100,15 +11,15 @@ class SolidEdges {
 /// Example usage:
 ///
 /// ```dart
-/// final config = RelativisticEffectConfiguration(
+/// final config = PhysicsEffectConfiguration(
 ///   gravity: Gravity.earthGravity,
 ///   particleConfiguration: ParticleConfiguration(...),
 /// );
 /// ```
 @immutable
-class RelativisticEffectConfiguration extends EffectConfiguration {
-  /// Creates an instance of [RelativisticEffectConfiguration] with customizable parameters
-  /// for simulating particle physics with relativistic effects.
+class PhysicsEffectConfiguration extends EffectConfiguration {
+  /// Creates an instance of [PhysicsEffectConfiguration] with customizable parameters
+  /// for simulating particle physics.
   ///
   /// This configuration adds properties like gravity, velocity, and material characteristics such as friction and restitution,
   /// which impact how particles behave under simulated physical laws.
@@ -153,7 +64,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
   /// - [scaleCurve]: Controls the scaling of particles over time.
   /// - [startDelay]: The delay before the particle effect starts after initiation.
   /// - [trail]: Specifies any trail effect applied to particles as they move.
-  const RelativisticEffectConfiguration({
+  const PhysicsEffectConfiguration({
     required this.gravity,
     required super.particleConfiguration,
     this.configurationOverrider,
@@ -195,8 +106,8 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
   });
 
   /// A callback function that can override the configuration dynamically.
-  final RelativisticEffectConfiguration Function(
-    Effect<RelativisticParticle, RelativisticEffectConfiguration>,
+  final PhysicsEffectConfiguration Function(
+    Effect<PhysicsParticle, PhysicsEffectConfiguration>,
   )? configurationOverrider;
 
   /// The gravitational force applied to the particles.
@@ -233,9 +144,9 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
   final SolidEdges solidEdges;
 
   @override
-  RelativisticEffectConfiguration copyWith({
-    RelativisticEffectConfiguration Function(
-      Effect<RelativisticParticle, RelativisticEffectConfiguration>,
+  PhysicsEffectConfiguration copyWith({
+    PhysicsEffectConfiguration Function(
+      Effect<PhysicsParticle, PhysicsEffectConfiguration>,
     )? configurationOverrider,
     Gravity? gravity,
     Density? maxDensity,
@@ -279,7 +190,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
     Duration? startDelay,
     Trail? trail,
   }) {
-    return RelativisticEffectConfiguration(
+    return PhysicsEffectConfiguration(
       configurationOverrider: configurationOverrider ?? this.configurationOverrider,
       gravity: gravity ?? this.gravity,
       maxDensity: maxDensity ?? this.maxDensity,
@@ -345,7 +256,7 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
   bool operator ==(Object other) =>
       identical(this, other) ||
       super == other &&
-          other is RelativisticEffectConfiguration &&
+          other is PhysicsEffectConfiguration &&
           runtimeType == other.runtimeType &&
           configurationOverrider == other.configurationOverrider &&
           gravity == other.gravity &&

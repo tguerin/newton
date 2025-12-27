@@ -53,9 +53,12 @@ class ExplosionPreset {
   /// Gravity applied to particles.
   final Gravity gravity;
 
-  /// Creates a [RelativisticEffectConfiguration] for the explosion effect.
-  RelativisticEffectConfiguration toConfiguration() {
-    return RelativisticEffectConfiguration(
+  /// Creates a [PhysicsEffectConfiguration] for the explosion effect.
+  ///
+  /// **Note**: This returns a `PhysicsEffectConfiguration` (the new recommended API).
+  /// The old `RelativisticEffectConfiguration` is deprecated.
+  PhysicsEffectConfiguration toConfiguration() {
+    return PhysicsEffectConfiguration(
       gravity: gravity,
       origin: origin,
       maxAngle: 360,

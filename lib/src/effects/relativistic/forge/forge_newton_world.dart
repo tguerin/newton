@@ -10,7 +10,7 @@ const _edgeCategory = 0x0002;
 const int _edgeMask = _particleCategory;
 
 /// The `ForgeNewtonWorld` class implements the `NewtonWorld` interface using the Forge2D
-/// physics engine. It manages the simulation of relativistic particles within a 2D world,
+/// physics engine. It manages the simulation of physics particles within a 2D world,
 /// handling their addition, removal, and updates based on the physical properties defined.
 
 class ForgeNewtonWorld implements NewtonWorld {
@@ -26,13 +26,13 @@ class ForgeNewtonWorld implements NewtonWorld {
   static const _pixelsPerMeter = 100.0;
 
   late final _Boundaries _boundaries;
-  final Map<RelativisticParticle, f2d.Body> _particlesBody = {};
-  final Map<RelativisticParticle, f2d.Fixture> _particlesFixture = {};
-  final Map<RelativisticParticle, _ParticleFixtureCache> _particleFixtureCache = {};
+  final Map<PhysicsParticle, f2d.Body> _particlesBody = {};
+  final Map<PhysicsParticle, f2d.Fixture> _particlesFixture = {};
+  final Map<PhysicsParticle, _ParticleFixtureCache> _particleFixtureCache = {};
   late final f2d.World _world;
 
   @override
-  Offset? getParticleScreenPosition(RelativisticParticle particle) {
+  Offset? getParticleScreenPosition(PhysicsParticle particle) {
     final position = _particlesBody[particle]?.position;
     if (position == null) {
       return null;
@@ -46,7 +46,7 @@ class ForgeNewtonWorld implements NewtonWorld {
   }
 
   @override
-  void removeParticle(RelativisticParticle particle) {
+  void removeParticle(PhysicsParticle particle) {
     final body = _particlesBody.remove(particle);
     final fixture = _particlesFixture.remove(particle);
     _particleFixtureCache.remove(particle);
@@ -59,9 +59,9 @@ class ForgeNewtonWorld implements NewtonWorld {
   }
 
   @override
-  void addParticle(RelativisticParticle relativistParticle) {
-    final speed = relativistParticle.velocity;
-    final angleInDegrees = relativistParticle.angle;
+  void addParticle(PhysicsParticle particle) {
+    final speed = particle.velocity;
+    final angleInDegrees = particle.angle;
 
     final angleInRadians = angleInDegrees * (pi / 180);
 
@@ -70,10 +70,10 @@ class ForgeNewtonWorld implements NewtonWorld {
 
     final bodyDef = f2d.BodyDef()
       ..type = f2d.BodyType.dynamic
-      ..position = _screenToWorld(relativistParticle.particle.initialPosition);
+      ..position = _screenToWorld(particle.particle.initialPosition);
 
     final body = _world.createBody(bodyDef)..linearVelocity = f2d.Vector2(vx, vy);
-    _particlesBody[relativistParticle] = body;
+    _particlesBody[particle] = body;
   }
 
   @override
@@ -82,21 +82,21 @@ class ForgeNewtonWorld implements NewtonWorld {
   }
 
   @override
-  void updateParticles(List<RelativisticParticle> activeParticles) {
-    for (final relativistParticle in activeParticles) {
-      final body = _particlesBody[relativistParticle];
+  void updateParticles(List<PhysicsParticle> activeParticles) {
+    for (final particle in activeParticles) {
+      final body = _particlesBody[particle];
       if (body == null) continue;
 
       // Get current particle properties
-      final particleSize = _sizeToWorld(relativistParticle.particle.size);
-      final density = relativistParticle.density.value;
-      final friction = relativistParticle.friction.value;
-      final restitution = relativistParticle.restitution.value;
-      final particleMask = relativistParticle.onlyInteractWithEdges ? _edgeCategory : _particleCategory | _edgeCategory;
-      final isCircle = relativistParticle.particle.shape is CircleShape;
+      final particleSize = _sizeToWorld(particle.particle.size);
+      final density = particle.density.value;
+      final friction = particle.friction.value;
+      final restitution = particle.restitution.value;
+      final particleMask = particle.onlyInteractWithEdges ? _edgeCategory : _particleCategory | _edgeCategory;
+      final isCircle = particle.particle.shape is CircleShape;
 
       // Check if we need to recreate the fixture
-      final cached = _particleFixtureCache[relativistParticle];
+      final cached = _particleFixtureCache[particle];
       final needsUpdate = cached == null ||
           cached.size.x != particleSize.x ||
           cached.size.y != particleSize.y ||
@@ -108,13 +108,13 @@ class ForgeNewtonWorld implements NewtonWorld {
 
       if (needsUpdate) {
         // Destroy old fixture if it exists
-        final oldFixture = _particlesFixture[relativistParticle];
+        final oldFixture = _particlesFixture[particle];
         if (oldFixture != null) {
           body.destroyFixture(oldFixture);
         }
 
         // Create new fixture with current properties
-        final circleShape = switch (relativistParticle.particle.shape) {
+        final circleShape = switch (particle.particle.shape) {
           CircleShape() => f2d.CircleShape()..radius = particleSize.x / 2,
           _ => f2d.PolygonShape()
             ..setAsBox(
@@ -130,10 +130,10 @@ class ForgeNewtonWorld implements NewtonWorld {
           ..restitution = restitution
           ..filter.categoryBits = _particleCategory
           ..filter.maskBits = particleMask;
-        _particlesFixture[relativistParticle] = body.createFixture(fixtureDef);
+        _particlesFixture[particle] = body.createFixture(fixtureDef);
 
         // Update cache
-        _particleFixtureCache[relativistParticle] = _ParticleFixtureCache(
+        _particleFixtureCache[particle] = _ParticleFixtureCache(
           size: particleSize,
           density: density,
           friction: friction,
