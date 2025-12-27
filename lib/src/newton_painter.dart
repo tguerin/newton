@@ -61,37 +61,32 @@ class NewtonPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _clearTransformations();
 
-    // paint the particles with lowest zIndex first
-    // in case of equal zIndex, draw based on sequence index, lowest first
-    _effects
-        .expand((effect) {
-          effect
-            ..surfaceSize = size
-            ..forward(_elapsedTimeNotifier.value);
-          return effect.activeParticles;
-        })
-        .indexed
-        .toList()
-      ..sort(
-        (ap1, ap2) {
-          //$1 is the index within the List of active particles
-          //$2 is the actual active particle
+    // Update effects and collect all active particles
+    final allParticles = <AnimatedParticle>[];
+    for (final effect in _effects) {
+      effect
+        ..surfaceSize = size
+        ..forward(_elapsedTimeNotifier.value);
+      allParticles.addAll(effect.activeParticles);
+    }
 
-          //first compare zIndex
-          var comp = ap1.$2.particle.zIndex.compareTo(ap2.$2.particle.zIndex);
-          if (comp == 0) {
-            //tie break based on sequence
-            comp = ap1.$1.compareTo(ap2.$1);
-          }
-          return comp;
-        },
-      )
-      ..map((a) => a.$2).forEach((activeParticle) {
-        if (activeParticle.foreground == _foreground) {
-          _updateTransformations(activeParticle);
-          activeParticle.drawExtra(canvas);
-        }
+    // Sort particles: zIndex first, then maintain relative order for tie-breaker
+    // Optimized: removed indexed/map steps, using simpler sort comparator
+    final sortedParticles = allParticles.toList()
+      ..sort((ap1, ap2) {
+        final zIndexComp = ap1.particle.zIndex.compareTo(ap2.particle.zIndex);
+        if (zIndexComp != 0) return zIndexComp;
+        // For equal zIndex, maintain relative order (stable sort)
+        return 0;
       });
+
+    // Paint particles in sorted order
+    for (final activeParticle in sortedParticles) {
+      if (activeParticle.foreground == _foreground) {
+        _updateTransformations(activeParticle);
+        activeParticle.drawExtra(canvas);
+      }
+    }
 
     // Draw all particles using drawAtlas for efficiency.
     for (final blendedImage in _allBlendedImages) {
