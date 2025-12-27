@@ -114,4 +114,9 @@ class PhysicsEffect extends Effect<PhysicsParticle, PhysicsEffectConfiguration> 
   void onParticlesUpdated() {
     _world.updateParticles(activeParticles);
   }
+
+  /// Gets the `NewtonWorld` instance for this effect.
+  ///
+  /// This allows external code to access the physics world for collider management.
+  NewtonWorld get world => _world;
 }

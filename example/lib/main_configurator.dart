@@ -289,6 +289,26 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
                 key: _newtonKey,
                 effectConfigurations: _configuredEffects.map((effect) => effect.effectConfiguration).toList(),
                 onEffectStateChanged: (effect, state) {},
+                child: _hasPhysicsEffects()
+                    ? Center(
+                        child: NewtonCollider(
+                          borderRadius: BorderRadius.circular(20),
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            child: const Text(
+                              'Collider',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      )
+                    : null,
               ),
               Positioned(
                 left: 0,
@@ -1437,6 +1457,13 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
         const Gap(4),
         Text('Only interact with edges', style: Theme.of(context).textTheme.labelMedium),
       ],
+    );
+  }
+
+  /// Checks if any of the configured effects are physics effects.
+  bool _hasPhysicsEffects() {
+    return _configuredEffects.any(
+      (effect) => effect.effectConfiguration is PhysicsEffectConfiguration,
     );
   }
 }

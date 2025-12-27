@@ -42,6 +42,10 @@ with dynamic and interactive animations.
   help you easily create popular particle effects like rain, smoke, and
   explosions.
 
+- **Widget Collisions:** Particles can interact with Flutter widgets using
+  `NewtonCollider`, creating engaging interactive effects with accurate physics
+  including support for rounded corners.
+
 - **Efficient Performance:** Newton is optimized for performance, ensuring
   smooth animations even on lower-end devices without compromising on visual
   quality.

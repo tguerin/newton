@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:forge2d/forge2d.dart' as f2d;
 import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
+import 'package:newton_particles/src/utils/sdf_physics.dart';
 
 const _particleCategory = 0x0001;
 const _edgeCategory = 0x0002;
@@ -30,6 +31,7 @@ class ForgeNewtonWorld implements NewtonWorld {
   final Map<PhysicsParticle, f2d.Fixture> _particlesFixture = {};
   final Map<PhysicsParticle, _ParticleFixtureCache> _particleFixtureCache = {};
   late final f2d.World _world;
+  List<RRect> _colliders = [];
 
   @override
   Offset? getParticleScreenPosition(PhysicsParticle particle) {
@@ -43,6 +45,146 @@ class ForgeNewtonWorld implements NewtonWorld {
   @override
   void forward(Duration elapsedDuration) {
     _world.stepDt(elapsedDuration.inMilliseconds / Duration.millisecondsPerSecond);
+    // Apply SDF-based collision detection for widget colliders
+    _applySDFCollisions();
+  }
+
+  /// Sets the list of colliders (RRects) for SDF-based collision detection.
+  /// This replaces all existing colliders with the new list.
+  void setColliders(List<RRect> colliders) {
+    // Create a new list to ensure we're not keeping old references
+    _colliders = List<RRect>.from(colliders);
+  }
+
+  /// Applies SDF-based collision detection and correction for all particles.
+  void _applySDFCollisions() {
+    if (_colliders.isEmpty) return;
+
+    for (final entry in _particlesBody.entries) {
+      final particle = entry.key;
+      final body = entry.value;
+
+      // Widget colliders always work regardless of onlyInteractWithEdges setting
+
+      final particlePosition = _worldToScreen(body.position);
+      final particleSize = particle.particle.size;
+
+      // Calculate collision radius based on particle shape
+      final collisionRadius = _getCollisionRadius(particle.particle.shape, particleSize);
+
+      // Check collision with each collider
+      for (final collider in _colliders) {
+        // Get distance from particle center to RRect surface
+        // Negative = inside, Positive = outside, Zero = on surface
+        final distance = SDFPhysics.getDistanceToRRect(particlePosition, collider);
+
+        // Collision occurs when the particle's edge penetrates the surface
+        // distance is from particle center to RRect surface
+        // If distance < collisionRadius, the particle edge has penetrated
+        // Add a small threshold to prevent jittering when particles are at rest
+        const collisionThreshold = 0.5; // pixels
+        if (distance < collisionRadius - collisionThreshold) {
+          // Calculate penetration depth (how far the particle has penetrated)
+          final penetration = collisionRadius - distance;
+
+          // Get surface normal (points outward from collider)
+          final normal = SDFPhysics.getNormal(particlePosition, collider);
+          if (normal.distance < 0.1) continue; // Invalid normal
+
+          // Ensure normal points outward (away from collider)
+          // If distance is negative (inside), normal should point away from center
+          // If distance is positive but < radius (edge touching), normal should point away
+          final toParticle = particlePosition - collider.center;
+          final normalDotToParticle = normal.dx * toParticle.dx + normal.dy * toParticle.dy;
+          final outwardNormal = normalDotToParticle > 0 ? normal : -normal;
+
+          // Get current velocity in screen space
+          final currentVelocity = body.linearVelocity;
+          final screenVelocity = Offset(
+            currentVelocity.x * _pixelsPerMeter,
+            currentVelocity.y * _pixelsPerMeter,
+          );
+          final velocityMagnitude = screenVelocity.distance;
+
+          // Check if velocity is moving toward the collider (negative dot product)
+          final velocityDotNormal = screenVelocity.dx * outwardNormal.dx + screenVelocity.dy * outwardNormal.dy;
+
+          // Calculate tangential velocity (component parallel to surface)
+          // This preserves rolling motion along the edge
+          final tangentialVelocity = screenVelocity - outwardNormal * velocityDotNormal;
+
+          // Get restitution value
+          final restitution = particle.restitution.value;
+
+          // Only apply corrections if:
+          // 1. Particle is actually penetrating (not just touching)
+          // 2. Particle has significant velocity toward the collider
+          // This prevents jittering when particles are at rest
+          if (penetration > collisionThreshold && velocityDotNormal < -0.1) {
+            // Push particle out of collider by the penetration depth
+            final pushOut = outwardNormal * penetration;
+            final worldPushOut = _screenToWorld(pushOut);
+            body.setTransform(body.position + worldPushOut, body.angle);
+
+            // Reflect only the normal component with restitution, preserve tangential for rolling
+            // velocityDotNormal is negative when moving toward, so -velocityDotNormal is positive (moving away)
+            // Apply restitution to reduce bounce: -velocityDotNormal * restitution
+            final reflectedNormalComponent = outwardNormal * (-velocityDotNormal * restitution);
+            final finalVelocity = tangentialVelocity + reflectedNormalComponent;
+
+            final worldVelocity = f2d.Vector2(
+              finalVelocity.dx / _pixelsPerMeter,
+              finalVelocity.dy / _pixelsPerMeter,
+            );
+            body.linearVelocity = worldVelocity;
+          } else if (penetration > collisionThreshold * 2) {
+            // Only push out if deeply penetrating, but preserve tangential velocity for rolling
+            final pushOut = outwardNormal * (penetration - collisionThreshold);
+            final worldPushOut = _screenToWorld(pushOut);
+            body.setTransform(body.position + worldPushOut, body.angle);
+
+            // If velocity is very low, zero it out to prevent jittering
+            // Otherwise apply restitution to normal component and preserve tangential
+            if (velocityMagnitude < 1.0) {
+              body.linearVelocity = f2d.Vector2.zero();
+            } else {
+              // Apply restitution to normal component if moving toward collider
+              final reflectedNormalComponent = velocityDotNormal < 0
+                  ? outwardNormal * (-velocityDotNormal * restitution)
+                  : outwardNormal * velocityDotNormal;
+              final finalVelocity = tangentialVelocity + reflectedNormalComponent;
+
+              final worldVelocity = f2d.Vector2(
+                finalVelocity.dx / _pixelsPerMeter,
+                finalVelocity.dy / _pixelsPerMeter,
+              );
+              body.linearVelocity = worldVelocity;
+            }
+          } else if (penetration > 0 && velocityDotNormal.abs() < 0.5) {
+            // Particle is in contact but not penetrating much and velocity is mostly tangential
+            // This is rolling along the edge - just push out slightly
+            // Apply restitution if there's any normal component
+            final pushOut = outwardNormal * (penetration * 0.5);
+            final worldPushOut = _screenToWorld(pushOut);
+            body.setTransform(body.position + worldPushOut, body.angle);
+
+            // Apply restitution to any normal component while preserving tangential
+            if (velocityDotNormal < -0.01) {
+              // Small normal component toward collider - apply restitution
+              final reflectedNormalComponent = outwardNormal * (-velocityDotNormal * restitution);
+              final finalVelocity = tangentialVelocity + reflectedNormalComponent;
+
+              final worldVelocity = f2d.Vector2(
+                finalVelocity.dx / _pixelsPerMeter,
+                finalVelocity.dy / _pixelsPerMeter,
+              );
+              body.linearVelocity = worldVelocity;
+            }
+            // If velocityDotNormal is positive or very small, don't modify - let Forge2D handle it
+          }
+        }
+      }
+    }
   }
 
   @override
@@ -164,6 +306,21 @@ class ForgeNewtonWorld implements NewtonWorld {
       worldPosition.x * _pixelsPerMeter,
       worldPosition.y * _pixelsPerMeter,
     );
+  }
+
+  /// Gets the collision radius for a particle based on its shape.
+  ///
+  /// For circles, returns the radius.
+  /// For squares/rectangles, returns half the diagonal (conservative approximation).
+  /// For images, uses the bounding box diagonal.
+  static double _getCollisionRadius(Shape shape, Size particleSize) {
+    return switch (shape) {
+      CircleShape() => particleSize.width / 2,
+      SquareShape() => sqrt(particleSize.width * particleSize.width + particleSize.height * particleSize.height) / 2,
+      ImageShape() => sqrt(particleSize.width * particleSize.width + particleSize.height * particleSize.height) / 2,
+      ImageAssetShape() =>
+        sqrt(particleSize.width * particleSize.width + particleSize.height * particleSize.height) / 2,
+    };
   }
 }
 

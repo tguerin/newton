@@ -3,10 +3,12 @@ import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
+import 'package:newton_particles/src/effects/relativistic/forge/forge_newton_world.dart';
 import 'package:newton_particles/src/newton_painter.dart';
 import 'package:newton_particles/src/utils/bundle_extensions.dart';
 
@@ -66,6 +68,9 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   final _effects = <Effect>[];
   final _effectsElapsedTimeNotifier = _ElapsedTimeNotifier();
   final _debugDataController = StreamController<NewtonDebugData>.broadcast();
+  final _colliders = <String, RRect>{};
+  final GlobalKey _customPaintKey = GlobalKey();
+  Size? _previousSize;
 
   /// Stream of debug data providing real-time information about particle effects.
   ///
@@ -144,36 +149,78 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return _NewtonScope(
       newtonState: this,
-      child: FutureBuilder(
-        future: _shapeSpriteSheet,
-        builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
-          if (snapshot.hasData) {
-            return RepaintBoundary(
-              child: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  return CustomPaint(
-                    willChange: _effects.isNotEmpty,
-                    size: constraints.biggest,
-                    painter: NewtonPainter(
-                      elapsedTimeNotifier: _effectsElapsedTimeNotifier,
-                      effects: _effects,
-                      shapesSpriteSheet: snapshot.data!,
-                    ),
-                    foregroundPainter: NewtonPainter(
-                      elapsedTimeNotifier: _effectsElapsedTimeNotifier,
-                      effects: _effects,
-                      shapesSpriteSheet: snapshot.data!,
-                      foreground: true,
-                    ),
-                    child: widget.child,
-                  );
-                },
-              ),
-            );
-          } else {
-            return widget.child ?? Container();
-          }
+      child: NotificationListener<NewtonCollisionNotification>(
+        onNotification: (notification) {
+          setState(() {
+            if (notification.isRemoving) {
+              _colliders.remove(notification.id);
+            } else {
+              // Always remove the old collider first to ensure cleanup
+              _colliders.remove(notification.id);
+
+              // Convert from global screen coordinates to canvas coordinates
+              final canvasRect = _convertRectToCanvas(notification.rect);
+              // Only add if the rect is valid (has positive size and reasonable coordinates)
+              if (canvasRect.width > 0 && canvasRect.height > 0) {
+                _colliders[notification.id] = notification.borderRadius.toRRect(canvasRect);
+              }
+              // If conversion failed or rect is invalid, the collider is already removed above
+            }
+          });
+          // Sync colliders to physics effects - this replaces ALL colliders with the current map
+          _syncCollidersToEffects();
+          return true;
         },
+        child: FutureBuilder(
+          future: _shapeSpriteSheet,
+          builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+            if (snapshot.hasData) {
+              return RepaintBoundary(
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    final currentSize = constraints.biggest;
+                    // Update colliders and effects when size changes (e.g., screen resize)
+                    if (_previousSize != null && _previousSize != currentSize) {
+                      // Update surface size for all effects
+                      for (final effect in _effects) {
+                        effect.surfaceSize = currentSize;
+                      }
+                      // Update colliders after layout is complete
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _updateCollidersOnLayoutChange();
+                      });
+                    } else if (_previousSize == null) {
+                      // First time - set initial surface size
+                      for (final effect in _effects) {
+                        effect.surfaceSize = currentSize;
+                      }
+                    }
+                    _previousSize = currentSize;
+                    return CustomPaint(
+                      key: _customPaintKey,
+                      willChange: _effects.isNotEmpty,
+                      size: currentSize,
+                      painter: NewtonPainter(
+                        elapsedTimeNotifier: _effectsElapsedTimeNotifier,
+                        effects: _effects,
+                        shapesSpriteSheet: snapshot.data!,
+                      ),
+                      foregroundPainter: NewtonPainter(
+                        elapsedTimeNotifier: _effectsElapsedTimeNotifier,
+                        effects: _effects,
+                        shapesSpriteSheet: snapshot.data!,
+                        foreground: true,
+                      ),
+                      child: widget.child,
+                    );
+                  },
+                ),
+              );
+            } else {
+              return widget.child ?? Container();
+            }
+          },
+        ),
       ),
     );
   }
@@ -274,6 +321,65 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     EffectState state,
   ) {
     widget.onEffectStateChanged?.call(effect, state);
+  }
+
+  /// Converts a rectangle from global screen coordinates to canvas coordinates.
+  Rect _convertRectToCanvas(Rect globalRect) {
+    final customPaintContext = _customPaintKey.currentContext;
+    if (customPaintContext != null) {
+      final renderObject = customPaintContext.findRenderObject();
+      if (renderObject is RenderBox && renderObject.hasSize) {
+        // Convert top-left and bottom-right corners
+        final topLeft = renderObject.globalToLocal(globalRect.topLeft);
+        final bottomRight = renderObject.globalToLocal(globalRect.bottomRight);
+        final convertedRect = Rect.fromPoints(topLeft, bottomRight);
+        // Validate the converted rect is reasonable (within bounds of the canvas)
+        // If conversion produces invalid coordinates, return an empty rect which will be filtered out
+        if (convertedRect.width > 0 &&
+            convertedRect.height > 0 &&
+            convertedRect.left >= -10000 &&
+            convertedRect.top >= -10000 &&
+            convertedRect.right <= renderObject.size.width + 10000 &&
+            convertedRect.bottom <= renderObject.size.height + 10000) {
+          return convertedRect;
+        }
+      }
+    }
+    // Return empty rect if conversion fails - this will cause the collider to be removed
+    return Rect.zero;
+  }
+
+  /// Syncs colliders to all physics effects.
+  void _syncCollidersToEffects() {
+    // Create a fresh list from current colliders to ensure no stale references
+    final collidersList = _colliders.values.toList();
+
+    for (final effect in _effects) {
+      if (effect is PhysicsEffect) {
+        final world = effect.world;
+        if (world is ForgeNewtonWorld) {
+          // This completely replaces all colliders in the physics world
+          world.setColliders(collidersList);
+        }
+      }
+    }
+  }
+
+  /// Gets the current list of colliders.
+  List<RRect> get colliders => _colliders.values.toList();
+
+  /// Updates collider positions when layout changes (e.g., screen resize).
+  /// This triggers all NewtonCollider widgets to re-report their positions.
+  void _updateCollidersOnLayoutChange() {
+    if (!mounted) return;
+
+    // Trigger a rebuild to cause all NewtonCollider widgets to re-report
+    // via their didChangeDependencies callbacks
+    // This ensures colliders get fresh positions in the new coordinate space
+    setState(() {
+      // Empty setState just triggers a rebuild, which will cause
+      // NewtonCollider widgets to re-report their positions
+    });
   }
 }
 

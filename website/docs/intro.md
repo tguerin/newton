@@ -59,6 +59,32 @@ Newton(
 Try our [effect configurator](https://newton.7omtech.fr/docs/configurator) to
 tweak your effect.
 
+## Widget Collisions
+
+Newton supports collision detection between particles and Flutter widgets. Wrap any widget with `NewtonCollider` to make particles bounce off it:
+
+```dart
+Newton(
+  effectConfigurations: [physicsEffectConfig],
+  child: Stack(
+    children: [
+      NewtonCollider(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          width: 200,
+          height: 100,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      ),
+    ],
+  ),
+)
+```
+
+See the [Widget Collisions documentation](widget-collisions) for more details.
+
 ## Example
 
 For a quick start, here's an example of creating a simple rain effect using

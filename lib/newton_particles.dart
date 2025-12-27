@@ -33,3 +33,5 @@ export 'src/particles/shape.dart';
 export 'src/types.dart';
 export 'src/utils/random_extensions.dart';
 export 'src/utils/range.dart';
+export 'src/widgets/newton_collider.dart';
+export 'src/widgets/newton_collision_notification.dart';
