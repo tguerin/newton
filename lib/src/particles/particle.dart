@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:newton_particles/newton_particles.dart';
 
@@ -92,5 +93,28 @@ class Particle {
   /// If opacity is outside the range [0,1] it will be clamped to the nearest value.
   void updateOpacity(double opacity) {
     _color = _color.withValues(alpha: opacity.clamp(0, 1));
+  }
+
+  /// Resets the particle for reuse in a pool.
+  ///
+  /// This method resets all mutable fields to prepare the particle for reuse.
+  /// Note: Final fields (initialPosition, initialSize, initialColor, shape, _zIndex)
+  /// cannot be reset and will retain their original values. This is acceptable
+  /// for pooled particles as these fields are primarily used for reference.
+  ///
+  /// - [configuration]: The new configuration for the particle.
+  /// - [position]: The new initial position.
+  /// - [rotation]: The new rotation value.
+  @internal
+  void resetForPool({
+    required ParticleConfiguration configuration,
+    required Offset position,
+    double rotation = 0,
+  }) {
+    this.position = position;
+    this.rotation = rotation;
+    size = configuration.size;
+    _color = configuration.color.computeColor(0);
+    // Note: We cannot reset final fields, but this is acceptable for pooling
   }
 }

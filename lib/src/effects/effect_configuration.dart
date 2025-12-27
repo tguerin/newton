@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/deterministic/deterministic_effect.dart';
 import 'package:newton_particles/src/effects/relativistic/relativistic_effect.dart';
+import 'package:newton_particles/src/utils/particle_pool.dart';
 
 /// Extension type `Tag` represents a simple wrapper around a string value that can be used
 /// to tag or identify specific configurations, effects, or particles within the Newton system.
@@ -379,9 +380,20 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
 /// based on the specific type of `EffectConfiguration`.
 extension EffectForConfiguration on EffectConfiguration<ParticleConfiguration> {
   /// Creates an `Effect` based on the specific type of `EffectConfiguration`.
-  Effect<AnimatedParticle, EffectConfiguration> effect() => switch (this) {
-        final DeterministicEffectConfiguration effectConfiguration => DeterministicEffect(effectConfiguration),
-        final RelativisticEffectConfiguration effectConfiguration => RelativistEffect(effectConfiguration),
+  ///
+  /// - [particlePool]: Optional particle pool for reusing particle instances.
+  ///   If not provided, each effect will use its own default pool.
+  ///   Providing a custom pool allows you to control memory usage and share
+  ///   pools across multiple effects.
+  Effect<AnimatedParticle, EffectConfiguration> effect({ParticlePool? particlePool}) => switch (this) {
+        final DeterministicEffectConfiguration effectConfiguration => DeterministicEffect(
+            effectConfiguration,
+            particlePool: particlePool,
+          ),
+        final RelativisticEffectConfiguration effectConfiguration => RelativistEffect(
+            effectConfiguration,
+            particlePool: particlePool,
+          ),
         _ => throw Exception('Unexpected configuration type'),
       } as Effect<AnimatedParticle, EffectConfiguration>;
 }

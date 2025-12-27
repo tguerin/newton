@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:newton_particles/newton_particles.dart';
+import 'package:newton_particles/src/utils/particle_pool.dart';
 
 /// Abstract class representing a particle effect, defining the behavior of
 /// particles and managing their lifecycle within the effect.
@@ -7,7 +8,14 @@ abstract class Effect<ParticleT extends AnimatedParticle, ConfigurationT extends
   /// Constructor for creating an `Effect` with the specified configurations.
   ///
   /// - [effectConfiguration]: Configuration for the effect itself.
-  Effect(this.effectConfiguration);
+  /// - [particlePool]: Optional particle pool for reusing particle instances.
+  ///   If not provided, a default pool with max size 200 will be used.
+  ///   Providing a custom pool allows you to control memory usage and share
+  ///   pools across multiple effects.
+  Effect(
+    this.effectConfiguration, {
+    ParticlePool? particlePool,
+  }) : _particlePool = particlePool ?? ParticlePool(maxSize: 200);
 
   static const _noSize = Size(-1, -1);
 
@@ -63,6 +71,18 @@ abstract class Effect<ParticleT extends AnimatedParticle, ConfigurationT extends
   int _totalEmittedCount = 0;
   Duration _totalElapsed = Duration.zero;
   bool _killPending = false;
+
+  /// Particle pool for reusing particle instances to reduce allocations.
+  ///
+  /// This pool improves performance by reusing particle instances instead of
+  /// creating new ones, reducing garbage collection pressure.
+  final ParticlePool _particlePool;
+
+  /// Gets the particle pool for this effect.
+  ///
+  /// This getter provides access to the particle pool for subclasses.
+  @protected
+  ParticlePool get particlePool => _particlePool;
 
   /// Advances the effect by the given duration, updating the state and particles.
   void forward(Duration elapsedDuration) {
@@ -153,6 +173,8 @@ abstract class Effect<ParticleT extends AnimatedParticle, ConfigurationT extends
               ..addedAtRuntime = addedAtRuntime,
           );
         }
+        // Return particle to pool for reuse
+        particlePool.release(activeParticle.particle);
       }
       return animationOver;
     });

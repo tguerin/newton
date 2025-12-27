@@ -16,8 +16,13 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
   /// The `RelativistEffect` initializes a new `ForgeNewtonWorld` with the provided gravity and
   /// hard edges settings from the effect configuration. This world serves as the environment
   /// where particles are simulated.
-  RelativistEffect(super.effectConfiguration)
-      : _world = ForgeNewtonWorld(
+  ///
+  /// - [effectConfiguration]: Configuration for the effect.
+  /// - [particlePool]: Optional particle pool for reusing particle instances.
+  RelativistEffect(
+    super.effectConfiguration, {
+    super.particlePool,
+  }) : _world = ForgeNewtonWorld(
           effectConfiguration.gravity,
           effectConfiguration.solidEdges,
         );
@@ -70,7 +75,7 @@ class RelativistEffect extends Effect<RelativisticParticle, RelativisticEffectCo
       fadeOutThreshold: effectConfiguration.randomFadeOutThreshold(),
       foreground: effectConfiguration.randomParticleForeground(),
       onlyInteractWithEdges: effectConfiguration.onlyInteractWithEdges,
-      particle: Particle(
+      particle: particlePool.acquire(
         configuration: effectConfiguration.particleConfiguration,
         position: Offset(
               effectConfiguration.origin.dx * surfaceSize.width,

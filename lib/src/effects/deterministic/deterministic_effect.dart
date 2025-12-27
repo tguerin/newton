@@ -12,7 +12,11 @@ class DeterministicEffect extends Effect<DeterministicAnimatedParticle, Determin
   /// Creates an instance of [DeterministicEffect] with the specified configurations.
   ///
   /// - [effectConfiguration]: The configuration settings for the effect, defining how particles should behave.
-  DeterministicEffect(super.effectConfiguration);
+  /// - [particlePool]: Optional particle pool for reusing particle instances.
+  DeterministicEffect(
+    super.effectConfiguration, {
+    super.particlePool,
+  });
 
   /// Instantiates and returns a new [DeterministicAnimatedParticle] based on the current effect configuration.
   ///
@@ -43,7 +47,7 @@ class DeterministicEffect extends Effect<DeterministicAnimatedParticle, Determin
                 angle: effectConfiguration.randomAngle(),
               );
       },
-      particle: Particle(
+      particle: particlePool.acquire(
         configuration: effectConfiguration.particleConfiguration,
         position: Offset(
               effectConfiguration.origin.dx * surfaceSize.width,
