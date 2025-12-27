@@ -61,6 +61,7 @@ class _NewtonColliderState extends State<NewtonCollider> with WidgetsBindingObse
   late final String _internalId;
   Offset? _lastReportedPosition;
   Size? _lastReportedSize;
+  bool _hasScheduledReport = false;
 
   @override
   void initState() {
@@ -69,27 +70,27 @@ class _NewtonColliderState extends State<NewtonCollider> with WidgetsBindingObse
     _internalId = widget.id ?? _uuid.v4();
     WidgetsBinding.instance.addObserver(this);
     // Report geometry after the first frame is painted
-    WidgetsBinding.instance.addPostFrameCallback((_) => _report());
+    _scheduleReport();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _report());
+    _scheduleReport();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Re-report when app comes back to foreground
     if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _report());
+      _scheduleReport();
     }
   }
 
   @override
   void didChangeMetrics() {
     // Re-report when screen metrics change (orientation, etc.)
-    WidgetsBinding.instance.addPostFrameCallback((_) => _report());
+    _scheduleReport();
   }
 
   @override
@@ -97,7 +98,18 @@ class _NewtonColliderState extends State<NewtonCollider> with WidgetsBindingObse
     super.didUpdateWidget(oldWidget);
     // Re-report when widget properties change (e.g., borderRadius)
     if (widget.borderRadius != oldWidget.borderRadius || widget.id != oldWidget.id) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _report());
+      _scheduleReport();
+    }
+  }
+
+  /// Schedules a report callback, avoiding duplicate callbacks in the same frame.
+  void _scheduleReport() {
+    if (!_hasScheduledReport) {
+      _hasScheduledReport = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _hasScheduledReport = false;
+        _report();
+      });
     }
   }
 
@@ -167,33 +179,15 @@ class _NewtonColliderState extends State<NewtonCollider> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    // Schedule a position check after this frame
-    // This ensures we catch position changes from layout updates
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _checkAndReportPosition();
-      }
-    });
+    // Schedule a report after this frame to catch position changes from rebuilds
+    // This is needed when the parent widget rebuilds (e.g., configuration changes)
+    // but didChangeDependencies() is not called. The _scheduleReport() method
+    // prevents duplicate callbacks in the same frame for performance.
+    _scheduleReport();
 
     return Container(
       key: _key,
       child: widget.child,
     );
-  }
-
-  /// Checks if the widget position has changed and reports if needed.
-  void _checkAndReportPosition() {
-    if (!mounted) return;
-
-    final renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null || !renderBox.hasSize) return;
-
-    final offset = renderBox.localToGlobal(Offset.zero);
-    final size = renderBox.size;
-
-    // Report if position or size changed
-    if (_lastReportedPosition != offset || _lastReportedSize != size) {
-      _report();
-    }
   }
 }

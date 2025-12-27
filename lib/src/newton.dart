@@ -155,16 +155,17 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
             if (notification.isRemoving) {
               _colliders.remove(notification.id);
             } else {
-              // Always remove the old collider first to ensure cleanup
-              _colliders.remove(notification.id);
-
               // Convert from global screen coordinates to canvas coordinates
               final canvasRect = _convertRectToCanvas(notification.rect);
-              // Only add if the rect is valid (has positive size and reasonable coordinates)
+              // Only update if the rect is valid (has positive size and reasonable coordinates)
+              // Preserve existing collider if conversion fails temporarily (e.g., during rebuild)
               if (canvasRect.width > 0 && canvasRect.height > 0) {
                 _colliders[notification.id] = notification.borderRadius.toRRect(canvasRect);
+              } else if (!_colliders.containsKey(notification.id)) {
+                // Only remove if it doesn't exist yet - preserve existing collider during temporary failures
+                // This prevents colliders from being lost during rebuilds when coordinate conversion
+                // might temporarily fail
               }
-              // If conversion failed or rect is invalid, the collider is already removed above
             }
           });
           // Sync colliders to physics effects - this replaces ALL colliders with the current map
@@ -269,9 +270,11 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   ///
   /// This method removes all currently active particle effects, effectively resetting the animation state of the `Newton` widget.
   void clearEffects() {
-    _effects.removeWhere((effect) {
-      effect.postEffectCallback = null;
-      return true;
+    setState(() {
+      _effects.removeWhere((effect) {
+        effect.postEffectCallback = null;
+        return true;
+      });
     });
   }
 
@@ -290,6 +293,17 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
       _pendingActiveEffects.removeWhere(_isEffectRemoved);
       _effects.removeWhere(_isEffectRemoved);
       _setupEffectsFromWidget();
+      // Sync colliders to new effects immediately after they're set up
+      _syncCollidersToEffects();
+      // Update colliders after rebuild is complete to ensure they re-report
+      // in the new coordinate space after CustomPaint is recreated
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _updateCollidersOnLayoutChange();
+        // Sync again after colliders have re-reported
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _syncCollidersToEffects();
+        });
+      });
     }
   }
 
