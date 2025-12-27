@@ -1,4 +1,3 @@
-
 <picture>
     <source srcset="https://raw.github.com/tguerin/newton/main/graphics/newton-dark.png" media="(prefers-color-scheme: dark)">
     <img
@@ -14,22 +13,38 @@
 
 ## Particle Emitter for Flutter
 
-Newton is a highly configurable particle emitter package for Flutter, now with advanced support for both deterministic and physics-based animations. With Newton, you can create captivating animations such as rain, smoke, explosions, and more, along with realistic physics-driven effects like gravity and collisions. This allows you to easily add both visually stunning and physically accurate effects to your Flutter applications, enhancing the user experience with dynamic and interactive animations.
+Newton is a highly configurable particle emitter package for Flutter, now with
+advanced support for both deterministic and physics-based animations. With
+Newton, you can create captivating animations such as rain, smoke, explosions,
+and more, along with realistic physics-driven effects like gravity and
+collisions. This allows you to easily add both visually stunning and physically
+accurate effects to your Flutter applications, enhancing the user experience
+with dynamic and interactive animations.
 
 ![ezgif-2-55326df4fb](https://github.com/user-attachments/assets/4a59ba88-6741-4495-b87d-31ab2e7cad76)
 
 ### Features
 
-- **Highly Configurable:** Newton offers an extensive range of options to fine-tune your particle animations. You can adjust particle appearance, behavior, movement, and physics properties, providing complete control over your animations.
+- **Highly Configurable:** Newton offers an extensive range of options to
+  fine-tune your particle animations. You can adjust particle appearance,
+  behavior, movement, and physics properties, providing complete control over
+  your animations.
 
-- **[Interactive Animation Configurator](https://newton.7omtech.fr/docs/configurator):** Create your particle animations visually using the included app configurator. Experiment with different settings, preview animations in real-time.
+- **[Interactive Animation Configurator](https://newton.7omtech.fr/docs/configurator):**
+  Create your particle animations visually using the included app configurator.
+  Experiment with different settings, preview animations in real-time.
 
-- **Custom Particle Design:** Design your particle effects to seamlessly integrate with your app’s aesthetic. Use custom shapes, colors, and sizes to craft truly unique animations that suit your needs.
+- **Custom Particle Design:** Design your particle effects to seamlessly
+  integrate with your app’s aesthetic. Use custom shapes, colors, and sizes to
+  craft truly unique animations that suit your needs.
 
-- **Comprehensive Documentation:** Detailed guides and examples are available to help you easily create popular particle effects like rain, smoke, and explosions.
+- **Comprehensive Documentation:** Detailed guides and examples are available to
+  help you easily create popular particle effects like rain, smoke, and
+  explosions.
 
-- **Efficient Performance:** Newton is optimized for performance, ensuring smooth animations even on lower-end devices without compromising on visual quality.
-
+- **Efficient Performance:** Newton is optimized for performance, ensuring
+  smooth animations even on lower-end devices without compromising on visual
+  quality.
 
 ## Installation
 
@@ -37,7 +52,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.2.2
+  newton_particles: ^0.2.3
 ```
 
 Then, run `flutter pub get` to fetch the package.
@@ -50,7 +65,8 @@ Then, run `flutter pub get` to fetch the package.
 import 'package:newton_particles/newton_particles.dart';
 ```
 
-2. Create a `Newton` widget and add it to your Flutter UI with the desired effects:
+2. Create a `Newton` widget and add it to your Flutter UI with the desired
+   effects:
 
 ```dart
 Newton(
@@ -80,11 +96,13 @@ Newton(
 )
 ```
 
-Try our [effect configurator](https://newton.7omtech.fr/docs/configurator) to tweak your effect.
+Try our [effect configurator](https://newton.7omtech.fr/docs/configurator) to
+tweak your effect.
 
 ## Example
 
-For a quick start, here's an example of creating a simple rain effect using Newton:
+For a quick start, here's an example of creating a simple rain effect using
+Newton:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -131,16 +149,22 @@ class MyApp extends StatelessWidget {
 
 ## Documentation
 
-For detailed documentation and examples, visit the [Newton Documentation](https://newton.7omtech.fr).
+For detailed documentation and examples, visit the
+[Newton Documentation](https://newton.7omtech.fr).
 
 ## Contributing
 
-We welcome contributions from the community! If you find any issues or have ideas for improvements, feel free to open an issue or submit a pull request on GitHub.
+We welcome contributions from the community! If you find any issues or have
+ideas for improvements, feel free to open an issue or submit a pull request on
+GitHub.
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/tguerin/newton/blob/main/LICENSE).
+This project is licensed under the
+[MIT License](https://github.com/tguerin/newton/blob/main/LICENSE).
 
 ---
 
-**Note:** This package is under active development, and breaking changes might be introduced in future versions until a stable 1.0.0 release. Please review the [changelog](CHANGELOG.md) when updating versions.
+**Note:** This package is under active development, and breaking changes might
+be introduced in future versions until a stable 1.0.0 release. Please review the
+[changelog](CHANGELOG.md) when updating versions.

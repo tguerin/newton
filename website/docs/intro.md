@@ -10,7 +10,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.2.2
+  newton_particles: ^0.2.3
 ```
 
 Then, run `flutter pub get` to fetch the package.
@@ -23,7 +23,8 @@ Then, run `flutter pub get` to fetch the package.
 import 'package:newton_particles/newton_particles.dart';
 ```
 
-2. Create a `Newton` widget and add it to your Flutter UI with the desired effects:
+2. Create a `Newton` widget and add it to your Flutter UI with the desired
+   effects:
 
 ```dart
 Newton(
@@ -53,11 +54,13 @@ Newton(
 )
 ```
 
-Try our [effect configurator](https://newton.7omtech.fr/docs/configurator) to tweak your effect.
+Try our [effect configurator](https://newton.7omtech.fr/docs/configurator) to
+tweak your effect.
 
 ## Example
 
-For a quick start, here's an example of creating a simple rain effect using Newton:
+For a quick start, here's an example of creating a simple rain effect using
+Newton:
 
 ```dart
 import 'package:flutter/material.dart';

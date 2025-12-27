@@ -1,3 +1,10 @@
+## [0.2.3] - 2025-12-27
+
+- [Chore] Fix lints and upgrade dependencies
+- [Fix] Fix foreground property not behaving as expected. Thanks
+  @redredninjacat.
+- [Feat] Implemented ShapeBuilder and ZIndexBuilder. Thanks @redninjacat.
+
 ## [0.2.2] - 2024-09-06
 
 - [Fix] Remove code generation that is not available for now.
@@ -5,11 +12,12 @@
 
 ## [0.2.1] - 2024-09-06
 
-- [Fix] Pub.dev doc site 
+- [Fix] Pub.dev doc site
 
 ## [0.2.0] - 2024-09-06
 
-- [Breaking] Support physics based animation. Revamp the way effects are configured and added to the Newton widget.
+- [Breaking] Support physics based animation. Revamp the way effects are
+  configured and added to the Newton widget.
 - [Breaking] Replace duration based properties as int by Duration.
 - [Breaking] Origin is now relative to the widget size.
 - [Performance] No more unnecessary repaints. thanks @VonZen
@@ -70,7 +78,8 @@
 
 ### Fix
 
-- [Fixed] Improve performance drastically by using drawAtlas as much as possible.
+- [Fixed] Improve performance drastically by using drawAtlas as much as
+  possible.
 
 ## [0.0.13] - 2023-08-07
 
@@ -134,7 +143,6 @@
 - [Feature] Introduce the notion of PathTransformation for particles.
 - [Feature] Add a fountain like effect.
 
-
 ## [0.0.4] - 2023-08-01
 
 ### Feature
@@ -165,4 +173,5 @@
 ### Added
 
 - [Feature] Initial release of Newton package.
-- [Feature] Implemented a highly configurable particle emitter with default effects.
+- [Feature] Implemented a highly configurable particle emitter with default
+  effects.
