@@ -76,17 +76,21 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// - [EmissionProperties] for emission timing, origin offsets, and lifespan ranges
   /// - [PhysicsProperties] or [DeterministicProperties] for angle ranges
   ///
-  /// Note: This constructor only accepts [particleConfiguration] and [tag].
+  /// Note: This constructor accepts [particleConfiguration], [emissionProperties], and [tag].
   /// All other properties are provided by subclasses via grouped property classes
-  /// (VisualProperties, EmissionProperties, AnimationProperties, LayerProperties, etc.).
+  /// (VisualProperties, AnimationProperties, LayerProperties, etc.).
   /// Subclasses set these fields in their initializer lists from the grouped properties.
   const EffectConfiguration({
     required this.particleConfiguration,
+    this.emissionProperties = const EmissionProperties(),
     this.tag,
   });
 
   /// Defines the configuration of the emitted particles.
   final T particleConfiguration;
+
+  /// The emission properties (emission timing, count, origin, and lifespan).
+  final EmissionProperties emissionProperties;
 
   /// Tag to identify the effect configuration, allowing for easy reference or management. Optional.
   final Tag? tag;
@@ -96,12 +100,10 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   // Subclasses set these fields in their initializer lists from grouped properties.
 
   /// Curve to control the emission timing of particles.
-  /// Provided by subclasses via [EmissionProperties].
-  Curve get emitCurve;
+  Curve get emitCurve => emissionProperties.emitCurve;
 
   /// Duration between particle emissions.
-  /// Provided by subclasses via [EmissionProperties].
-  Duration get emitDuration;
+  Duration get emitDuration => emissionProperties.emitDuration;
 
   /// Curve to control particle fade-in animation.
   /// Provided by subclasses via [VisualProperties].
@@ -112,20 +114,17 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   Curve get fadeOutCurve;
 
   /// Origin point for particle emission, relative from the top-left of the container.
-  /// Provided by subclasses via [EmissionProperties].
-  Offset get origin;
+  Offset get origin => emissionProperties.origin;
 
   /// Total number of particles to emit.
-  /// Provided by subclasses via [EmissionProperties].
-  int get particleCount;
+  int get particleCount => emissionProperties.particleCount;
 
   /// The layer on which the particles should be rendered.
   /// Provided by subclasses via [LayerProperties].
   ParticleLayer get particleLayer;
 
   /// Number of particles emitted per emission event.
-  /// Provided by subclasses via [EmissionProperties].
-  int get particlesPerEmit;
+  int get particlesPerEmit => emissionProperties.particlesPerEmit;
 
   /// Curve to control particle scaling animation.
   /// Provided by subclasses via [VisualProperties].
@@ -144,8 +143,16 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   double randomAngle();
 
   /// Helper method to generate a random duration within the configured lifespan range.
-  /// Delegates to [EmissionProperties].
-  Duration randomDuration();
+  Duration randomDuration() {
+    return Duration(
+      milliseconds: random
+          .nextDoubleRange(
+            emissionProperties.minParticleLifespan.inMilliseconds.toDouble(),
+            emissionProperties.maxParticleLifespan.inMilliseconds.toDouble(),
+          )
+          .round(),
+    );
+  }
 
   /// Helper method to generate a random fade-in threshold within the configured range.
   /// Delegates to [VisualProperties].
@@ -156,8 +163,18 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   double randomFadeOutThreshold();
 
   /// Helper method to generate a random origin offset within the configured range.
-  /// Delegates to [EmissionProperties].
-  Offset randomOriginOffset();
+  Offset randomOriginOffset() {
+    return Offset(
+      random.nextDoubleRange(
+        emissionProperties.minOriginOffset.dx,
+        emissionProperties.maxOriginOffset.dx,
+      ),
+      random.nextDoubleRange(
+        emissionProperties.minOriginOffset.dy,
+        emissionProperties.maxOriginOffset.dy,
+      ),
+    );
+  }
 
   /// Helper method to determine if the particle should be rendered in the foreground based on [particleLayer].
   bool randomParticleForeground() {
@@ -176,6 +193,7 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
   /// Subclasses should override this to accept grouped properties.
   EffectConfiguration copyWith({
     ParticleConfiguration? particleConfiguration,
+    EmissionProperties? emissionProperties,
   });
 
   @override
@@ -184,10 +202,11 @@ abstract class EffectConfiguration<T extends ParticleConfiguration> {
       other is EffectConfiguration &&
           runtimeType == other.runtimeType &&
           particleConfiguration == other.particleConfiguration &&
+          emissionProperties == other.emissionProperties &&
           tag == other.tag;
 
   @override
-  int get hashCode => particleConfiguration.hashCode ^ tag.hashCode;
+  int get hashCode => particleConfiguration.hashCode ^ emissionProperties.hashCode ^ tag.hashCode;
 }
 
 /// Extension on `EffectConfiguration` that provides a method to create an `Effect`

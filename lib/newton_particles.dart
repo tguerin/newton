@@ -1,3 +1,4 @@
+export 'src/debug_data.dart';
 export 'src/effects/animated_particle.dart';
 export 'src/effects/animation_properties.dart';
 export 'src/effects/deterministic/deterministic_effect_configuration.dart';

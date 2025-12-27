@@ -1,13 +1,18 @@
 import 'dart:async';
+import 'dart:js_interop';
 
 import 'package:example/available_effect.dart';
+import 'package:example/code_generator.dart';
 import 'package:example/color_selection.dart';
 import 'package:example/range_selection.dart';
 import 'package:example/single_value_selection.dart';
 import 'package:example/theme.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart' hide Velocity;
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:newton_particles/newton_particles.dart';
+import 'package:web/web.dart' as web;
 
 void main() {
   runApp(const NewtonExampleApp());
@@ -36,6 +41,9 @@ class NewtonConfigurationPage extends StatefulWidget {
 }
 
 class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
+  static const int maxParticlesPhysics = 300;
+  static const int maxParticlesDeterministic = 800;
+
   final _configuredEffects = <_ConfiguredEffect>[
     _ConfiguredEffect(
       effectName: 'Rain',
@@ -63,114 +71,206 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   _ConfiguredEffect? _currentConfiguredEffect;
 
+  // Track active particle counts per effect configuration from debug stream
+  final _activeParticleCounts = <EffectConfiguration, int>{};
+
+  // Track total emitted particle counts per effect configuration from debug stream
+  final _totalEmittedCounts = <EffectConfiguration, int>{};
+
+  StreamSubscription<NewtonDebugData>? _debugDataSubscription;
+
+  // Global key to access NewtonState
+  final _newtonKey = GlobalKey();
+
+  /// Copies text to clipboard, using web API on web and Flutter's Clipboard on other platforms.
+  Future<bool> _copyToClipboard(String text) async {
+    if (kIsWeb) {
+      try {
+        final clipboard = web.window.navigator.clipboard;
+        await clipboard.writeText(text).toDart;
+        return true;
+      } catch (_) {
+        // Fallback to Flutter's Clipboard API
+      }
+    }
+    try {
+      await Clipboard.setData(ClipboardData(text: text));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _currentConfiguredEffect = _configuredEffects.first;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _subscribeToDebugData();
+    });
+  }
+
+  void _subscribeToDebugData() {
+    // Wait for the widget tree to be built, then subscribe to debug stream
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final newtonState = _newtonKey.currentState as NewtonState?;
+      if (newtonState != null && _debugDataSubscription == null) {
+        _debugDataSubscription = newtonState.debugDataStream.listen((debugData) {
+          if (mounted) {
+            setState(() {
+              _activeParticleCounts.clear();
+              _totalEmittedCounts.clear();
+              for (final effectData in debugData.effectData) {
+                _activeParticleCounts[effectData.configuration] = effectData.activeParticleCount;
+                _totalEmittedCounts[effectData.configuration] = effectData.totalEmittedCount;
+              }
+            });
+          }
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          unawaited(
-            showDialog(
-              context: context,
-              builder: (context) => StatefulBuilder(
-                builder: (context, setDialogState) {
-                  return AlertDialog(
-                    content: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Effect name',
-                              errorText:
-                                  _configuredEffects.map((effect) => effect.effectName).contains(_currentEffectName)
-                                      ? 'Can’t have same effect name'
-                                      : null,
-                            ),
-                            onChanged: (name) {
-                              setDialogState(() {
-                                _currentEffectName = name;
-                              });
-                            },
-                          ),
-                          SizedBox(
-                            width: 200,
-                            child: DropdownButton<String>(
-                              isExpanded: true,
-                              value: _selectedAnimation.label,
-                              icon: const Icon(Icons.arrow_drop_down),
-                              elevation: 16,
-                              onChanged: (String? value) {
-                                // This is called when the user selects an item.
-                                setDialogState(() {
-                                  _selectedAnimation = AvailableEffect.of(value!);
-                                });
-                              },
-                              // Filter out smoke in relativistic effect as it's not supported
-                              items: AvailableEffect.values
-                                  .where((effect) => !_usePhysics || effect != AvailableEffect.smoke)
-                                  .map<DropdownMenuItem<String>>((AvailableEffect value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.label,
-                                  child: Text(value.label),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Checkbox(
-                                value: _usePhysics,
-                                onChanged: (value) {
-                                  setDialogState(() {
-                                    _usePhysics = value ?? false;
-                                  });
-                                },
-                              ),
-                              const Gap(4),
-                              Text('Use physics', style: Theme.of(context).textTheme.labelMedium),
-                            ],
-                          ),
-                          const Gap(24),
-                          ElevatedButton(
-                            onPressed: _currentEffectName.isEmpty
-                                ? null
-                                : () {
-                                    Navigator.pop(context);
-                                    setState(() {
-                                      _configuredEffects.add(
-                                        _currentConfiguredEffect = _ConfiguredEffect(
-                                          effectName: _currentEffectName,
-                                          effectConfiguration: _usePhysics
-                                              ? defaultRelativisticEffectConfigurationsPerAnimation[_selectedAnimation]!
-                                              : defaultDeterministicEffectConfigurationsPerAnimation(
-                                                  MediaQuery.sizeOf(context),
-                                                )[_selectedAnimation]!,
-                                        ),
-                                      );
-                                      _selectedAnimation = AvailableEffect.scratch;
-                                      _currentEffectName = '';
-                                    });
-                                  },
-                            child: const Text('Add new effect'),
-                          ),
-                        ],
-                      ),
-                    ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_configuredEffects.isNotEmpty) ...[
+            Tooltip(
+              message: 'Copy complete runnable app code (with main, imports, and widget)',
+              child: FloatingActionButton(
+                heroTag: 'copy_all',
+                onPressed: () async {
+                  final code = generateRunnableApp(
+                    _configuredEffects.map((e) => e.effectConfiguration).toList(),
                   );
+                  final success = await _copyToClipboard(code);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          success
+                              ? 'Complete runnable app code copied to clipboard!'
+                              : 'Failed to copy to clipboard. Please try again.',
+                        ),
+                      ),
+                    );
+                  }
                 },
+                child: const Icon(Icons.code),
               ),
             ),
-          );
-        },
+            const Gap(8),
+          ],
+          Tooltip(
+            message: 'Add new effect',
+            child: FloatingActionButton(
+              heroTag: 'add',
+              child: const Icon(Icons.add),
+              onPressed: () {
+                unawaited(
+                  showDialog(
+                    context: context,
+                    builder: (context) => StatefulBuilder(
+                      builder: (context, setDialogState) {
+                        return AlertDialog(
+                          content: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextField(
+                                  decoration: InputDecoration(
+                                    hintText: 'Effect name',
+                                    errorText: _configuredEffects
+                                            .map((effect) => effect.effectName)
+                                            .contains(_currentEffectName)
+                                        ? "Can't have same effect name"
+                                        : null,
+                                  ),
+                                  onChanged: (name) {
+                                    setDialogState(() {
+                                      _currentEffectName = name;
+                                    });
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 200,
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    value: _selectedAnimation.label,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    elevation: 16,
+                                    onChanged: (String? value) {
+                                      // This is called when the user selects an item.
+                                      setDialogState(() {
+                                        _selectedAnimation = AvailableEffect.of(value!);
+                                      });
+                                    },
+                                    // Filter out smoke in relativistic effect as it's not supported
+                                    items: AvailableEffect.values
+                                        .where((effect) => !_usePhysics || effect != AvailableEffect.smoke)
+                                        .map<DropdownMenuItem<String>>((AvailableEffect value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value.label,
+                                        child: Text(value.label),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Checkbox(
+                                      value: _usePhysics,
+                                      onChanged: (value) {
+                                        setDialogState(() {
+                                          _usePhysics = value ?? false;
+                                        });
+                                      },
+                                    ),
+                                    const Gap(4),
+                                    Text('Use physics', style: Theme.of(context).textTheme.labelMedium),
+                                  ],
+                                ),
+                                const Gap(24),
+                                ElevatedButton(
+                                  onPressed: _currentEffectName.isEmpty
+                                      ? null
+                                      : () {
+                                          Navigator.pop(context);
+                                          setState(() {
+                                            _configuredEffects.add(
+                                              _currentConfiguredEffect = _ConfiguredEffect(
+                                                effectName: _currentEffectName,
+                                                effectConfiguration: _usePhysics
+                                                    ? defaultRelativisticEffectConfigurationsPerAnimation[
+                                                        _selectedAnimation]!
+                                                    : defaultDeterministicEffectConfigurationsPerAnimation(
+                                                        MediaQuery.sizeOf(context),
+                                                      )[_selectedAnimation]!,
+                                              ),
+                                            );
+                                            _selectedAnimation = AvailableEffect.scratch;
+                                            _currentEffectName = '';
+                                          });
+                                        },
+                                  child: const Text('Add new effect'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       body: GestureDetector(
         onTap: () {
@@ -186,13 +286,19 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
             fit: StackFit.expand,
             children: [
               Newton(
+                key: _newtonKey,
                 effectConfigurations: _configuredEffects.map((effect) => effect.effectConfiguration).toList(),
-                onEffectStateChanged: (effect, state) => {},
+                onEffectStateChanged: (effect, state) {},
               ),
               Positioned(
                 left: 0,
                 top: 0,
                 child: _configurationSection(),
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: _particleCountStatus(),
               ),
             ],
           ),
@@ -235,20 +341,50 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 4),
-                child: FilledButton.tonal(
-                  onPressed: () {
-                    setState(() {
-                      if (_currentConfiguredEffect != null) {
-                        _configuredEffects.remove(_currentConfiguredEffect);
-                        if (_configuredEffects.isNotEmpty) {
-                          _currentConfiguredEffect = _configuredEffects.last;
-                        } else {
-                          _currentConfiguredEffect = null;
-                        }
+                child: Tooltip(
+                  message: 'Copy Dart code for this effect to clipboard',
+                  child: FilledButton.tonal(
+                    onPressed: () async {
+                      final code = generateEffectCode(
+                        currentConfiguredEffect.effectConfiguration,
+                        effectName: currentConfiguredEffect.effectName,
+                      );
+                      final success = await _copyToClipboard(code);
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              success
+                                  ? 'Effect code copied to clipboard!'
+                                  : 'Failed to copy to clipboard. Please try again.',
+                            ),
+                          ),
+                        );
                       }
-                    });
-                  },
-                  child: const Text('Delete effect'),
+                    },
+                    child: const Text('Copy Code'),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Tooltip(
+                  message: 'Delete this effect',
+                  child: FilledButton.tonal(
+                    onPressed: () {
+                      setState(() {
+                        if (_currentConfiguredEffect != null) {
+                          _configuredEffects.remove(_currentConfiguredEffect);
+                          if (_configuredEffects.isNotEmpty) {
+                            _currentConfiguredEffect = _configuredEffects.last;
+                          } else {
+                            _currentConfiguredEffect = null;
+                          }
+                        }
+                      });
+                    },
+                    child: const Text('Delete effect'),
+                  ),
                 ),
               ),
             ],
@@ -497,9 +633,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget _particlesPerEmitSection(_ConfiguredEffect configuredEffect) {
     final config = configuredEffect.effectConfiguration;
-    final emissionProps = config is PhysicsEffectConfiguration
-        ? config.emissionProperties
-        : (config as DeterministicEffectConfiguration).emissionProperties;
+    final emissionProps = config.emissionProperties;
     return SingleValueSelection(
       value: emissionProps.particlesPerEmit.toDouble(),
       title: 'Particles per emit',
@@ -528,9 +662,8 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget _particleCount(_ConfiguredEffect configuredEffect) {
     final config = configuredEffect.effectConfiguration;
-    final emissionProps = config is PhysicsEffectConfiguration
-        ? config.emissionProperties
-        : (config as DeterministicEffectConfiguration).emissionProperties;
+    final emissionProps = config.emissionProperties;
+
     return SingleValueSelection(
       value: emissionProps.particleCount.toDouble(),
       title: 'Particle count',
@@ -557,11 +690,118 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     );
   }
 
+  Widget _particleCountStatus() {
+    final currentConfiguredEffect = _currentConfiguredEffect;
+    if (currentConfiguredEffect == null) return const SizedBox.shrink();
+
+    final config = currentConfiguredEffect.effectConfiguration;
+    final validation = _validateParticleCount(config);
+    final maxLimit = config is PhysicsEffectConfiguration ? maxParticlesPhysics : maxParticlesDeterministic;
+    final activeCount = _activeParticleCounts[config] ?? 0;
+    final totalEmitted = _totalEmittedCounts[config] ?? 0;
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(8),
+          border: validation != null ? Border.all(color: Theme.of(context).colorScheme.error) : null,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (activeCount > 0 || totalEmitted > 0) ...[
+              Text(
+                'Active: $activeCount / $maxLimit',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              if (totalEmitted > 0) ...[
+                const Gap(4),
+                Text(
+                  'Emitted: $totalEmitted',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ] else ...[
+              Text(
+                'Max: $maxLimit (${config is PhysicsEffectConfiguration ? "physics" : "deterministic"})',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  fontSize: 11,
+                ),
+              ),
+            ],
+            if (validation != null) ...[
+              const Gap(8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.errorContainer,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.onErrorContainer,
+                    ),
+                    const Gap(6),
+                    Flexible(
+                      child: Text(
+                        validation,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onErrorContainer,
+                          fontSize: 11,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  String? _validateParticleCount(EffectConfiguration config) {
+    final maxLimit = config is PhysicsEffectConfiguration ? maxParticlesPhysics : maxParticlesDeterministic;
+
+    // Only validate based on actual active particle count from debug data
+    final activeCount = _activeParticleCounts[config] ?? 0;
+
+    // Only show warning if we have actual data and it exceeds the limit
+    if (activeCount > 0 && activeCount > maxLimit) {
+      return 'Warning: $activeCount active particles (current frame) exceeds recommended limit of $maxLimit';
+    }
+
+    return null;
+  }
+
   Widget _emitDurationSection(_ConfiguredEffect configuredEffect) {
     final config = configuredEffect.effectConfiguration;
-    final emissionProps = config is PhysicsEffectConfiguration
-        ? config.emissionProperties
-        : (config as DeterministicEffectConfiguration).emissionProperties;
+    final emissionProps = config.emissionProperties;
     return SingleValueSelection(
       value: emissionProps.emitDuration.inMilliseconds.toDouble(),
       title: 'Emit duration',
@@ -591,9 +831,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget _animationDurationSection(_ConfiguredEffect configuredEffect) {
     final config = configuredEffect.effectConfiguration;
-    final emissionProps = config is PhysicsEffectConfiguration
-        ? config.emissionProperties
-        : (config as DeterministicEffectConfiguration).emissionProperties;
+    final emissionProps = config.emissionProperties;
     return RangeSelection(
       initialMin: emissionProps.minParticleLifespan.inMilliseconds.toDouble(),
       initialMax: emissionProps.maxParticleLifespan.inMilliseconds.toDouble(),
@@ -895,9 +1133,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget _originDxSection(_ConfiguredEffect configuredEffect) {
     final config = configuredEffect.effectConfiguration;
-    final emissionProps = config is PhysicsEffectConfiguration
-        ? config.emissionProperties
-        : (config as DeterministicEffectConfiguration).emissionProperties;
+    final emissionProps = config.emissionProperties;
     return SingleValueSelection(
       value: emissionProps.origin.dx,
       min: 0,
@@ -926,9 +1162,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget _originDySection(_ConfiguredEffect configuredEffect) {
     final config = configuredEffect.effectConfiguration;
-    final emissionProps = config is PhysicsEffectConfiguration
-        ? config.emissionProperties
-        : (config as DeterministicEffectConfiguration).emissionProperties;
+    final emissionProps = config.emissionProperties;
     return SingleValueSelection(
       value: emissionProps.origin.dy,
       min: 0,
@@ -957,9 +1191,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget _offsetOriginDxSection(_ConfiguredEffect configuredEffect) {
     final config = configuredEffect.effectConfiguration;
-    final emissionProps = config is PhysicsEffectConfiguration
-        ? config.emissionProperties
-        : (config as DeterministicEffectConfiguration).emissionProperties;
+    final emissionProps = config.emissionProperties;
     return RangeSelection(
       initialMin: emissionProps.minOriginOffset.dx,
       initialMax: emissionProps.maxOriginOffset.dx,
@@ -991,9 +1223,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   Widget _offsetOriginDySection(_ConfiguredEffect configuredEffect) {
     final config = configuredEffect.effectConfiguration;
-    final emissionProps = config is PhysicsEffectConfiguration
-        ? config.emissionProperties
-        : (config as DeterministicEffectConfiguration).emissionProperties;
+    final emissionProps = config.emissionProperties;
     return RangeSelection(
       initialMin: emissionProps.minOriginOffset.dy,
       initialMax: emissionProps.maxOriginOffset.dy,
@@ -1179,6 +1409,9 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
 
   @override
   void dispose() {
+    _debugDataSubscription?.cancel();
+    _activeParticleCounts.clear();
+    _totalEmittedCounts.clear();
     _randomnessScrollController.dispose();
     super.dispose();
   }

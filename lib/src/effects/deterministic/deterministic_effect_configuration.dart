@@ -14,9 +14,9 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
   /// This provides better organization and validation.
   DeterministicEffectConfiguration({
     required super.particleConfiguration,
+    super.emissionProperties = const EmissionProperties(),
     this.deterministicProperties = const DeterministicProperties(),
     this.visualProperties = const VisualProperties(),
-    this.emissionProperties = const EmissionProperties(),
     this.animationProperties = const AnimationProperties(),
     this.layerProperties = const LayerProperties(),
     this.customPathBuilder,
@@ -27,12 +27,6 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
         fadeInCurve = visualProperties.fadeInCurve,
         fadeOutCurve = visualProperties.fadeOutCurve,
         scaleCurve = visualProperties.scaleCurve,
-        // Map emission properties
-        emitCurve = emissionProperties.emitCurve,
-        emitDuration = emissionProperties.emitDuration,
-        particleCount = emissionProperties.particleCount,
-        particlesPerEmit = emissionProperties.particlesPerEmit,
-        origin = emissionProperties.origin,
         // Map animation properties
         startDelay = animationProperties.startDelay,
         // Map layer properties
@@ -44,9 +38,6 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
 
   /// The visual properties (grouped ranges for scale and fade thresholds).
   final VisualProperties visualProperties;
-
-  /// The emission properties (emission timing, count, origin, and lifespan).
-  final EmissionProperties emissionProperties;
 
   /// The animation properties (start delay).
   final AnimationProperties animationProperties;
@@ -72,22 +63,6 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
 
   @override
   final Curve scaleCurve;
-
-  // Emission properties mapped to EffectConfiguration fields
-  @override
-  final Curve emitCurve;
-
-  @override
-  final Duration emitDuration;
-
-  @override
-  final int particleCount;
-
-  @override
-  final int particlesPerEmit;
-
-  @override
-  final Offset origin;
 
   // Animation properties mapped to EffectConfiguration fields
   @override
@@ -127,7 +102,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     return DeterministicEffectConfiguration(
       deterministicProperties: deterministicProperties ?? this.deterministicProperties,
       visualProperties: visualProperties ?? this.visualProperties,
-      emissionProperties: emissionProperties ?? this.emissionProperties,
+      emissionProperties: emissionProperties ?? super.emissionProperties,
       animationProperties: animationProperties ?? this.animationProperties,
       layerProperties: layerProperties ?? this.layerProperties,
       customPathBuilder: customPathBuilder ?? this.customPathBuilder,
@@ -141,15 +116,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     return deterministicProperties.randomAngle();
   }
 
-  @override
-  Duration randomDuration() {
-    return Duration(
-      milliseconds: random.nextIntRange(
-        emissionProperties.minParticleLifespan.inMilliseconds,
-        emissionProperties.maxParticleLifespan.inMilliseconds,
-      ),
-    );
-  }
+  // randomDuration is now implemented in EffectConfiguration base class
 
   @override
   double randomFadeInThreshold() {
@@ -161,19 +128,7 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
     return visualProperties.randomFadeOutThreshold();
   }
 
-  @override
-  Offset randomOriginOffset() {
-    return Offset(
-      random.nextDoubleRange(
-        emissionProperties.minOriginOffset.dx,
-        emissionProperties.maxOriginOffset.dx,
-      ),
-      random.nextDoubleRange(
-        emissionProperties.minOriginOffset.dy,
-        emissionProperties.maxOriginOffset.dy,
-      ),
-    );
-  }
+  // randomOriginOffset is now implemented in EffectConfiguration base class
 
   @override
   Tween<double> randomScaleRange() {
@@ -196,6 +151,8 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
           runtimeType == other.runtimeType &&
           deterministicProperties == other.deterministicProperties &&
           visualProperties == other.visualProperties &&
+          animationProperties == other.animationProperties &&
+          layerProperties == other.layerProperties &&
           distanceCurve == other.distanceCurve &&
           customPathBuilder == other.customPathBuilder;
 
@@ -204,6 +161,8 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
       super.hashCode ^
       deterministicProperties.hashCode ^
       visualProperties.hashCode ^
+      animationProperties.hashCode ^
+      layerProperties.hashCode ^
       distanceCurve.hashCode ^
       customPathBuilder.hashCode;
 }

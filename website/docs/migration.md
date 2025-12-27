@@ -173,7 +173,8 @@ Groups all visual appearance properties:
 
 ### EmissionProperties
 
-Groups all emission-related properties:
+Groups all emission-related properties. **Note:** `EmissionProperties` is now part of the base `EffectConfiguration` class, making it available to both `PhysicsEffectConfiguration` and `DeterministicEffectConfiguration`:
+
 - `origin` → `emissionProperties.origin`
 - `minOriginOffset` / `maxOriginOffset` → `emissionProperties.minOriginOffset` / `maxOriginOffset`
 - `particleCount` → `emissionProperties.particleCount`

@@ -10,6 +10,7 @@ environment:
   flutter: ">=3.27.0"
 
 dependencies:
+  collection: ^1.18.0
   flutter:
     sdk: flutter
   forge2d: ^0.14.2+1

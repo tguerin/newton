@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -63,6 +65,24 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
 
   final _effects = <Effect>[];
   final _effectsElapsedTimeNotifier = _ElapsedTimeNotifier();
+  final _debugDataController = StreamController<NewtonDebugData>.broadcast();
+
+  /// Stream of debug data providing real-time information about particle effects.
+  ///
+  /// This stream emits [NewtonDebugData] objects periodically (typically every frame)
+  /// containing information about active particles, effect states, and performance metrics.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// final newtonState = Newton.of(context);
+  /// newtonState.debugDataStream.listen((debugData) {
+  ///   print('Total active particles: ${debugData.totalActiveParticles}');
+  ///   for (final effectData in debugData.effectData) {
+  ///     print('Effect: ${effectData.activeParticleCount} particles');
+  ///   }
+  /// });
+  /// ```
+  Stream<NewtonDebugData> get debugDataStream => _debugDataController.stream;
 
   @override
   void initState() {
@@ -89,8 +109,35 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     }
     if (_effects.isNotEmpty) {
       _effectsElapsedTimeNotifier.value = elapsed - _lastElapsed;
+      _emitDebugData();
     }
     _lastElapsed = elapsed;
+  }
+
+  void _emitDebugData() {
+    if (!_debugDataController.isClosed && _debugDataController.hasListener) {
+      final effectData = _effects.map((effect) {
+        return EffectDebugData(
+          configuration: effect.effectConfiguration,
+          activeParticleCount: effect.activeParticles.length,
+          totalEmittedCount: effect.totalEmittedCount,
+          state: effect.state,
+        );
+      }).toList();
+
+      final totalActiveParticles = effectData.fold<int>(
+        0,
+        (sum, data) => sum + data.activeParticleCount,
+      );
+
+      final debugData = NewtonDebugData(
+        effectData: effectData,
+        totalActiveParticles: totalActiveParticles,
+        totalEffects: _effects.length,
+      );
+
+      _debugDataController.add(debugData);
+    }
   }
 
   @override
@@ -167,6 +214,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     _ticker
       ..stop(canceled: true)
       ..dispose();
+    _debugDataController.close().ignore();
     super.dispose();
   }
 
@@ -183,7 +231,15 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   @override
   void didUpdateWidget(Newton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.effectConfigurations != oldWidget.effectConfigurations) {
+    // Check if configurations have changed by comparing list contents deeply
+    // This handles cases where copyWith creates new configuration objects
+    // EffectConfiguration implements == operator, so ListEquality works correctly
+    final configsChanged = !const ListEquality<EffectConfiguration>().equals(
+      widget.effectConfigurations,
+      oldWidget.effectConfigurations,
+    );
+
+    if (configsChanged) {
       _pendingActiveEffects.removeWhere(_isEffectRemoved);
       _effects.removeWhere(_isEffectRemoved);
       _setupEffectsFromWidget();

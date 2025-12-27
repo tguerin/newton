@@ -25,9 +25,9 @@ class PhysicsEffectConfiguration extends EffectConfiguration {
   /// This provides better organization and validation.
   PhysicsEffectConfiguration({
     required super.particleConfiguration,
+    super.emissionProperties = const EmissionProperties(),
     this.physicsProperties = const PhysicsProperties(),
     this.visualProperties = const VisualProperties(),
-    this.emissionProperties = const EmissionProperties(),
     this.animationProperties = const AnimationProperties(),
     this.layerProperties = const LayerProperties(),
     this.configurationOverrider,
@@ -46,12 +46,6 @@ class PhysicsEffectConfiguration extends EffectConfiguration {
         fadeInCurve = visualProperties.fadeInCurve,
         fadeOutCurve = visualProperties.fadeOutCurve,
         scaleCurve = visualProperties.scaleCurve,
-        // Map emission properties
-        emitCurve = emissionProperties.emitCurve,
-        emitDuration = emissionProperties.emitDuration,
-        particleCount = emissionProperties.particleCount,
-        particlesPerEmit = emissionProperties.particlesPerEmit,
-        origin = emissionProperties.origin,
         // Map animation properties
         startDelay = animationProperties.startDelay,
         // Map layer properties
@@ -68,9 +62,6 @@ class PhysicsEffectConfiguration extends EffectConfiguration {
 
   /// The visual properties (grouped ranges for scale and fade thresholds).
   final VisualProperties visualProperties;
-
-  /// The emission properties (emission timing, count, origin, and lifespan).
-  final EmissionProperties emissionProperties;
 
   /// The animation properties (start delay).
   final AnimationProperties animationProperties;
@@ -121,22 +112,6 @@ class PhysicsEffectConfiguration extends EffectConfiguration {
   @override
   final Curve scaleCurve;
 
-  // Emission properties mapped to EffectConfiguration fields
-  @override
-  final Curve emitCurve;
-
-  @override
-  final Duration emitDuration;
-
-  @override
-  final int particleCount;
-
-  @override
-  final int particlesPerEmit;
-
-  @override
-  final Offset origin;
-
   // Animation properties mapped to EffectConfiguration fields
   @override
   final Duration startDelay;
@@ -164,7 +139,7 @@ class PhysicsEffectConfiguration extends EffectConfiguration {
       configurationOverrider: configurationOverrider ?? this.configurationOverrider,
       physicsProperties: physicsProperties ?? this.physicsProperties,
       visualProperties: visualProperties ?? this.visualProperties,
-      emissionProperties: emissionProperties ?? this.emissionProperties,
+      emissionProperties: emissionProperties ?? super.emissionProperties,
       animationProperties: animationProperties ?? this.animationProperties,
       layerProperties: layerProperties ?? this.layerProperties,
       particleConfiguration: particleConfiguration ?? this.particleConfiguration,
@@ -176,15 +151,7 @@ class PhysicsEffectConfiguration extends EffectConfiguration {
     return physicsProperties.randomAngle();
   }
 
-  @override
-  Duration randomDuration() {
-    return Duration(
-      milliseconds: random.nextIntRange(
-        emissionProperties.minParticleLifespan.inMilliseconds,
-        emissionProperties.maxParticleLifespan.inMilliseconds,
-      ),
-    );
-  }
+  // randomDuration is now implemented in EffectConfiguration base class
 
   @override
   double randomFadeInThreshold() {
@@ -196,19 +163,7 @@ class PhysicsEffectConfiguration extends EffectConfiguration {
     return visualProperties.randomFadeOutThreshold();
   }
 
-  @override
-  Offset randomOriginOffset() {
-    return Offset(
-      random.nextDoubleRange(
-        emissionProperties.minOriginOffset.dx,
-        emissionProperties.maxOriginOffset.dx,
-      ),
-      random.nextDoubleRange(
-        emissionProperties.minOriginOffset.dy,
-        emissionProperties.maxOriginOffset.dy,
-      ),
-    );
-  }
+  // randomOriginOffset is now implemented in EffectConfiguration base class
 
   @override
   Tween<double> randomScaleRange() {
@@ -244,6 +199,8 @@ class PhysicsEffectConfiguration extends EffectConfiguration {
           configurationOverrider == other.configurationOverrider &&
           physicsProperties == other.physicsProperties &&
           visualProperties == other.visualProperties &&
+          animationProperties == other.animationProperties &&
+          layerProperties == other.layerProperties &&
           solidEdges == other.solidEdges &&
           onlyInteractWithEdges == other.onlyInteractWithEdges;
 
@@ -253,6 +210,8 @@ class PhysicsEffectConfiguration extends EffectConfiguration {
       configurationOverrider.hashCode ^
       physicsProperties.hashCode ^
       visualProperties.hashCode ^
+      animationProperties.hashCode ^
+      layerProperties.hashCode ^
       solidEdges.hashCode ^
       onlyInteractWithEdges.hashCode;
 }

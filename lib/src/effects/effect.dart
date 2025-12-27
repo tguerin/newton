@@ -25,6 +25,9 @@ abstract class Effect<ParticleT extends AnimatedParticle, ConfigurationT extends
   /// List of active particles currently managed by this effect.
   List<ParticleT> get activeParticles => _activeParticles.toList();
 
+  /// Total number of particles that have been emitted by this effect.
+  int get totalEmittedCount => _totalEmittedCount;
+
   /// The configuration settings for the effect.
   final ConfigurationT effectConfiguration;
 
