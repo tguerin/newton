@@ -28,6 +28,7 @@ class ForgeNewtonWorld implements NewtonWorld {
   late final _Boundaries _boundaries;
   final Map<RelativisticParticle, f2d.Body> _particlesBody = {};
   final Map<RelativisticParticle, f2d.Fixture> _particlesFixture = {};
+  final Map<RelativisticParticle, _ParticleFixtureCache> _particleFixtureCache = {};
   late final f2d.World _world;
 
   @override
@@ -48,6 +49,7 @@ class ForgeNewtonWorld implements NewtonWorld {
   void removeParticle(RelativisticParticle particle) {
     final body = _particlesBody.remove(particle);
     final fixture = _particlesFixture.remove(particle);
+    _particleFixtureCache.remove(particle);
     if (body != null) {
       if (fixture != null) {
         body.destroyFixture(fixture);
@@ -82,31 +84,64 @@ class ForgeNewtonWorld implements NewtonWorld {
   @override
   void updateParticles(List<RelativisticParticle> activeParticles) {
     for (final relativistParticle in activeParticles) {
-      final particleMask = relativistParticle.onlyInteractWithEdges ? _edgeCategory : _particleCategory | _edgeCategory;
       final body = _particlesBody[relativistParticle];
       if (body == null) continue;
-      final fixture = _particlesFixture[relativistParticle];
-      if (fixture != null) {
-        body.destroyFixture(fixture);
-      }
+
+      // Get current particle properties
       final particleSize = _sizeToWorld(relativistParticle.particle.size);
-      final circleShape = switch (relativistParticle.particle.shape) {
-        CircleShape() => f2d.CircleShape()..radius = particleSize.x / 2,
-        _ => f2d.PolygonShape()
-          ..setAsBox(
-            particleSize.x / 2,
-            particleSize.y / 2,
-            f2d.Vector2(0, 0),
-            0,
-          ),
-      };
-      final fixtureDef = f2d.FixtureDef(circleShape)
-        ..density = relativistParticle.density.value
-        ..friction = relativistParticle.friction.value
-        ..restitution = relativistParticle.restitution.value
-        ..filter.categoryBits = _particleCategory
-        ..filter.maskBits = particleMask;
-      _particlesFixture[relativistParticle] = body.createFixture(fixtureDef);
+      final density = relativistParticle.density.value;
+      final friction = relativistParticle.friction.value;
+      final restitution = relativistParticle.restitution.value;
+      final particleMask = relativistParticle.onlyInteractWithEdges ? _edgeCategory : _particleCategory | _edgeCategory;
+      final isCircle = relativistParticle.particle.shape is CircleShape;
+
+      // Check if we need to recreate the fixture
+      final cached = _particleFixtureCache[relativistParticle];
+      final needsUpdate = cached == null ||
+          cached.size.x != particleSize.x ||
+          cached.size.y != particleSize.y ||
+          cached.density != density ||
+          cached.friction != friction ||
+          cached.restitution != restitution ||
+          cached.maskBits != particleMask ||
+          cached.isCircle != isCircle;
+
+      if (needsUpdate) {
+        // Destroy old fixture if it exists
+        final oldFixture = _particlesFixture[relativistParticle];
+        if (oldFixture != null) {
+          body.destroyFixture(oldFixture);
+        }
+
+        // Create new fixture with current properties
+        final circleShape = switch (relativistParticle.particle.shape) {
+          CircleShape() => f2d.CircleShape()..radius = particleSize.x / 2,
+          _ => f2d.PolygonShape()
+            ..setAsBox(
+              particleSize.x / 2,
+              particleSize.y / 2,
+              f2d.Vector2(0, 0),
+              0,
+            ),
+        };
+        final fixtureDef = f2d.FixtureDef(circleShape)
+          ..density = density
+          ..friction = friction
+          ..restitution = restitution
+          ..filter.categoryBits = _particleCategory
+          ..filter.maskBits = particleMask;
+        _particlesFixture[relativistParticle] = body.createFixture(fixtureDef);
+
+        // Update cache
+        _particleFixtureCache[relativistParticle] = _ParticleFixtureCache(
+          size: particleSize,
+          density: density,
+          friction: friction,
+          restitution: restitution,
+          maskBits: particleMask,
+          isCircle: isCircle,
+        );
+      }
     }
   }
 
@@ -178,4 +213,23 @@ class _Boundaries {
       ..filter.maskBits = _edgeMask;
     return _world.createBody(bodyDef)..createFixture(fixtureDef);
   }
+}
+
+/// Caches fixture properties to avoid unnecessary fixture recreation.
+class _ParticleFixtureCache {
+  const _ParticleFixtureCache({
+    required this.size,
+    required this.density,
+    required this.friction,
+    required this.restitution,
+    required this.maskBits,
+    required this.isCircle,
+  });
+
+  final f2d.Vector2 size;
+  final double density;
+  final double friction;
+  final double restitution;
+  final int maskBits;
+  final bool isCircle;
 }
