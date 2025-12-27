@@ -80,11 +80,24 @@ class NewtonPainter extends CustomPainter {
         return 0;
       });
 
-    // Paint particles in sorted order
+    // Viewport bounds with margin for particles that might extend beyond their position
+    // (e.g., trails, large particles, rotation)
+    const cullMargin = 100.0; // pixels
+    final viewportBounds = Rect.fromLTWH(
+      -cullMargin,
+      -cullMargin,
+      size.width + 2 * cullMargin,
+      size.height + 2 * cullMargin,
+    );
+
+    // Paint particles in sorted order, culling off-screen particles
     for (final activeParticle in sortedParticles) {
       if (activeParticle.foreground == _foreground) {
-        _updateTransformations(activeParticle);
-        activeParticle.drawExtra(canvas);
+        // Check if particle is within viewport before processing
+        if (_isParticleVisible(activeParticle, viewportBounds)) {
+          _updateTransformations(activeParticle);
+          activeParticle.drawExtra(canvas);
+        }
       }
     }
 
@@ -120,6 +133,31 @@ class NewtonPainter extends CustomPainter {
     _rectsPerImage.clear();
     _colorsPerImage.clear();
     _allBlendedImages.clear();
+  }
+
+  /// Checks if a particle is visible within the viewport bounds.
+  ///
+  /// This method performs viewport culling to skip particles that are
+  /// outside the visible area, improving performance for large particle counts.
+  ///
+  /// - [particle]: The particle to check.
+  /// - [viewportBounds]: The viewport bounds with margin for particles that extend beyond their position.
+  ///
+  /// Returns `true` if the particle is potentially visible, `false` if it's definitely off-screen.
+  bool _isParticleVisible(AnimatedParticle particle, Rect viewportBounds) {
+    final pos = particle.particle.position;
+    final size = particle.particle.size;
+
+    // Calculate bounding box for the particle
+    // Account for rotation by using the diagonal of the size as the radius
+    final maxRadius = (size.width + size.height) / 2;
+    final particleBounds = Rect.fromCircle(
+      center: pos,
+      radius: maxRadius,
+    );
+
+    // Check if particle bounds intersect with viewport
+    return viewportBounds.overlaps(particleBounds);
   }
 
   /// Updates the transformation maps with the given particle's properties.
