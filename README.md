@@ -52,7 +52,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.2.3
+  newton_particles: ^0.3.0
 ```
 
 Then, run `flutter pub get` to fetch the package.
@@ -72,21 +72,23 @@ import 'package:newton_particles/newton_particles.dart';
 Newton(
     // Add any kind of effects to your UI
     // For example:
-    activeEffects: [
-        RelativisticEffectConfiguration(
-            gravity: Gravity.earthGravity,
-            maxAngle: 90,
-            maxEndScale: 1,
-            maxFadeOutThreshold: .8,
-            maxOriginOffset: const Offset(1, 0),
-            maxParticleLifespan: const Duration(seconds: 10),
-            minVelocity: Velocity.stationary,
-            maxVelocity: Velocity.stationary,
-            minAngle: 90,
-            minParticleLifespan: const Duration(seconds: 7),
-            minEndScale: 1,
-            minFadeOutThreshold: .6,
-            origin: Offset.zero,
+    effectConfigurations: [
+        PhysicsEffectConfiguration(
+            physicsProperties: const PhysicsProperties(
+                gravity: Gravity.earthGravity,
+                angle: Range.single(90),
+                velocity: Range.between(Velocity.stationary, Velocity.stationary),
+            ),
+            visualProperties: const VisualProperties(
+                endScale: Range.single(1),
+                fadeOutThreshold: Range.between(0.6, 0.8),
+            ),
+            emissionProperties: const EmissionProperties(
+                origin: Offset.zero,
+                maxOriginOffset: Offset(1, 0),
+                minParticleLifespan: Duration(seconds: 7),
+                maxParticleLifespan: Duration(seconds: 10),
+            ),
             particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),
                 size: Size(5, 5),
@@ -119,21 +121,23 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(title: Text('Newton Rain Example')),
         body: Newton(
-          activeEffects: [
-            RelativisticEffectConfiguration(
-              gravity: Gravity.earthGravity,
-              maxAngle: 90,
-              maxEndScale: 1,
-              maxFadeOutThreshold: .8,
-              maxOriginOffset: const Offset(1, 0),
-              maxParticleLifespan: const Duration(seconds: 10),
-              minVelocity: Velocity.stationary,
-              maxVelocity: Velocity.stationary,
-              minAngle: 90,
-              minParticleLifespan: const Duration(seconds: 7),
-              minEndScale: 1,
-              minFadeOutThreshold: .6,
-              origin: Offset.zero,
+          effectConfigurations: [
+            PhysicsEffectConfiguration(
+              physicsProperties: const PhysicsProperties(
+                gravity: Gravity.earthGravity,
+                angle: Range.single(90),
+                velocity: Range.between(Velocity.stationary, Velocity.stationary),
+              ),
+              visualProperties: const VisualProperties(
+                endScale: Range.single(1),
+                fadeOutThreshold: Range.between(0.6, 0.8),
+              ),
+              emissionProperties: const EmissionProperties(
+                origin: Offset.zero,
+                maxOriginOffset: Offset(1, 0),
+                minParticleLifespan: Duration(seconds: 7),
+                maxParticleLifespan: Duration(seconds: 10),
+              ),
               particleConfiguration: const ParticleConfiguration(
                 shape: CircleShape(),
                 size: Size(5, 5),

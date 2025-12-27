@@ -32,18 +32,21 @@ class HomeScreen extends StatelessWidget {
       child: TextButton(
         onPressed: () {
             Newton.of(context).addEffect(
-              RelativisticEffectConfiguration(
+              PhysicsEffectConfiguration(
+              physicsProperties: const PhysicsProperties(
                 gravity: Gravity.earthGravity,
-                origin: Offset.zero,
-                maxOriginOffset: const Offset(1, 0),
-                maxAngle: 90,
-                maxEndScale: 1,
-                maxFadeOutThreshold: 0.8,
-                maxParticleLifespan: const Duration(seconds: 7),
-                minAngle: 90,
-                minEndScale: 1,
-                minFadeOutThreshold: 0.6,
-                minParticleLifespan: const Duration(seconds: 4),
+                angle: Range.single(90),
+              ),
+                visualProperties: const VisualProperties(
+                  endScale: Range.single(1),
+                  fadeOutThreshold: Range.between(0.6, 0.8),
+                ),
+                emissionProperties: const EmissionProperties(
+                  origin: Offset.zero,
+                  maxOriginOffset: Offset(1, 0),
+                  minParticleLifespan: Duration(seconds: 4),
+                  maxParticleLifespan: Duration(seconds: 7),
+                ),
                 particleConfiguration: const ParticleConfiguration(
                   shape: CircleShape(),
                   size: Size(5, 5),
