@@ -27,8 +27,6 @@ class DeterministicEffectConfiguration extends EffectConfiguration {
   /// - [emitDuration]: The interval between particle emissions, controlling how long the effect lasts.
   /// - [fadeInCurve]: A curve that controls the fade-in effect for particles, allowing smooth appearance animations.
   /// - [fadeOutCurve]: A curve that controls the fade-out effect for particles, allowing particles to disappear gradually.
-  /// - [foreground]: Determines whether the effect should render in the foreground layer.
-  ///   When set to `true`, particles are rendered on top of other visual elements.
   /// - [maxAngle]: The maximum angle (in degrees) for particle trajectory, providing control over the
   ///   directional spread of particles.
   /// - [maxBeginScale]: The maximum starting scale for particles, controlling their initial size.

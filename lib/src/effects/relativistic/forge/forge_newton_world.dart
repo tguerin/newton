@@ -7,7 +7,7 @@ import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 
 const _particleCategory = 0x0001;
 const _edgeCategory = 0x0002;
-const _edgeMask = _particleCategory;
+const int _edgeMask = _particleCategory;
 
 /// The `ForgeNewtonWorld` class implements the `NewtonWorld` interface using the Forge2D
 /// physics engine. It manages the simulation of relativistic particles within a 2D world,
@@ -140,10 +140,9 @@ class _Boundaries {
   final f2d.World _world;
 
   void updateBoundaries(f2d.Vector2 newScreenSize) {
-    for (final boundary in _boundaries) {
-      _world.destroyBody(boundary);
-    }
-    _boundaries.clear();
+    _boundaries
+      ..forEach(_world.destroyBody)
+      ..clear();
     if (_hardEdges == SolidEdges.none) return;
     _boundaries = _createBoundaries(newScreenSize);
   }

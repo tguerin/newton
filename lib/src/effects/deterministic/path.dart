@@ -12,7 +12,7 @@ import 'package:vector_math/vector_math_64.dart';
 /// of the particle's movement, which is represented by a value between 0 and 1.
 /// Subclasses of `DeterministicPathTransformation` are expected to provide specific
 /// implementations of this transformation behavior.
-abstract class DeterministicPathTransformation {
+sealed class DeterministicPathTransformation {
   /// Creates a [DeterministicPathTransformation]
   const DeterministicPathTransformation();
 

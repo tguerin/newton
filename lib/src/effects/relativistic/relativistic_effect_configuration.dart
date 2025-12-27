@@ -132,7 +132,6 @@ class RelativisticEffectConfiguration extends EffectConfiguration {
   /// - [emitDuration]: The duration between particle emissions.
   /// - [fadeInCurve]: Controls the fade-in animation for particles.
   /// - [fadeOutCurve]: Controls the fade-out animation for particles.
-  /// - [foreground]: Whether the effect should be rendered in the foreground.
   /// - [maxAngle]: The maximum angle (in degrees) for the particle trajectory.
   /// - [maxBeginScale]: The maximum initial scale of particles.
   /// - [maxEndScale]: The maximum final scale of particles.

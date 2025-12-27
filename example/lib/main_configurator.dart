@@ -38,8 +38,9 @@ class NewtonConfigurationPage extends StatefulWidget {
 class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
   final _configuredEffects = <_ConfiguredEffect>[
     _ConfiguredEffect(
-        effectName: 'Rain',
-        effectConfiguration: defaultRelativisticEffectConfigurationsPerAnimation[AvailableEffect.rain]!),
+      effectName: 'Rain',
+      effectConfiguration: defaultRelativisticEffectConfigurationsPerAnimation[AvailableEffect.rain]!,
+    ),
   ];
   AvailableEffect _selectedAnimation = AvailableEffect.scratch;
 
@@ -287,7 +288,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
             duration: const Duration(milliseconds: 400),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.white.withOpacity(.4)),
+              border: Border.all(color: Colors.white.withValues(alpha: .4)),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -341,7 +342,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
             duration: const Duration(milliseconds: 400),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.white.withOpacity(.4)),
+              border: Border.all(color: Colors.white.withValues(alpha: .4)),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -392,7 +393,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
             duration: const Duration(milliseconds: 400),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.white.withOpacity(.4)),
+              border: Border.all(color: Colors.white.withValues(alpha: .4)),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -463,7 +464,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
             duration: const Duration(milliseconds: 400),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.white.withOpacity(.4)),
+              border: Border.all(color: Colors.white.withValues(alpha: .4)),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

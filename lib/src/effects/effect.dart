@@ -3,7 +3,7 @@ import 'package:newton_particles/newton_particles.dart';
 
 /// Abstract class representing a particle effect, defining the behavior of
 /// particles and managing their lifecycle within the effect.
-abstract class Effect<Particle extends AnimatedParticle, Configuration extends EffectConfiguration> {
+abstract class Effect<ParticleT extends AnimatedParticle, ConfigurationT extends EffectConfiguration> {
   /// Constructor for creating an `Effect` with the specified configurations.
   ///
   /// - [effectConfiguration]: Configuration for the effect itself.
@@ -15,10 +15,10 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   bool addedAtRuntime = false;
 
   /// List of active particles currently managed by this effect.
-  List<Particle> get activeParticles => _activeParticles.toList();
+  List<ParticleT> get activeParticles => _activeParticles.toList();
 
   /// The configuration settings for the effect.
-  final Configuration effectConfiguration;
+  final ConfigurationT effectConfiguration;
 
   /// The root effect from which this effect may be derived.
   Effect<AnimatedParticle, EffectConfiguration>? rootEffect;
@@ -27,7 +27,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   EffectState get state => _state;
 
   /// The callback invoked when the state of the effect changes.
-  void Function(Effect<Particle, Configuration>, EffectState)? _stateChangeCallback;
+  void Function(Effect<ParticleT, ConfigurationT>, EffectState)? _stateChangeCallback;
 
   /// The size of the surface where the effect is rendered.
   Size get surfaceSize => _surfaceSize;
@@ -50,12 +50,12 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
 
   /// Sets the state change callback and immediately invokes it with the current state.
   // ignore: avoid_setters_without_getters
-  set stateChangeCallback(void Function(Effect<Particle, EffectConfiguration>, EffectState)? value) {
+  set stateChangeCallback(void Function(Effect<ParticleT, EffectConfiguration>, EffectState)? value) {
     _stateChangeCallback = value;
     _stateChangeCallback?.call(this, _state);
   }
 
-  final List<Particle> _activeParticles = List.empty(growable: true);
+  final List<ParticleT> _activeParticles = List.empty(growable: true);
   bool _firstEmission = true;
   Duration _lastInstantiation = Duration.zero;
   EffectState _state = EffectState.running;
@@ -86,7 +86,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   }
 
   /// Initializes and returns a new particle for the effect.
-  Particle instantiateParticle(Size surfaceSize);
+  ParticleT instantiateParticle(Size surfaceSize);
 
   /// Starts the effect, changing its state to running.
   void start() {
@@ -117,7 +117,7 @@ abstract class Effect<Particle extends AnimatedParticle, Configuration extends E
   ///
   /// Can be overridden in subclasses to handle additional cleanup or logic.
   @protected
-  void onParticleDestroyed(Particle particle) {
+  void onParticleDestroyed(ParticleT particle) {
     // Default implementation does nothing. Override in subclasses if needed.
   }
 

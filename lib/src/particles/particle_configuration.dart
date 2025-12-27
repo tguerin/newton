@@ -24,9 +24,9 @@ class ParticleConfiguration {
   /// The `postEffectBuilder` parameter is optional and represents the effect to trigger once particle travel is over.
   /// It defaults to `null`, that means no effect.
   const ParticleConfiguration({
+    required this.size,
     this.shape,
     this.shapeBuilder,
-    required this.size,
     this.color = const SingleParticleColor(color: Colors.white),
     this.zIndexBuilder,
     this.postEffectBuilder,

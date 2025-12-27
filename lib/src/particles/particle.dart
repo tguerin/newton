@@ -91,6 +91,6 @@ class Particle {
   /// The `updateOpacity` will adjust the opacity accordingly.
   /// If opacity is outside the range [0,1] it will be clamped to the nearest value.
   void updateOpacity(double opacity) {
-    _color = _color.withOpacity(opacity.clamp(0, 1));
+    _color = _color.withValues(alpha: opacity.clamp(0, 1));
   }
 }

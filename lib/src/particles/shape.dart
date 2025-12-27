@@ -139,7 +139,7 @@ class ImageAssetShape extends Shape {
     ui.Image? placeholderImage,
   }) : _imageShape = placeholderImage != null ? ImageShape(placeholderImage) : null {
     if (!deferLoading) {
-      load();
+      load().ignore();
     }
   }
 
@@ -162,7 +162,7 @@ class ImageAssetShape extends Shape {
       final completer = Completer<ui.Image>();
       ui.decodeImageFromList(Uint8List.view(data.buffer), completer.complete);
       _imageShape = ImageShape(await completer.future, blendMode: blendMode);
-    } catch (e) {
+    } on Exception catch (_) {
       // If loading fails, keep using the placeholder image
     }
   }

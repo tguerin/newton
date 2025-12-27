@@ -1,12 +1,3 @@
-/// The `newton_particles` library provides a powerful and highly configurable particle emitter
-/// for creating visually captivating animations in Flutter apps, such as rain, smoke, or explosions.
-///
-/// To get started, import the `newton_particles` library into your Dart code and include the
-/// `Newton` widget in your widget tree. The `Newton` widget allows you to add and manage
-/// various particle effects by passing a list of `EffectConfiguration` instances.
-/// It automatically handles the animation and rendering of these particle effects on a custom canvas.
-library newton_particles;
-
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -66,7 +57,7 @@ class Newton extends StatefulWidget {
 class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
   static const _shapeSpriteSheetPath = 'packages/newton_particles/assets/images/newton.png';
   late Ticker _ticker;
-  var _lastElapsed = Duration.zero;
+  Duration _lastElapsed = Duration.zero;
   final _pendingActiveEffects = List<Effect>.empty(growable: true);
   late Future<ui.Image> _shapeSpriteSheet;
 
@@ -79,7 +70,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     _shapeSpriteSheet = rootBundle.loadImage(_shapeSpriteSheetPath);
     _setupEffectsFromWidget();
     _ticker = createTicker(_onFrameUpdate);
-    _ticker.start();
+    _ticker.start().ignore();
   }
 
   void _onFrameUpdate(Duration elapsed) {

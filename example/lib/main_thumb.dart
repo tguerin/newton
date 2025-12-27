@@ -108,7 +108,7 @@ class _ThumbUpExampleState extends State<ThumbUpExample> {
                 width: _btnSize,
                 height: _btnSize,
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.8),
+                  color: Colors.red.withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(_btnSize / 2),
                 ),
                 child: const Center(child: Text('click')),
