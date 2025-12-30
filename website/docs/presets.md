@@ -6,7 +6,148 @@ import Configurations from '@site/src/components/configurations';
 
 # Effect Samples
 
-In the upcoming section, we will explore how to create animations using
+Newton provides ready-to-use preset classes that make it easy to add common particle effects to your app. You can use these presets directly or customize them to fit your needs.
+
+## Using Presets
+
+Newton includes several preset classes that you can use out of the box:
+
+- **[RainPreset](#rain-preset)** - Falling rain drops
+- **[SnowPreset](#snow-preset)** - Falling snowflakes with wind drift
+- **[FountainPreset](#fountain-preset)** - Water fountain effect
+- **[ConfettiPreset](#confetti-preset)** - Celebration confetti
+- **[ExplosionPreset](#explosion-preset)** - Explosion burst effect
+
+### Quick Start with Presets
+
+To use a preset, simply create an instance and call `toConfiguration()`:
+
+```dart
+Newton(
+  effectConfigurations: [
+    RainPreset().toConfiguration(),
+  ],
+)
+```
+
+You can also customize presets by passing parameters:
+
+```dart
+Newton(
+  effectConfigurations: [
+    RainPreset(
+      color: Colors.blue,
+      particlesPerEmit: 10,
+      emitDuration: Duration(milliseconds: 50),
+    ).toConfiguration(),
+  ],
+)
+```
+
+## Rain Preset
+
+The `RainPreset` creates rain particles that fall straight down with gravity.
+
+```dart
+Newton(
+  effectConfigurations: [
+    RainPreset().toConfiguration(),
+  ],
+)
+```
+
+**Customizable options:**
+- `color`: Color of the rain drops (default: light blue)
+- `particleCount`: Total number of rain drops (default: 0 for infinite)
+- `particlesPerEmit`: Number of drops per burst (default: 5)
+- `emitDuration`: Duration between emissions (default: 100ms)
+- `origin`: Origin point for emission (default: top center)
+- `gravity`: Gravity applied to drops (default: earth gravity)
+
+## Snow Preset
+
+The `SnowPreset` creates snowflakes that fall slowly with slight horizontal drift.
+
+```dart
+Newton(
+  effectConfigurations: [
+    SnowPreset().toConfiguration(),
+  ],
+)
+```
+
+**Customizable options:**
+- `color`: Color of the snowflakes (default: white)
+- `particleCount`: Total number of snowflakes (default: 0 for infinite)
+- `particlesPerEmit`: Number of flakes per burst (default: 3)
+- `emitDuration`: Duration between emissions (default: 200ms)
+- `origin`: Origin point for emission (default: top center)
+- `windStrength`: Horizontal wind effect (default: 0.5)
+
+## Fountain Preset
+
+The `FountainPreset` creates particles that spray upward and fall back down.
+
+```dart
+Newton(
+  effectConfigurations: [
+    FountainPreset().toConfiguration(),
+  ],
+)
+```
+
+**Customizable options:**
+- `color`: Color of the fountain particles (default: light blue)
+- `particleCount`: Total number of particles (default: 0 for infinite)
+- `particlesPerEmit`: Number of particles per burst (default: 8)
+- `emitDuration`: Duration between emissions (default: 50ms)
+- `origin`: Origin point for the fountain (default: bottom center)
+- `gravity`: Gravity applied to particles (default: earth gravity)
+
+## Confetti Preset
+
+The `ConfettiPreset` creates colorful confetti particles that fall with gravity and bounce.
+
+```dart
+Newton(
+  effectConfigurations: [
+    ConfettiPreset().toConfiguration(),
+  ],
+)
+```
+
+**Customizable options:**
+- `colors`: List of colors for confetti (default: rainbow colors)
+- `particleCount`: Total number of particles (default: 50)
+- `particlesPerEmit`: Number of particles per burst (default: 10)
+- `emitDuration`: Duration between emissions (default: 50ms)
+- `origin`: Origin point for emission (default: center top)
+- `gravity`: Gravity applied to particles (default: earth gravity)
+
+## Explosion Preset
+
+The `ExplosionPreset` creates particles that burst outward in all directions.
+
+```dart
+Newton(
+  effectConfigurations: [
+    ExplosionPreset().toConfiguration(),
+  ],
+)
+```
+
+**Customizable options:**
+- `colors`: List of colors for explosion (default: fire colors)
+- `particleCount`: Total number of particles (default: 30)
+- `particlesPerEmit`: Number of particles in burst (default: 30)
+- `origin`: Origin point for explosion (default: center)
+- `gravity`: Gravity applied to particles (default: zero)
+
+---
+
+## Manual Effect Creation
+
+In the upcoming section, we will explore how to create animations manually using
 Newtonian dynamics, such as simulating rain or pulse effects. These animations
 can be constructed either deterministically or by applying physics-based
 principles.
