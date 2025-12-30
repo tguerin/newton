@@ -30,34 +30,30 @@ sealed class DeterministicPathTransformation {
 /// This transformation moves the position in a straight line defined by a distance
 /// and an optional angle. The movement is linear and calculated using trigonometric
 /// functions based on the angle.
-final class StraightPathTransformation extends DeterministicPathTransformation {
+///
+/// This is a convenience class that extends [TweenPathTransformation] to provide
+/// a simpler API for creating straight-line paths.
+final class StraightPathTransformation extends TweenPathTransformation {
   /// Creates a [StraightPathTransformation] with the given [distance] and an optional [angle].
   ///
   /// The [angle] parameter allows specifying the angle of the straight line in degrees.
   /// The [distance] parameter specifies how far the position moves along the straight line.
   StraightPathTransformation({required this.distance, this.angle = 0})
-      : _angleCos = cos(radians(angle)),
-        _angleSin = sin(radians(angle));
+      : super(
+          tween: Tween<Offset>(
+            begin: Offset.zero,
+            end: Offset(
+              distance * cos(radians(angle)),
+              distance * sin(radians(angle)),
+            ),
+          ),
+        );
 
   /// The angle of the straight path in degrees.
   final double angle;
 
-  /// The cosine of the angle, used for calculating horizontal movement.
-  final double _angleCos;
-
-  /// The sine of the angle, used for calculating vertical movement.
-  final double _angleSin;
-
   /// The total distance the position moves along the straight line.
   final double distance;
-
-  @override
-  Offset positionFor(Particle particle, double progress) {
-    return Offset(
-      particle.initialPosition.dx + distance * progress * _angleCos,
-      particle.initialPosition.dy + distance * progress * _angleSin,
-    );
-  }
 }
 
 /// A path transformation that moves the initial position along a path based on metrics.
