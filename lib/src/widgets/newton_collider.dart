@@ -114,16 +114,44 @@ class _NewtonColliderState extends State<NewtonCollider> with WidgetsBindingObse
   }
 
   void _report({bool isRemoving = false}) {
-    if (!mounted) return;
+    // When removing, we need to dispatch even if not mounted to ensure cleanup
+    if (!isRemoving && !mounted) return;
 
-    final renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null || !renderBox.hasSize) return;
+    final context = _key.currentContext;
+    if (context == null) {
+      return;
+    }
+
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) {
+      // If removing and we can't get render box, still dispatch with last known position
+      if (isRemoving && _lastReportedPosition != null && _lastReportedSize != null) {
+        NewtonCollisionNotification(
+          id: _internalId,
+          rect: _lastReportedPosition! & _lastReportedSize!,
+          borderRadius: widget.borderRadius ?? BorderRadius.zero,
+          isRemoving: true,
+        ).dispatch(context);
+      }
+      return;
+    }
 
     final offset = renderBox.localToGlobal(Offset.zero);
     final size = renderBox.size;
 
-    // Skip if size is invalid
-    if (size.width <= 0 || size.height <= 0) return;
+    // Skip if size is invalid (unless removing)
+    if (size.width <= 0 || size.height <= 0) {
+      // If removing and size is invalid, use last known position
+      if (isRemoving && _lastReportedPosition != null && _lastReportedSize != null) {
+        NewtonCollisionNotification(
+          id: _internalId,
+          rect: _lastReportedPosition! & _lastReportedSize!,
+          borderRadius: widget.borderRadius ?? BorderRadius.zero,
+          isRemoving: true,
+        ).dispatch(context);
+      }
+      return;
+    }
 
     // Only report if position or size changed (to avoid unnecessary updates)
     if (!isRemoving && _lastReportedPosition == offset && _lastReportedSize == size) {
@@ -171,8 +199,25 @@ class _NewtonColliderState extends State<NewtonCollider> with WidgetsBindingObse
   }
 
   @override
+  void deactivate() {
+    // Report removal when widget is being removed from the tree
+    // This happens before dispose() and ensures the context is still valid
+    if (_lastReportedPosition != null && _lastReportedSize != null) {
+      final context = _key.currentContext;
+      if (context != null) {
+        NewtonCollisionNotification(
+          id: _internalId,
+          rect: _lastReportedPosition! & _lastReportedSize!,
+          borderRadius: widget.borderRadius ?? BorderRadius.zero,
+          isRemoving: true,
+        ).dispatch(context);
+      }
+    }
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
-    _report(isRemoving: true);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
