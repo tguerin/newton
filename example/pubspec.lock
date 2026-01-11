@@ -66,7 +66,7 @@ packages:
     source: hosted
     version: "1.4.0"
   chipmunk2d_physics_ffi:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: chipmunk2d_physics_ffi
       sha256: "063a7e2be092c0abd7f2244c0eeaf55123e33a407e2a3c79a3e891afd904fa10"
@@ -305,7 +305,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.3.0"
+    version: "0.4.0"
   package_config:
     dependency: transitive
     description:

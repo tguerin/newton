@@ -24,6 +24,7 @@ export 'src/effects/relativistic/restitution.dart';
 export 'src/effects/relativistic/velocity.dart';
 export 'src/effects/trail.dart';
 export 'src/effects/visual_properties.dart';
+export 'src/initialization.dart';
 export 'src/newton.dart';
 export 'src/particles/color.dart';
 export 'src/particles/gradient_orientation.dart';

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:newton_particles/newton_particles.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeNewton();
   runApp(const NewtonExampleApp());
 }
 

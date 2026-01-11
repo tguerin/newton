@@ -62,6 +62,21 @@ dependencies:
 
 Then, run `flutter pub get` to fetch the package.
 
+### Web Setup (Required for WASM with Physics Effects)
+
+If you're building for web with WASM and using physics effects, you need to add a helper script to your `web/index.html` file. Add this script **before** the `flutter_bootstrap.js` script:
+
+```html
+<body>
+  <script>
+    window._dynamicImport = (path) => import(path);
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+```
+
+This helper is required for Chipmunk2D's WASM module to load properly on web.
+
 ## What's New in 0.4.0
 
 ### Breaking Changes
@@ -147,7 +162,9 @@ Newton:
 import 'package:flutter/material.dart';
 import 'package:newton_particles/newton_particles.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeNewton();
   runApp(MyApp());
 }
 

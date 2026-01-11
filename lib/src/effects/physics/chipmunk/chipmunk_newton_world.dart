@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:chipmunk2d_physics_ffi/chipmunk2d_physics_ffi.dart' as chipmunk2d_physics_ffi;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:newton_particles/newton_particles.dart';
 import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 import 'package:newton_particles/src/utils/sdf_physics.dart';
@@ -13,17 +14,26 @@ const int _edgeMask = _particleCategory;
 /// The `ChipmunkNewtonWorld` class implements the `NewtonWorld` interface using the Chipmunk2D
 /// physics engine. It manages the simulation of physics particles within a 2D world,
 /// handling their addition, removal, and updates based on the physical properties defined.
-
 class ChipmunkNewtonWorld implements NewtonWorld {
   /// Creates a new `ChipmunkNewtonWorld` with the specified gravity.
   ///
+  /// **Important**: On web, you must call [initializeNewton] before creating any
+  /// `ChipmunkNewtonWorld` instances. On other platforms, [initializeNewton] is optional.
+  /// It's recommended to call it in your app's `main()` function for cross-platform compatibility.
+  ///
   /// - [gravity]: The gravity vector applied to the world, typically defined as `Gravity(dx, dy)`.
-  ChipmunkNewtonWorld(Gravity gravity, SolidEdges hardEdges) {
+  ///
+  /// Throws an [AssertionError] on web if [initializeNewton] has not been called.
+  ChipmunkNewtonWorld(Gravity gravity, SolidEdges hardEdges)
+      : assert(
+          !kIsWeb || isNewtonInitialized,
+          'initializeNewton() must be called before creating PhysicsEffectConfiguration on web. '
+          'Call await initializeNewton() in your main() function.',
+        ) {
     _space = chipmunk2d_physics_ffi.Space();
     _space.gravity = chipmunk2d_physics_ffi.Vector(gravity.dx, gravity.dy);
     _boundaries = _Boundaries(_space, hardEdges);
   }
-
   static const _pixelsPerMeter = 100.0;
 
   late final _Boundaries _boundaries;

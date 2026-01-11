@@ -445,6 +445,7 @@ class CompiledApp {
       _1358: x0 => new WeakRef(x0),
       _1359: x0 => x0.deref(),
       _1366: () => globalThis.WeakRef,
+      _1369: x0 => x0.call(),
       _1370: s => JSON.stringify(s),
       _1371: s => printToConsole(s),
       _1372: (o, p, r) => o.replaceAll(p, () => r),
@@ -671,6 +672,7 @@ class CompiledApp {
       _1529: (x0,x1) => { x0.lastIndex = x1 },
       _1530: (o, p) => p in o,
       _1531: (o, p) => o[p],
+      _1532: (o, p, v) => o[p] = v,
       _1552: (x0,x1,x2,x3) => x0.call(x1,x2,x3),
       _1553: x0 => x0.random(),
       _1554: (x0,x1) => x0.getRandomValues(x1),
@@ -680,6 +682,7 @@ class CompiledApp {
       _1570: Function.prototype.call.bind(BigInt.prototype.toString),
       _1571: Function.prototype.call.bind(Number.prototype.toString),
       _1572: (d, digits) => d.toFixed(digits),
+      _3408: () => globalThis.window,
 
     };
 

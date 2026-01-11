@@ -17,13 +17,47 @@ Then, run `flutter pub get` to fetch the package.
 
 ## Usage
 
-1. Import the Newton package:
+1. **Initialize Newton** (Required on web for physics effects):
+
+   If you're using `PhysicsEffectConfiguration`, you should initialize Newton in your app's `main()` function:
+
+   ```dart
+   import 'package:newton_particles/newton_particles.dart';
+   
+   void main() async {
+     WidgetsFlutterBinding.ensureInitialized();
+     await initializeNewton();
+     runApp(MyApp());
+   }
+   ```
+
+   **Note**: 
+   - On web, this initialization is required for physics-based effects.
+   - On other platforms (iOS, Android, macOS, Linux, Windows), this is a no-op and can be safely called or omitted.
+   - If you're only using `DeterministicEffectConfiguration`, you can skip this step on all platforms.
+
+2. **Add dynamic import helper for web** (Required for WASM on web):
+
+   If you're building for web with WASM and using physics effects, you need to add a helper script to your `web/index.html` file. Add this script **before** the `flutter_bootstrap.js` script:
+
+   ```html
+   <body>
+     <script>
+       window._dynamicImport = (path) => import(path);
+     </script>
+     <script src="flutter_bootstrap.js" async></script>
+   </body>
+   ```
+
+   This helper is required for Chipmunk2D's WASM module to load properly on web.
+
+3. Import the Newton package:
 
 ```dart
 import 'package:newton_particles/newton_particles.dart';
 ```
 
-2. Create a `Newton` widget and add it to your Flutter UI with the desired
+4. Create a `Newton` widget and add it to your Flutter UI with the desired
    effects:
 
 ```dart
@@ -93,7 +127,9 @@ Newton:
 import 'package:flutter/material.dart';
 import 'package:newton_particles/newton_particles.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeNewton();
   runApp(MyApp());
 }
 
