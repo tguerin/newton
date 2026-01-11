@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
-import 'package:newton_particles/src/effects/relativistic/forge/forge_newton_world.dart';
+import 'package:newton_particles/src/effects/physics/chipmunk/chipmunk_newton_world.dart';
 import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 
 /// The `PhysicsEffect` class represents a particle effect that applies physics-based
@@ -15,7 +15,7 @@ import 'package:newton_particles/src/effects/relativistic/newton_world.dart';
 class PhysicsEffect extends Effect<PhysicsParticle, PhysicsEffectConfiguration> {
   /// Creates a `PhysicsEffect` with the specified configuration.
   ///
-  /// The `PhysicsEffect` initializes a new `ForgeNewtonWorld` with the provided gravity and
+  /// The `PhysicsEffect` initializes a new `ChipmunkNewtonWorld` with the provided gravity and
   /// hard edges settings from the effect configuration. This world serves as the environment
   /// where particles are simulated.
   ///
@@ -24,7 +24,7 @@ class PhysicsEffect extends Effect<PhysicsParticle, PhysicsEffectConfiguration> 
   PhysicsEffect(
     super.effectConfiguration, {
     super.particlePool,
-  }) : _world = ForgeNewtonWorld(
+  }) : _world = ChipmunkNewtonWorld(
           effectConfiguration.gravity,
           effectConfiguration.solidEdges,
         );

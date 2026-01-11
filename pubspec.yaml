@@ -6,14 +6,14 @@ issue_tracker: https://github.com/tguerin/newton/issues
 repository: https://github.com/tguerin/newton
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
   flutter: ">=3.27.0"
 
 dependencies:
+  chipmunk2d_physics_ffi: ^1.0.2
   collection: ^1.18.0
   flutter:
     sdk: flutter
-  forge2d: ^0.14.2+1
   uuid: ^4.5.1
   vector_math: ^2.1.4
 

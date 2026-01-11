@@ -8,7 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:newton_particles/newton_particles.dart';
-import 'package:newton_particles/src/effects/relativistic/forge/forge_newton_world.dart';
+import 'package:newton_particles/src/effects/physics/chipmunk/chipmunk_newton_world.dart';
 import 'package:newton_particles/src/newton_painter.dart';
 import 'package:newton_particles/src/utils/bundle_extensions.dart';
 
@@ -371,7 +371,7 @@ class NewtonState extends State<Newton> with SingleTickerProviderStateMixin {
     for (final effect in _effects) {
       if (effect is PhysicsEffect) {
         final world = effect.world;
-        if (world is ForgeNewtonWorld) {
+        if (world is ChipmunkNewtonWorld) {
           // This completely replaces all colliders in the physics world
           world.setColliders(collidersList);
         }

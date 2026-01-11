@@ -38,8 +38,8 @@ class NewtonConfigurationPage extends StatefulWidget {
 }
 
 class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
-  static const int maxParticlesPhysics = 300;
-  static const int maxParticlesDeterministic = 800;
+  static const int maxParticlesPhysics = 3000;
+  static const int maxParticlesDeterministic = 3000;
 
   final _configuredEffects = <_ConfiguredEffect>[
     _ConfiguredEffect(
@@ -277,7 +277,7 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
                 key: _newtonKey,
                 effectConfigurations: _configuredEffects.map((effect) => effect.effectConfiguration).toList(),
                 onEffectStateChanged: (effect, state) {},
-                child: _hasPhysicsEffects()
+                child: _hasRainEffect()
                     ? Center(
                         child: NewtonCollider(
                           borderRadius: BorderRadius.circular(20),
@@ -1450,10 +1450,10 @@ class _NewtonConfigurationPageState extends State<NewtonConfigurationPage> {
     );
   }
 
-  /// Checks if any of the configured effects are physics effects.
-  bool _hasPhysicsEffects() {
+  /// Checks if any of the configured effects is a rain effect.
+  bool _hasRainEffect() {
     return _configuredEffects.any(
-      (effect) => effect.effectConfiguration is PhysicsEffectConfiguration,
+      (effect) => effect.effectName == 'Rain' && effect.effectConfiguration is PhysicsEffectConfiguration,
     );
   }
 }
