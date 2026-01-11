@@ -4,11 +4,16 @@ sidebar_position: 5
 
 # Widget Collisions
 
-Newton supports collision detection between particles and Flutter widgets using the `NewtonCollider` widget. This allows particles to interact with UI elements as if they were solid boundaries, creating engaging and interactive particle effects.
+Newton supports collision detection between particles and Flutter widgets using
+the `NewtonCollider` widget. This allows particles to interact with UI elements
+as if they were solid boundaries, creating engaging and interactive particle
+effects.
 
 ## Overview
 
-The widget collision system uses **Signed Distance Fields (SDF)** to accurately detect collisions with rounded rectangles, providing precise physics interactions including:
+The widget collision system uses **Signed Distance Fields (SDF)** to accurately
+detect collisions with rounded rectangles, providing precise physics
+interactions including:
 
 - Accurate collision detection for both circular and rectangular particles
 - Support for rounded corners with proper physics
@@ -56,25 +61,32 @@ Newton(
 
 ### Notification System
 
-`NewtonCollider` uses Flutter's notification system to communicate with the `Newton` widget:
+`NewtonCollider` uses Flutter's notification system to communicate with the
+`Newton` widget:
 
-1. **Registration**: When a `NewtonCollider` is built, it sends a `NewtonCollisionNotification` with its geometry (position, size, border radius)
-2. **Updates**: The collider automatically updates when its position or size changes
+1. **Registration**: When a `NewtonCollider` is built, it sends a
+   `NewtonCollisionNotification` with its geometry (position, size, border
+   radius)
+2. **Updates**: The collider automatically updates when its position or size
+   changes
 3. **Removal**: When the collider is disposed, it sends a removal notification
 
 ### SDF Physics
 
-The collision detection uses **Signed Distance Fields (SDF)** for accurate rounded rectangle collision:
+The collision detection uses **Signed Distance Fields (SDF)** for accurate
+rounded rectangle collision:
 
-- **Distance Calculation**: Computes the signed distance from particle center to the RRect surface
+- **Distance Calculation**: Computes the signed distance from particle center to
+  the RRect surface
 - **Normal Calculation**: Calculates the surface normal for proper reflection
-- **Rounded Corners**: Accurately handles collisions with rounded corners using mathematical formulas
+- **Rounded Corners**: Accurately handles collisions with rounded corners using
+  mathematical formulas
 
-### Integration with Forge2D
+### Integration with Chipmunk2D
 
-The SDF collision system works alongside Forge2D's physics engine:
+The SDF collision system works alongside Chipmunk2D's physics engine:
 
-- Forge2D handles the main physics simulation (gravity, velocity, etc.)
+- Chipmunk2D handles the main physics simulation (gravity, velocity, etc.)
 - SDF provides accurate collision detection for widget boundaries
 - Collision corrections are applied after each physics step
 - Particle properties (friction, restitution) are respected
@@ -170,8 +182,10 @@ A widget that marks its child as a collision boundary for Newton particles.
 #### Properties
 
 - **`child`** (required): The widget that will act as a collision boundary
-- **`id`** (optional): Unique identifier for this collider. If not provided, a hash-based ID will be used
-- **`borderRadius`** (optional): The border radius of the collider. If not provided, will attempt to extract from child's decoration
+- **`id`** (optional): Unique identifier for this collider. If not provided, a
+  hash-based ID will be used
+- **`borderRadius`** (optional): The border radius of the collider. If not
+  provided, will attempt to extract from child's decoration
 
 #### Example
 
@@ -187,7 +201,8 @@ NewtonCollider(
 
 A notification sent by `NewtonCollider` to the `Newton` root widget.
 
-This is an internal class used by the collision system. You typically don't need to interact with it directly.
+This is an internal class used by the collision system. You typically don't need
+to interact with it directly.
 
 ## Best Practices
 
@@ -211,13 +226,15 @@ NewtonCollider(
 
 - Colliders automatically update when widgets move or resize
 - The system is optimized to handle multiple colliders efficiently
-- Avoid creating colliders for widgets that change position very frequently (consider throttling)
+- Avoid creating colliders for widgets that change position very frequently
+  (consider throttling)
 
 ### Particle Properties
 
 Colliders respect particle properties:
 
-- **Friction**: Particles will slide or roll along collider edges based on friction
+- **Friction**: Particles will slide or roll along collider edges based on
+  friction
 - **Restitution**: Bounciness is properly applied when particles hit colliders
 - **Shape**: Both circular and rectangular particles are supported
 
@@ -225,31 +242,40 @@ Colliders respect particle properties:
 
 The collision system automatically handles coordinate transformations:
 
-- Widget positions are converted from global screen coordinates to the Newton canvas coordinate space
-- This ensures collisions work correctly regardless of where widgets are positioned in your widget tree
+- Widget positions are converted from global screen coordinates to the Newton
+  canvas coordinate space
+- This ensures collisions work correctly regardless of where widgets are
+  positioned in your widget tree
 
 ## Limitations
 
-1. **Shape Support**: Currently supports rectangular widgets with optional rounded corners. Complex shapes (paths, images) are approximated as bounding boxes with rounded corners.
+1. **Shape Support**: Currently supports rectangular widgets with optional
+   rounded corners. Complex shapes (paths, images) are approximated as bounding
+   boxes with rounded corners.
 
-2. **Performance**: Very large numbers of colliders (100+) may impact performance. Consider using fewer, larger colliders when possible.
+2. **Performance**: Very large numbers of colliders (100+) may impact
+   performance. Consider using fewer, larger colliders when possible.
 
-3. **Dynamic Updates**: Colliders update automatically, but rapid position changes may cause brief visual artifacts.
+3. **Dynamic Updates**: Colliders update automatically, but rapid position
+   changes may cause brief visual artifacts.
 
-4. **Particle Shapes**: All particle shapes are supported, but collision detection uses a conservative radius (for squares, uses half the diagonal).
+4. **Particle Shapes**: All particle shapes are supported, but collision
+   detection uses a conservative radius (for squares, uses half the diagonal).
 
 ## Troubleshooting
 
 ### Particles Not Bouncing
 
-- Ensure your effect is a `PhysicsEffectConfiguration` (not a deterministic effect)
+- Ensure your effect is a `PhysicsEffectConfiguration` (not a deterministic
+  effect)
 - Check that particles have sufficient velocity to trigger collisions
 - Verify the collider is positioned correctly in the widget tree
 
 ### Jittering or Vibration
 
 - This is usually resolved by the built-in collision threshold
-- If particles vibrate when at rest, they may be too close to the collider surface
+- If particles vibrate when at rest, they may be too close to the collider
+  surface
 
 ### Friction Not Working
 
@@ -259,5 +285,5 @@ The collision system automatically handles coordinate transformations:
 ### Rounded Corners Not Accurate
 
 - Make sure to specify `borderRadius` that matches your widget's decoration
-- The system will attempt to extract border radius from decorations, but explicit specification is more reliable
-
+- The system will attempt to extract border radius from decorations, but
+  explicit specification is more reliable

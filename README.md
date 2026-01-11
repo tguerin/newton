@@ -57,10 +57,19 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.3.0
+  newton_particles: ^0.4.0
 ```
 
 Then, run `flutter pub get` to fetch the package.
+
+## What's New in 0.4.0
+
+### Breaking Changes
+- **Physics Engine Migration**: Migrated from Forge2D (Box2D) to Chipmunk2D for improved performance and stability. The public API remains compatible, but the underlying physics engine has changed. If you have direct dependencies on `forge2d`, you'll need to update your code.
+
+### Major Updates
+- **Chipmunk2D Integration**: Full integration with Chipmunk2D physics engine, providing better performance for physics-based particle effects.
+- **Enhanced Performance**: Improved physics simulation performance, especially for large numbers of active particles (now supports up to 3000 particles with warnings).
 
 ## What's New in 0.3.0
 

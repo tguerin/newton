@@ -1,37 +1,107 @@
+## [0.4.0] - 2026-01-11
+
+### Breaking Changes
+
+- **[Breaking]** Migrated physics engine from Forge2D (Box2D) to Chipmunk2D. The
+  underlying physics implementation has changed, but the public API remains
+  compatible. This change improves performance and provides better stability for
+  physics-based particle effects.
+- **[Breaking]** Removed `forge2d` dependency. The package now uses
+  `chipmunk2d_physics_ffi` instead. If you have direct dependencies on `forge2d`
+  in your project, you may need to update your code.
+
+### Features
+
+- [Feature] **Chipmunk2D Integration**: Full integration with Chipmunk2D physics
+  engine via `chipmunk2d_physics_ffi` package, providing improved performance
+  and stability for physics simulations.
+- [Feature] **Enhanced Collision Detection**: Improved SDF-based collision
+  detection with widget colliders, maintaining all existing functionality with
+  the new physics engine.
+
+### Performance
+
+- [Performance] Improved physics simulation performance with Chipmunk2D engine,
+  especially for large numbers of active particles.
+- [Performance] Optimized fixture caching and shape management for better memory
+  efficiency.
+
+### Internal Changes
+
+- [Internal] Replaced `ForgeNewtonWorld` with `ChipmunkNewtonWorld`
+  implementation.
+- [Internal] Updated physics world coordinate transformations to work with
+  Chipmunk2D's coordinate system.
+- [Internal] Improved collision filter implementation using Chipmunk2D's
+  category and mask system.
+
+### Documentation
+
+- [Docs] Updated documentation to reflect Chipmunk2D migration.
+- [Docs] Increased recommended particle limit warnings to 3000 for both physics
+  and deterministic effects in the configurator.
+
 ## [0.3.0] - 2025-01-XX
 
 ### Breaking Changes
-- **[Breaking]** Renamed `RelativisticEffect` to `PhysicsEffect` and `RelativisticEffectConfiguration` to `PhysicsEffectConfiguration` for better clarity and understanding. The old names are deprecated and will be removed in a future version.
-- **[Breaking]** Revamped configuration API with grouped properties for better organization and type safety:
-  - Introduced `PhysicsProperties`, `VisualProperties`, `EmissionProperties`, `DeterministicProperties`, and `LayerProperties` classes
+
+- **[Breaking]** Renamed `RelativisticEffect` to `PhysicsEffect` and
+  `RelativisticEffectConfiguration` to `PhysicsEffectConfiguration` for better
+  clarity and understanding. The old names are deprecated and will be removed in
+  a future version.
+- **[Breaking]** Revamped configuration API with grouped properties for better
+  organization and type safety:
+  - Introduced `PhysicsProperties`, `VisualProperties`, `EmissionProperties`,
+    `DeterministicProperties`, and `LayerProperties` classes
   - Configuration is now more organized and easier to understand
-  - See [Migration Guide](https://newton.7omtech.fr/docs/migration) for details on upgrading
+  - See [Migration Guide](https://newton.7omtech.fr/docs/migration) for details
+    on upgrading
 
 ### Features
-- [Feature] **Widget Collisions**: Introduced `NewtonCollider` widget allowing particles to collide with Flutter widgets. Supports rounded corners, friction, and restitution with accurate physics using Signed Distance Fields (SDF).
+
+- [Feature] **Widget Collisions**: Introduced `NewtonCollider` widget allowing
+  particles to collide with Flutter widgets. Supports rounded corners, friction,
+  and restitution with accurate physics using Signed Distance Fields (SDF).
 - [Feature] **Effect Presets**: Added preset configurations for common effects:
   - `ConfettiPreset` - Celebratory confetti effect
   - `RainPreset` - Realistic rain effect
   - `SnowPreset` - Snowfall effect
   - `ExplosionPreset` - Explosion effect
   - `FountainPreset` - Fountain effect
-- [Feature] **Particle Pool**: Introduced `ParticlePool` for reusing particle instances, reducing memory allocations and improving performance.
-- [Feature] **Debug Data Stream**: Added `debugDataStream` to `NewtonState` for real-time monitoring of particle effects, active particle counts, and performance metrics.
-- [Feature] **Code Generator**: Enhanced configurator with ability to copy generated code for easy integration.
+- [Feature] **Particle Pool**: Introduced `ParticlePool` for reusing particle
+  instances, reducing memory allocations and improving performance.
+- [Feature] **Debug Data Stream**: Added `debugDataStream` to `NewtonState` for
+  real-time monitoring of particle effects, active particle counts, and
+  performance metrics.
+- [Feature] **Code Generator**: Enhanced configurator with ability to copy
+  generated code for easy integration.
 
 ### Performance
-- [Performance] Introduced viewport culling to skip rendering particles outside the visible area, significantly improving performance for large particle counts.
+
+- [Performance] Introduced viewport culling to skip rendering particles outside
+  the visible area, significantly improving performance for large particle
+  counts.
 - [Performance] Improved particle sorting strategy for more efficient rendering.
-- [Performance] Introduced fixture cache in physics engine to avoid unnecessary fixture recreation.
-- [Performance] Optimized collider reporting by removing redundant postFrameCallback in NewtonCollider.build() method, reducing unnecessary work on every rebuild.
+- [Performance] Introduced fixture cache in physics engine to avoid unnecessary
+  fixture recreation.
+- [Performance] Optimized collider reporting by removing redundant
+  postFrameCallback in NewtonCollider.build() method, reducing unnecessary work
+  on every rebuild.
 
 ### Fixes
-- [Fix] Added missing setState() call to clearEffects() method to ensure proper widget rebuild.
-- [Fix] Fixed colliders stopping to work when configuration properties (delay, particles per emit, etc.) were changed. Colliders now properly re-report their positions after configuration changes.
-- [Fix] Colliders are now preserved during temporary coordinate conversion failures that can occur during widget rebuilds.
-- [Fix] Improved collider syncing to physics effects, ensuring colliders are properly synchronized when effects are updated or recreated.
+
+- [Fix] Added missing setState() call to clearEffects() method to ensure proper
+  widget rebuild.
+- [Fix] Fixed colliders stopping to work when configuration properties (delay,
+  particles per emit, etc.) were changed. Colliders now properly re-report their
+  positions after configuration changes.
+- [Fix] Colliders are now preserved during temporary coordinate conversion
+  failures that can occur during widget rebuilds.
+- [Fix] Improved collider syncing to physics effects, ensuring colliders are
+  properly synchronized when effects are updated or recreated.
 
 ### Documentation
+
 - [Docs] Added comprehensive migration guide for upgrading from 0.2.x to 0.3.x.
 - [Docs] Added widget collisions documentation with examples and best practices.
 - [Docs] Updated presets documentation with new preset system.

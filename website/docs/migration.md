@@ -2,7 +2,61 @@
 sidebar_position: 7
 ---
 
-# Migration Guide: 0.2.x to 0.3.x
+# Migration Guide
+
+## Migration Guide: 0.3.x to 0.4.x
+
+### Overview
+
+Version 0.4.0 migrates the physics engine from Forge2D (Box2D) to Chipmunk2D. The public API remains compatible, so most users won't need to make any code changes. However, there are a few important points to be aware of.
+
+### What Changed
+
+- **Physics Engine**: The underlying physics engine has been changed from Forge2D to Chipmunk2D
+- **Dependency**: The package no longer depends on `forge2d` and now uses `chipmunk2d_physics_ffi` instead
+- **API Compatibility**: The public API remains the same - your existing code should work without changes
+
+### Migration Steps
+
+1. **Update your dependency**:
+   ```yaml
+   dependencies:
+     newton_particles: ^0.4.0
+   ```
+
+2. **Remove any direct `forge2d` dependencies** (if you have any):
+   If your project directly depends on `forge2d`, you'll need to remove it as it's no longer used by Newton.
+
+3. **Run `flutter pub get`**:
+   ```bash
+   flutter pub get
+   ```
+
+4. **Test your physics effects**:
+   While the API is compatible, the underlying physics engine behaves slightly differently. Test your physics-based effects to ensure they behave as expected.
+
+### What to Expect
+
+- **Better Performance**: Chipmunk2D generally provides better performance, especially for large numbers of particles
+- **Same Behavior**: Physics simulations should behave similarly, though there may be minor differences due to different physics engines
+- **All Features Preserved**: All existing features (collisions, gravity, density, friction, restitution, etc.) continue to work as before
+
+### Breaking Changes
+
+- If you were directly importing or using Forge2D classes from the Newton package, those are no longer available
+- The internal physics world implementation has changed, but this shouldn't affect your code unless you were accessing internal classes
+
+### Need Help?
+
+If you encounter any issues during migration:
+1. Check that you've updated to `^0.4.0`
+2. Ensure you've run `flutter pub get`
+3. Review the [changelog](/CHANGELOG.md) for detailed changes
+4. Open an issue on [GitHub](https://github.com/tguerin/newton/issues)
+
+---
+
+## Migration Guide: 0.2.x to 0.3.x
 
 This guide will help you migrate your Newton particle effects from version 0.2.x to 0.3.x. The new version introduces a more organized API using grouped properties, which provides better type safety and code organization.
 

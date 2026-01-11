@@ -671,14 +671,15 @@ class CompiledApp {
       _1529: (x0,x1) => { x0.lastIndex = x1 },
       _1530: (o, p) => p in o,
       _1531: (o, p) => o[p],
-      _1534: x0 => x0.random(),
-      _1535: (x0,x1) => x0.getRandomValues(x1),
-      _1536: () => globalThis.crypto,
-      _1537: () => globalThis.Math,
-      _1538: Function.prototype.call.bind(Number.prototype.toString),
-      _1539: Function.prototype.call.bind(BigInt.prototype.toString),
-      _1540: Function.prototype.call.bind(Number.prototype.toString),
-      _1541: (d, digits) => d.toFixed(digits),
+      _1552: (x0,x1,x2,x3) => x0.call(x1,x2,x3),
+      _1553: x0 => x0.random(),
+      _1554: (x0,x1) => x0.getRandomValues(x1),
+      _1555: () => globalThis.crypto,
+      _1556: () => globalThis.Math,
+      _1569: Function.prototype.call.bind(Number.prototype.toString),
+      _1570: Function.prototype.call.bind(BigInt.prototype.toString),
+      _1571: Function.prototype.call.bind(Number.prototype.toString),
+      _1572: (d, digits) => d.toFixed(digits),
 
     };
 
