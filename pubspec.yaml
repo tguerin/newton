@@ -10,7 +10,7 @@ environment:
   flutter: ">=3.27.0"
 
 dependencies:
-  chipmunk2d_physics_ffi: ^1.0.2
+  chipmunk2d_physics_ffi: ^1.0.4
   collection: ^1.18.0
   flutter:
     sdk: flutter

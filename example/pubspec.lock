@@ -69,10 +69,10 @@ packages:
     dependency: "direct main"
     description:
       name: chipmunk2d_physics_ffi
-      sha256: "063a7e2be092c0abd7f2244c0eeaf55123e33a407e2a3c79a3e891afd904fa10"
+      sha256: cf481ddc34f870f964b78b6acb28768667516eb91625d9c0b99fc82ef0eda663
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.4"
   clock:
     dependency: transitive
     description:
