@@ -57,7 +57,7 @@ To use Newton, simply add it as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  newton_particles: ^0.4.0
+  newton_particles: ^0.4.1
 ```
 
 Then, run `flutter pub get` to fetch the package.
@@ -76,6 +76,12 @@ If you're building for web with WASM and using physics effects, you need to add 
 ```
 
 This helper is required for Chipmunk2D's WASM module to load properly on web.
+
+## What's New in 0.4.1
+
+### Fixes
+
+- **chipmunk2d_physics_ffi 1.0.4**: Bumps the Chipmunk2D FFI dependency to fix Android builds for Google Play’s 16 KB page size requirement and Windows `build_runner` when prebuilt native libraries were missing. See [issue #51](https://github.com/tguerin/newton/issues/51) and [issue #52](https://github.com/tguerin/newton/issues/52).
 
 ## What's New in 0.4.0
 

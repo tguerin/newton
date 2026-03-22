@@ -1,3 +1,13 @@
+## [0.4.1] - 2026-03-22
+
+### Fixes
+
+- [Fix] Upgrade `chipmunk2d_physics_ffi` to 1.0.4 to fix Google Play 16 KB page
+  size compatibility for Android ([issue
+  #51](https://github.com/tguerin/newton/issues/51)) and `build_runner` failing
+  on Windows with “Prebuilt library not found for windows x64” ([issue
+  #52](https://github.com/tguerin/newton/issues/52)).
+
 ## [0.4.0] - 2026-01-11
 
 ### Breaking Changes

@@ -26,7 +26,7 @@ changes. However, there are a few important points to be aware of.
 1. **Update your dependency**:
    ```yaml
    dependencies:
-     newton_particles: ^0.4.0
+     newton_particles: ^0.4.1
    ```
 
 2. **Remove any direct `forge2d` dependencies** (if you have any): If your
@@ -104,7 +104,7 @@ changes. However, there are a few important points to be aware of.
 
 If you encounter any issues during migration:
 
-1. Check that you've updated to `^0.4.0`
+1. Check that you've updated to `^0.4.1`
 2. Ensure you've run `flutter pub get`
 3. Review the
    [changelog](https://github.com/tguerin/newton/blob/main/CHANGELOG.md) for

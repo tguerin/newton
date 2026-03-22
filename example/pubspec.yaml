@@ -28,7 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  chipmunk2d_physics_ffi: ^1.0.2
+  chipmunk2d_physics_ffi: ^1.0.4
   code_builder: ^4.4.0
   collection: ^1.18.0
   # The following adds the Cupertino Icons font to your application.
